@@ -217,20 +217,20 @@ if (sessionStorage.getItem("allowed") !== "true") {
 const i = {
   'kurkure': 'https://imgs.search.brave.com/Xva87qXgqGthKCYBU1RHctPgoFtCIYSp9RLmna14cS4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/emVwdG9ub3cuY29t/L3Byb2R1Y3Rpb24v/dHI6dy00MDMsYXIt/MjAwMC0yMDAwLHBy/LXRydWUsZi1hdXRv/LCxxLTQwLGRwci0y/L2Ntcy9wcm9kdWN0/X3ZhcmlhbnQvNDZh/MzFkYzQtMzhjYS00/MWIwLWI0MmUtMDM0/ZTU5ZTlkZTZkLmpw/ZWc',
   'chips': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_GSCkduUHxVsV6OmPStAmsjfbbofRKoK6_Q&s',
-  'tkatak':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNx0i0i_b8OgdxHeXCWpkIuCdbNyX4Rsw3Q&s',
+  'takatak':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNx0i0i_b8OgdxHeXCWpkIuCdbNyX4Rsw3Q&s',
   'maggie': 'https://m.media-amazon.com/images/I/81ZvU4rmYBL._SX679_.jpg',
-  'borbun': 'https://m.media-amazon.com/images/I/81c0jxRWx3L._SL1500_.jpg',
+  'bourbun': 'https://m.media-amazon.com/images/I/81c0jxRWx3L._SL1500_.jpg',
 };
 const s = {
   'in': 'Available',
   'out': 'Out of Stock'
 };
 const PRODUCTS = [
-  {id:1,name:'Kurkure Masala',aval: s.in,price:11,src: i.kurkure,cat:'Kurkure'},
+  {id:1,name:'Kurkure Masala',aval: s.out,price:11,src: i.kurkure,cat:'Kurkure'},
   {id:2,name:"Lay's Classic Salted",aval: s.out,price:11,src: i.chips,cat:'Chips'},
-  {id:3,name:"Tkatak",aval: s.in,price:11,src: i.tkatak,cat:'Kurkure'},
+  {id:3,name:"Takatak",aval: s.out,price:11,src: i.takatak,cat:'Kurkure'},
   {id:4,name:'Maggie',aval: s.out,price:11,src: i.maggie,cat:'Instant'},
-  {id:5,name:'Borbun',aval: s.in,price:11,src: i.borbun,cat:'Biscuits'},
+  {id:5,name:'Bourbun',aval: s.out,price:11,src: i.bourbun,cat:'Biscuits'},
   
 ];
 
@@ -392,9 +392,9 @@ function placeOrder() {
   const itemsList = Object.entries(cart).map(([id, qty]) => {
   const p = PRODUCTS.find(x => x.id == id);
   return `${p.name} x ${qty}`;
-}).join(', ');
+}).join('\n ');
 
-emailjs.send("service_4r1oj5k", "template_99dcrry", {
+emailjs.send("service_4r1oj5k", "template_h1gpir9", {
   name: name,
   room: room,
   phone: phone,
