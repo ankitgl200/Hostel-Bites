@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Bites 🏪</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#FF6B00;--yellow:#FFD600;--green:#22C55E;--red:#EF4444;--bg:#FFF8F0;--card:#FFFFFF;--text:#1A1208;--muted:#6B5E52;--border:#F0E0D0}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif}
+
+.header{background:var(--orange);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{color:#fff;font-size:22px;font-weight:900;font-family:'Nunito',sans-serif}
+.header-title span{color:var(--yellow)}
+.cart-btn{background:#fff;border:none;border-radius:24px;padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--orange);cursor:pointer;display:flex;align-items:center;gap:6px}
+.cart-count{background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:800}
+
+.nav-tabs{display:flex;background:#fff;border-bottom:2px solid var(--border)}
+.nav-tab{flex:1;padding:12px 0;border:none;background:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+
+.tabs{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;background:#fff;border-bottom:1px solid var(--border)}
+.tab{background:var(--bg);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--muted)}
+.tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+
+.products{padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:600px){.products{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.products{grid-template-columns:repeat(4,1fr)}}
+.product-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.product-emoji{display: flex; justify-content: center; align-items: center; height: 300px;}
+.product-emoji img{width: 250px; height: 250px; object-fit: contain; margin-left: 20px;}
+.product-info{padding:8px 12px 12px}
+.product-name{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:2px}
+.product-brand{font-size:11px;color:var(--muted);margin-bottom:6px}
+.product-price{font-size:16px;font-weight:700;color:var(--orange);font-family:'Nunito',sans-serif}
+.add-btn{background:var(--orange);color:#fff;border:none;border-radius:10px;padding:6px 10px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.qty-controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
+.qty-btn{background:var(--orange);color:#fff;border:none;border-radius:8px;width:28px;height:28px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty-num{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;min-width:20px;text-align:center}
+
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200}
+.cart-overlay.open{display:block}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(100%,380px);background:#fff;z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.25s}
+.cart-drawer.open{transform:translateX(0)}
+.cart-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cart-header h2{font-size:20px;font-weight:900}
+.close-btn{background:var(--bg);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer}
+.cart-items{flex:1;overflow-y:auto;padding:12px 16px}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.cart-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.cart-item-emoji{font-size:30px;min-width:36px;text-align:center}
+.cart-item-info{flex:1}
+.cart-item-name{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px}
+.cart-item-price{font-size:13px;color:var(--muted)}
+.cart-item-controls{display:flex;align-items:center;gap:8px}
+.ci-btn{background:var(--bg);border:1px solid var(--border);border-radius:6px;width:26px;height:26px;font-size:16px;font-weight:700;cursor:pointer}
+.cart-footer{padding:16px;border-top:1px solid var(--border)}
+.cart-total{display:flex;justify-content:space-between;font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;margin-bottom:12px}
+.checkout-btn{background:var(--orange);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;width:100%}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;padding:24px;width:min(95%,420px);margin:auto}
+.modal h3{font-size:20px;font-weight:900;margin-bottom:16px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.form-group input,.form-group select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);background:#fff;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:var(--orange)}
+.order-summary{background:var(--bg);border-radius:12px;padding:12px;margin:12px 0}
+.order-summary-row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
+.order-summary-total{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;border-top:1px solid var(--border);margin-top:6px;padding-top:6px;display:flex;justify-content:space-between}
+.upi-box{background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:14px;margin:12px 0;text-align:center}
+.upi-id{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:#16A34A;letter-spacing:1px;margin:6px 0}
+.upi-note{font-size:12px;color:#15803D}
+.place-order-btn{background:var(--green);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;width:100%;margin-top:8px}
+.cancel-btn{background:var(--bg);color:var(--muted);border:1.5px solid var(--border);border-radius:12px;padding:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:8px}
+
+.success-screen{display:none;text-align:center;padding:20px}
+.success-screen.show{display:block}
+.success-icon{font-size:64px;margin-bottom:12px}
+.success-screen h3{font-size:22px;font-weight:900;color:var(--green)}
+.success-screen p{color:var(--muted);font-size:14px;margin-top:8px}
+.order-id-box{background:var(--bg);border-radius:10px;padding:10px;margin:12px 0;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:var(--orange)}
+
+.orders-panel{padding:16px}
+.order-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.order-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.order-id-badge{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--orange)}
+.status-badge{border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
+.status-pending{background:#FEF3C7;color:#92400E}
+.status-done{background:#D1FAE5;color:#065F46}
+.order-items-list{font-size:13px;color:var(--muted);margin-bottom:8px}
+.order-foot{display:flex;justify-content:space-between;align-items:center}
+.order-total{font-family:'Nunito',sans-serif;font-weight:800;font-size:15px}
+.mark-done-btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:#1A1208;color:#fff;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:600;z-index:500;transition:transform 0.3s;font-family:'Nunito',sans-serif;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+.footer {
+    background: #222;
+    color: white;
+    padding: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🏪 Hostel <span>Bites</span></div>
+  <button class="cart-btn" onclick="openCart()">
+    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" id="shopTab" onclick="showPage('shop')">🛍 Shop</button>
+  <!-- <button class="nav-tab" id="ordersTab" onclick="showPage('orders')">📦 Orders</button> -->
+</div>
+
+<div id="shopPage">
+  <div class="tabs" id="categoryTabs"></div>
+  <div class="products" id="productGrid"></div>
+</div>
+
+<div id="ordersPage" class="hidden">
+  <div class="orders-panel">
+    <h3 style="font-size:18px;font-weight:900;margin-bottom:14px">📦 Received Orders</h3>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2>🛒 Your Cart</h2>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <div id="checkoutForm">
+      <h3>📝 Order Details</h3>
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="custName" name="custName" placeholder="e.g. Rahul Sharma">
+      </div>
+      <div class="form-group">
+        <label>Room Number</label>
+        <input type="text" id="custRoom" name="custRoom" placeholder="e.g. B-204">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="custPhone" name="custPhone" placeholder="e.g. 9876543210" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select id="payMethod" onchange="toggleUPI()">
+          <option value="cash">Cash on Delivery</option>
+          <!-- <option value="upi">Online Comming Soon</option> -->
+          
+        </select>
+      </div>
+      <div id="upiSection" class="upi-box">
+        <div style="font-size:13px;font-weight:600;color:#16A34A">Pay via UPI</div>
+        <div class="upi-id">Comming Soon</div>
+        <div class="upi-note">You can pay online on delivery</div>
+        <!-- <div class="upi-note">✅ Send screenshot after payment to confirm</div> -->
+      </div>
+      <div class="order-summary">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--muted)">Order Summary</div>
+        <div id="summaryItems"></div>
+        <div class="order-summary-total"><span>Total</span><span id="summaryTotal">₹0</span></div>
+      </div>
+      <button class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
+      <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
+    </div>
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <h3>Order Placed!</h3>
+      <div class="order-id-box" id="successOrderId"></div>
+      <p>Your snacks will be delivered to your room shortly!</p>
+      <button class="place-order-btn" onclick="closeAll()" style="margin-top:16px">🏠 Back to Shop</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="footer">
+    © 2026 Hostel Bites. All rights reserved.
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+(function(){
+  emailjs.init("_xs49of60mQDX4STa");
+})();
+</script>
+<script>
+if (sessionStorage.getItem("allowed") !== "true") {
+    window.location.href = "index.html"; // landing page
+}
+
+const i = {
+  'kurkure': 'https://imgs.search.brave.com/Xva87qXgqGthKCYBU1RHctPgoFtCIYSp9RLmna14cS4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/emVwdG9ub3cuY29t/L3Byb2R1Y3Rpb24v/dHI6dy00MDMsYXIt/MjAwMC0yMDAwLHBy/LXRydWUsZi1hdXRv/LCxxLTQwLGRwci0y/L2Ntcy9wcm9kdWN0/X3ZhcmlhbnQvNDZh/MzFkYzQtMzhjYS00/MWIwLWI0MmUtMDM0/ZTU5ZTlkZTZkLmpw/ZWc',
+  'chips': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_GSCkduUHxVsV6OmPStAmsjfbbofRKoK6_Q&s',
+  'tkatak':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNx0i0i_b8OgdxHeXCWpkIuCdbNyX4Rsw3Q&s',
+  'maggie': 'https://m.media-amazon.com/images/I/81ZvU4rmYBL._SX679_.jpg',
+  'borbun': 'https://m.media-amazon.com/images/I/81c0jxRWx3L._SL1500_.jpg',
+};
+const s = {
+  'in': 'Available',
+  'out': 'Out of Stock'
+};
+const PRODUCTS = [
+  {id:1,name:'Kurkure Masala',aval: s.in,price:11,src: i.kurkure,cat:'Kurkure'},
+  {id:2,name:"Lay's Classic Salted",aval: s.out,price:11,src: i.chips,cat:'Chips'},
+  {id:3,name:"Tkatak",aval: s.in,price:11,src: i.tkatak,cat:'Kurkure'},
+  {id:4,name:'Maggie',aval: s.out,price:11,src: i.maggie,cat:'Instant'},
+  {id:5,name:'Borbun',aval: s.in,price:11,src: i.borbun,cat:'Biscuits'},
+  
+];
+
+const CATS = ['All','Kurkure','Biscuits','Chips','Namkeen','Instant'];
+let cart = {};
+let activeCat = 'All';
+let orders = JSON.parse(localStorage.getItem('hostelOrders') || '[]');
+let orderCounter = parseInt(localStorage.getItem('orderCounter') || '100');
+
+function renderCats() {
+  document.getElementById('categoryTabs').innerHTML = CATS.map(c =>
+    `<button class="tab${c===activeCat?' active':''}" onclick="filterCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function renderProducts() {
+  const filtered = activeCat==='All' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===activeCat);
+  document.getElementById('productGrid').innerHTML = filtered.map(p => {
+    const qty = cart[p.id] || 0;
+    return `<div class="product-card">
+      <div class="product-emoji"><img src="${p.src}" alt=""></div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-brand">${p.aval}</div>
+        <div class="product-price">₹${p.price}</div>
+        ${qty===0
+          ? `<button class="add-btn" onclick="addToCart(${p.id})">+ Add</button>`
+          : `<div class="qty-controls">
+              <button class="qty-btn" onclick="removeFromCart(${p.id})">−</button>
+              <span class="qty-num">${qty}</span>
+              <button class="qty-btn" onclick="addToCart(${p.id})">+</button>
+            </div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterCat(c) { activeCat=c; renderCats(); renderProducts(); }
+
+// function addToCart(id) { cart[id]=(cart[id]||0)+1; updateCartCount(); renderProducts(); renderCartDrawer(); }
+// function removeFromCart(id) {
+//   if(cart[id]>1) cart[id]--;
+//   else delete cart[id];
+//   updateCartCount(); renderProducts(); renderCartDrawer();
+// }
+function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
+
+  if (product.aval === s.out) {
+    showToast('❌ Item is out of stock');
+    return; // stop here
+  }
+
+  cart[id] = (cart[id] || 0) + 1;
+  updateCartCount();
+  renderProducts();
+  renderCartDrawer();
+}
+
+function updateCartCount() {
+  const total = Object.values(cart).reduce((a,b)=>a+b,0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+function cartTotal() {
+  return Object.entries(cart).reduce((sum,[id,qty]) => {
+    const p = PRODUCTS.find(x=>x.id==id);
+    return sum + (p ? p.price*qty : 0);
+  }, 0);
+}
+
+function renderCartDrawer() {
+  const items = Object.entries(cart);
+  const el = document.getElementById('cartItems');
+  if (!items.length) {
+    el.innerHTML = `<div class="cart-empty"><div style="font-size:48px;margin-bottom:12px">🛒</div><p>Your cart is empty</p></div>`;
+    document.getElementById('cartFooter').style.display='none';
+    return;
+  }
+  el.innerHTML = items.map(([id,qty]) => {
+    const p = PRODUCTS.find(x=>x.id==id);
+    return `<div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-price">₹${p.price} × ${qty} = ₹${p.price*qty}</div>
+      </div>
+      <div class="cart-item-controls">
+        <button class="ci-btn" onclick="removeFromCart(${id})">−</button>
+        <span style="font-weight:700;min-width:16px;text-align:center">${qty}</span>
+        <button class="ci-btn" onclick="addToCart(${id})">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cartTotal').textContent = `₹${cartTotal()}`;
+  document.getElementById('cartFooter').style.display = 'block';
+}
+
+function openCart() {
+  renderCartDrawer();
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+function openCheckout() {
+  if (!Object.keys(cart).length) { showToast('Cart is empty!'); return; }
+  closeCart();
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('checkoutForm').style.display = 'block';
+  renderSummary();
+  document.getElementById('checkoutModal').classList.add('open');
+}
+function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
+function closeAll() {
+  closeCheckout();
+  cart = {};
+  updateCartCount();
+  renderProducts();
+}
+
+function toggleUPI() {
+  const v = document.getElementById('payMethod').value;
+  document.getElementById('upiSection').style.display = v==='upi' ? 'block' : 'none';
+}
+
+function renderSummary() {
+  document.getElementById('summaryItems').innerHTML = Object.entries(cart).map(([id,qty]) => {
+    const p = PRODUCTS.find(x=>x.id==id);
+    return `<div class="order-summary-row"><span> ${p.name} ×${qty}</span><span>₹${p.price*qty}</span></div>`;
+  }).join('');
+  document.getElementById('summaryTotal').textContent = `₹${cartTotal()}`;
+}
+
+function placeOrder() {
+  const name = document.getElementById('custName').value.trim();
+  const room = document.getElementById('custRoom').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const pay = document.getElementById('payMethod').value;
+  if (!name || !room || !phone) { showToast('Please fill all details!'); return; }
+  if (phone.length < 10) { showToast('Enter valid 10-digit phone'); return; }
+
+  orderCounter++;
+  const orderId = 'HB' + orderCounter;
+  const order = {
+    id: orderId, name, room, phone,
+    payment: pay,
+    items: Object.entries(cart).map(([id,qty]) => {
+      const p = PRODUCTS.find(x=>x.id==id);
+      return {name:p.name, qty, price:p.price};
+    }),
+    total: cartTotal(),
+    status: 'pending',
+    time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})
+  };
+
+  const itemsList = Object.entries(cart).map(([id, qty]) => {
+  const p = PRODUCTS.find(x => x.id == id);
+  return `${p.name} x ${qty}`;
+}).join(', ');
+
+emailjs.send("service_4r1oj5k", "template_99dcrry", {
+  name: name,
+  room: room,
+  phone: phone,
+  payment: pay,
+  items: itemsList,
+  total: cartTotal()
+})
+.then(function(response) {
+  console.log("✅ Email sent!", response);
+})
+.catch(function(error) {
+  console.error("❌ Email failed:", error);
+});
+  orders.unshift(order);
+  localStorage.setItem('hostelOrders', JSON.stringify(orders));
+  localStorage.setItem('orderCounter', orderCounter);
+
+  document.getElementById('checkoutForm').style.display = 'none';
+  document.getElementById('successOrderId').textContent = `Order ID: ${orderId}`;
+  document.getElementById('successScreen').classList.add('show');
+  showToast('🎉 Order placed successfully!');
+}
+
+function renderOrders() {
+  const el = document.getElementById('ordersList');
+  if (!orders.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px 0"><div style="font-size:40px;margin-bottom:10px">📭</div><p>No orders yet</p></div>';
+    return;
+  }
+  el.innerHTML = orders.map((o,i) => `
+    <div class="order-card">
+      <div class="order-card-header">
+        <div>
+          <div class="order-id-badge">${o.id}</div>
+          <div style="font-size:12px;color:var(--muted)">${o.time} · Room ${o.room} · ${o.name}</div>
+        </div>
+        <span class="status-badge ${o.status==='done'?'status-done':'status-pending'}">${o.status==='done'?'✓ Done':'⏳ Pending'}</span>
+      </div>
+      <div class="order-items-list">${o.items.map(it=>`${it.emoji} ${it.name} ×${it.qty}`).join(' · ')}</div>
+      <div class="order-foot">
+        <div class="order-total">₹${o.total} · ${o.payment==='upi'?'💳 UPI':'💵 Cash'}</div>
+        ${o.status!=='done' ? `<button class="mark-done-btn" onclick="markDone(${i})">Mark Done ✓</button>` : ''}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">📞 ${o.phone}</div>
+    </div>
+  `).join('');
+}
+
+function markDone(i) {
+  orders[i].status = 'done';
+  localStorage.setItem('hostelOrders', JSON.stringify(orders));
+  renderOrders();
+  showToast('✅ Order marked as done!');
+}
+
+function showPage(page) {
+  document.getElementById('shopTab').classList.toggle('active', page==='shop');
+  document.getElementById('ordersTab').classList.toggle('active', page==='orders');
+  document.getElementById('shopPage').classList.toggle('hidden', page!=='shop');
+  document.getElementById('ordersPage').classList.toggle('hidden', page!=='orders');
+  if (page==='orders') renderOrders();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+renderCats();
+renderProducts();
+</script>
+</body>
+</html>
