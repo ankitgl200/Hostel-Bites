@@ -893,19 +893,41 @@
     function filterCat(c) { activeCat = c; renderCats(); renderProducts(); }
 
 
-    function addToCart(id) {
-      const product = PRODUCTS.find(p => p.id === id);
+   function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
 
-      if (product.aval === s.out) {
-        showToast('❌ Item is out of stock');
-        return; // stop here
-      }
+  if (product.aval === s.out) {
+    showToast('❌ Item is out of stock');
+    return;
+  }
 
-      cart[id] = (cart[id] || 0) + 1;
-      updateCartCount();
-      renderProducts();
-      renderCartDrawer();
-    }
+  let currentQty = cart[id] || 0;
+
+  // 🔥 LIMIT CHECK
+  if (currentQty >= 5) {
+    showToast("⚠️ You can only order max 5 of this item");
+    return;
+  }
+
+  cart[id] = currentQty + 1;
+
+  updateCartCount();
+  renderProducts();
+  renderCartDrawer();
+}
+function removeFromCart(id) {
+  if (!cart[id]) return;
+
+  if (cart[id] > 1) {
+    cart[id]--;
+  } else {
+    delete cart[id]; // remove completely when 0
+  }
+
+  updateCartCount();
+  renderProducts();
+  renderCartDrawer();
+}
 
     function updateCartCount() {
       const total = Object.values(cart).reduce((a, b) => a + b, 0);
