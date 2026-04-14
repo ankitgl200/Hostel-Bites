@@ -3,268 +3,251 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostel Bites</title>
 
     <style>
-        body {
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
             font-family: Arial, sans-serif;
             background: #fff5eb;
-            text-align: center;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
-        /* Header */
-
-
+        /* HEADER */
         .header {
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: #ff6a00;
             color: white;
-            padding: 20px;
-            font-size: 28px;
+            padding: 14px 20px;
+            font-size: 20px;
             font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* Dev Button */
+        .header span {
+            font-size: 20px;
+        }
+
         .dev-btn {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            padding: 8px 15px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             background: white;
             color: #ff6a00;
             cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        /* Input Box */
+        /* DEV INPUT BOX */
         .dev-box {
             display: none;
-            margin-top: 15px;
+            background: #fff3e8;
+            border-bottom: 1px solid #ffd4ab;
+            padding: 12px 16px;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .dev-box.visible {
+            display: flex;
         }
 
         .dev-box input {
-            padding: 10px;
+            flex: 1;
+            min-width: 0;
+            max-width: 280px;
+            padding: 10px 14px;
             border-radius: 10px;
             border: 1px solid #ccc;
+            font-size: 15px;
         }
 
         .dev-box button {
-            padding: 10px;
+            padding: 10px 18px;
             border: none;
             background: #ff6a00;
             color: white;
             border-radius: 10px;
-            margin-left: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-        /* Main Section */
+        /* MAIN CONTAINER */
         .container {
             flex: 1;
-            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 24px;
+            gap: 12px;
+        }
+
+        .emoji-icon {
+            font-size: 64px;
+            line-height: 1;
+            margin-bottom: 8px;
         }
 
         h1 {
-            color: #333;
+            font-size: clamp(24px, 7vw, 36px);
+            color: #222;
+            line-height: 1.2;
         }
 
-        p {
-            color: #666;
-            font-size: 18px;
+        .subtitle {
+            font-size: clamp(15px, 4vw, 18px);
+            color: #555;
         }
 
-        /* Button */
+        .timing {
+            font-size: clamp(14px, 3.5vw, 16px);
+            color: #777;
+        }
+
+        .timing b {
+            color: #ff6a00;
+        }
+
+        /* ENTER BUTTON */
         .btn {
-            margin-top: 30px;
-            padding: 15px 30px;
-            font-size: 18px;
+            margin-top: 16px;
+            padding: 16px 40px;
+            font-size: clamp(15px, 4vw, 18px);
             border: none;
-            border-radius: 30px;
+            border-radius: 50px;
             background: linear-gradient(45deg, #ff6a00, #ff8c42);
             color: white;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 106, 0, 0.4);
+            box-shadow: 0 5px 18px rgba(255, 106, 0, 0.35);
+            width: min(90%, 280px);
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 3px 10px rgba(255, 106, 0, 0.3);
         }
 
-        /* Popup */
+        /* POPUP */
         .popup {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: red;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(90%, 360px);
+            background: #d32f2f;
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 15px;
             display: none;
+            z-index: 200;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
-        /* Footer */
+        /* FOOTER */
         .footer {
             background: #222;
-            color: white;
-            padding: 15px;
-            font-size: 14px;
+            color: #aaa;
+            text-align: center;
+            padding: 14px 16px;
+            font-size: 13px;
         }
 
-
-
-        /* Responsive */
-        /* 📱 Mobile Responsive Design */
-        @media (max-width: 768px) {
-
-            body {
-                padding: 0;
-            }
-
-            /* Header */
+        /* Tablet+ adjustments */
+        @media (min-width: 480px) {
             .header {
                 font-size: 22px;
-                padding: 15px;
+                padding: 16px 28px;
             }
 
-            .dev-btn {
-                top: 12px;
-                right: 10px;
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            /* Dev Input */
-            .dev-box {
-                margin-top: 10px;
-            }
-
-            .dev-box input {
-                width: 70%;
-                font-size: 14px;
-            }
-
-            .dev-box button {
-                font-size: 14px;
-                padding: 8px 10px;
-            }
-
-            /* Main Section */
-            .container {
-                margin-top: 60px;
-                padding: 0 15px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            p {
-                font-size: 15px;
-                line-height: 1.5;
-            }
-
-            /* Button */
-            .btn {
-                width: 90%;
-                max-width: 300px;
-                font-size: 16px;
-                padding: 12px;
-            }
-
-            /* Popup */
-            .popup {
-                right: 10px;
-                left: 10px;
-                top: 15px;
-                font-size: 14px;
-                text-align: center;
-            }
-
-            /* Footer */
-            .footer {
-                font-size: 12px;
-                padding: 10px;
+            .emoji-icon {
+                font-size: 72px;
             }
         }
 
-        /* 📱 Extra Small Devices */
-        @media (max-width: 400px) {
-
-            h1 {
-                font-size: 20px;
+        @media (min-width: 768px) {
+            .header {
+                font-size: 24px;
+                padding: 18px 36px;
             }
 
-            .btn {
-                font-size: 14px;
-                padding: 10px;
-            }
-
-            .dev-btn {
-                font-size: 10px;
-                padding: 5px 8px;
+            .container {
+                padding: 60px 40px;
             }
         }
     </style>
-
 </head>
 
 <body>
+
     <div class="header">
-        🍟 Hostel Bites
+        <span>🍟 Hostel Bites</span>
         <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Code</button>
     </div>
+
     <div class="dev-box" id="devBox">
         <input type="password" id="devCode" placeholder="Enter Dev Code">
         <button onclick="checkDevCode()">Unlock</button>
     </div>
 
-
     <div class="container">
+        <div class="emoji-icon">🛒</div>
         <h1>Welcome to Hostel Store</h1>
-        <p>Snacks, Drinks & Midnight Cravings 😋</p>
-        <p> Store is open only from <b>8 PM to 12 AM </b></p>
-
+        <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
+        <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
         <button class="btn" onclick="enterStore()">Enter Store</button>
     </div>
 
     <div id="popup" class="popup">
-        Store is open only from 8 PM to 12 AM ⏰
+        ⏰ Store is open only from 8 PM to 12 AM
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         © 2026 Hostel Bites. All rights reserved.
     </div>
 
     <script>
-
-
         function showDevInput() {
             let box = document.getElementById("devBox");
-            box.style.display = box.style.display === "block" ? "none" : "block";
+            box.classList.toggle("visible");
         }
 
         async function hashCode(text) {
             const encoder = new TextEncoder();
             const data = encoder.encode(text);
             const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-
-            return hashHex;
+            return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
         }
 
         async function checkDevCode() {
             let input = document.getElementById("devCode").value;
-
             let hashedInput = await hashCode(input);
-
             let correctHash = "dabf920f1e716a90dd51aab0e9604fc9bd1183a1791d737f86b5201190fe7798";
 
             if (hashedInput === correctHash) {
@@ -276,16 +259,14 @@
             }
         }
 
-
         function updateDevButton() {
             let btn = document.getElementById("devButton");
-
             if (localStorage.getItem("dev") === "true") {
                 btn.innerText = "Logout Dev";
                 btn.onclick = logoutDev;
             } else {
                 btn.innerText = "Dev Code";
-                btn.onclick = showDevInput;
+                btn.onclick = handleDevClick;
             }
         }
 
@@ -300,20 +281,10 @@
         }
 
         function isStoreOpen() {
-            let now = new Date();
-            let hour = now.getHours();
-
             let devAccess = localStorage.getItem("dev") === "true";
-
-            if (devAccess) {
-                return true;
-            }
-
-            if (hour >= 20 || hour < 1) {
-                return true;
-            }
-
-            return false;
+            if (devAccess) return true;
+            let hour = new Date().getHours();
+            return hour >= 20 || hour < 1;
         }
 
         function enterStore() {
@@ -323,33 +294,14 @@
             } else {
                 let popup = document.getElementById("popup");
                 popup.style.display = "block";
-
-                setTimeout(() => {
-                    popup.style.display = "none";
-                }, 3000);
+                setTimeout(() => { popup.style.display = "none"; }, 3000);
             }
         }
 
-
-        function enterStore() {
-            if (isStoreOpen()) {
-                sessionStorage.setItem("allowed", "true"); // 🔥 important
-                window.location.href = "hostel_bites.html";
-            } else {
-                let popup = document.getElementById("popup");
-                popup.style.display = "block";
-
-                setTimeout(() => {
-                    popup.style.display = "none";
-                }, 3000);
-            }
-        }
         window.onload = function () {
             updateDevButton();
         };
-
     </script>
 
 </body>
-
 </html>
