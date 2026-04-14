@@ -1,145 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Hostel Bites</title>
+    <meta charset="UTF-8">
+    <title>Hostel Bites</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #fff5eb;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #fff5eb;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-/* Header */
-.header {
-    background: #ff6a00;
-    color: white;
-    padding: 20px;
-    font-size: 28px;
-    font-weight: bold;
-}
+        /* Header */
 
-/* Main Section */
-.container {
-    flex: 1;
-    margin-top: 100px;
-}
 
-h1 {
-    color: #333;
-}
+        .header {
+            position: relative;
+            background: #ff6a00;
+            color: white;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-p {
-    color: #666;
-    font-size: 18px;
-}
+        /* Dev Button */
+        .dev-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 15px;
+            background: white;
+            color: #ff6a00;
+            cursor: pointer;
+        }
 
-/* Button */
-.btn {
-    margin-top: 30px;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 25px;
-    background: #ff6a00;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        /* Input Box */
+        .dev-box {
+            display: none;
+            margin-top: 15px;
+        }
 
-.btn:hover {
-    background: #e65c00;
-}
+        .dev-box input {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
 
-/* Popup */
-.popup {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: red;
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    display: none;
-}
+        .dev-box button {
+            padding: 10px;
+            border: none;
+            background: #ff6a00;
+            color: white;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
 
-/* Footer */
-.footer {
-    background: #222;
-    color: white;
-    padding: 15px;
-    font-size: 14px;
-}
-</style>
+        /* Main Section */
+        .container {
+            flex: 1;
+            margin-top: 100px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* Button */
+        .btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            background: #ff6a00;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #e65c00;
+        }
+
+        /* Popup */
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: red;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: #222;
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+        }
+    </style>
 
 </head>
+
 <body>
-
-<div class="header">
-    🍟 Hostel Bites
-</div>
-
-<div class="container">
-    <h1>Welcome to Hostel Store</h1>
-    <p>Snacks, Drinks & Midnight Cravings 😋</p>
-    <p> Store is open only from <b>8 PM to 12 AM </b></p>
-
-    <button class="btn" onclick="enterStore()">Enter Store</button>
-</div>
-
-<div id="popup" class="popup">
-    Store is open only from 8 PM to 12 AM ⏰
-</div>
-
-<!-- Footer -->
-<div class="footer">
-    © 2026 Hostel Bites. All rights reserved.
-</div>
-
-<script>
-function isStoreOpen() {
-    let now = new Date();
-    let hour = now.getHours();
-
-    if (hour >= 20 || hour < 1) {
-        return true;
-    }
-    return false;
-}
-
-// function enterStore() {
-//     if (isStoreOpen()) {
-//         window.location.href = "hostel_bites.html";
-//     } else {
-//         let popup = document.getElementById("popup");
-//         popup.style.display = "block";
-
-//         setTimeout(() => {
-//             popup.style.display = "none";
-//         }, 3000);
-//     }
-// }
+    <div class="header">
+        🍟 Hostel Bites
+        <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Code</button>
+    </div>
+    <div class="dev-box" id="devBox">
+        <input type="password" id="devCode" placeholder="Enter Dev Code">
+        <button onclick="checkDevCode()">Unlock</button>
+    </div>
 
 
-function enterStore() {
-    if (isStoreOpen()) {
-        sessionStorage.setItem("allowed", "true"); // 🔥 important
-        window.location.href = "hostel_bites.html";
-    } else {
-        let popup = document.getElementById("popup");
-        popup.style.display = "block";
+    <div class="container">
+        <h1>Welcome to Hostel Store</h1>
+        <p>Snacks, Drinks & Midnight Cravings 😋</p>
+        <p> Store is open only from <b>8 PM to 12 AM </b></p>
 
-        setTimeout(() => {
-            popup.style.display = "none";
-        }, 3000);
-    }
-}
-</script>
+        <button class="btn" onclick="enterStore()">Enter Store</button>
+    </div>
+
+    <div id="popup" class="popup">
+        Store is open only from 8 PM to 12 AM ⏰
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2026 Hostel Bites. All rights reserved.
+    </div>
+
+    <script>
+
+
+        function showDevInput() {
+            let box = document.getElementById("devBox");
+            box.style.display = box.style.display === "block" ? "none" : "block";
+        }
+
+        async function hashCode(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+
+            return hashHex;
+        }
+
+        async function checkDevCode() {
+            let input = document.getElementById("devCode").value;
+
+            let hashedInput = await hashCode(input);
+
+            let correctHash = "dabf920f1e716a90dd51aab0e9604fc9bd1183a1791d737f86b5201190fe7798";
+
+            if (hashedInput === correctHash) {
+                localStorage.setItem("dev", "true");
+                alert("Dev Mode Activated 🔓");
+                updateDevButton();
+            } else {
+                alert("Wrong Code ❌");
+            }
+        }
+
+
+        function updateDevButton() {
+            let btn = document.getElementById("devButton");
+
+            if (localStorage.getItem("dev") === "true") {
+                btn.innerText = "Logout Dev";
+                btn.onclick = logoutDev;
+            } else {
+                btn.innerText = "Dev Code";
+                btn.onclick = showDevInput;
+            }
+        }
+
+        function logoutDev() {
+            localStorage.removeItem("dev");
+            alert("Dev Mode Disabled 🔒");
+            updateDevButton(); 
+        }
+
+        function handleDevClick() {
+            showDevInput();
+        }
+
+        function isStoreOpen() {
+            let now = new Date();
+            let hour = now.getHours();
+
+            let devAccess = localStorage.getItem("dev") === "true";
+
+            if (devAccess) {
+                return true;
+            }
+
+            if (hour >= 20 || hour < 1) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function enterStore() {
+            if (isStoreOpen()) {
+                sessionStorage.setItem("allowed", "true");
+                window.location.href = "hostel_bites.html";
+            } else {
+                let popup = document.getElementById("popup");
+                popup.style.display = "block";
+
+                setTimeout(() => {
+                    popup.style.display = "none";
+                }, 3000);
+            }
+        }
+
+
+        function enterStore() {
+            if (isStoreOpen()) {
+                sessionStorage.setItem("allowed", "true"); // 🔥 important
+                window.location.href = "hostel_bites.html";
+            } else {
+                let popup = document.getElementById("popup");
+                popup.style.display = "block";
+
+                setTimeout(() => {
+                    popup.style.display = "none";
+                }, 3000);
+            }
+        }
+        window.onload = function () {
+            updateDevButton();
+        };
+
+    </script>
 
 </body>
+
 </html>
