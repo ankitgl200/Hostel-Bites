@@ -87,12 +87,13 @@ p {
 <div class="container">
     <h1>Welcome to Hostel Store</h1>
     <p>Snacks, Drinks & Midnight Cravings 😋</p>
+    <p> Store is open only from <b>8 PM to 12 AM </b></p>
 
     <button class="btn" onclick="enterStore()">Enter Store</button>
 </div>
 
 <div id="popup" class="popup">
-    Store is open only from 8 PM to 1 AM ⏰
+    Store is open only from 8 PM to 12 AM ⏰
 </div>
 
 <!-- Footer -->
@@ -105,7 +106,7 @@ function isStoreOpen() {
     let now = new Date();
     let hour = now.getHours();
 
-    if (hour >= 20 || hour < 24) {
+    if (hour >= 20 || hour < 1) {
         return true;
     }
     return false;
