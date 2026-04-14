@@ -743,8 +743,7 @@
             style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
             <option value="A" selected>X</option>
           </select>
-          <input type="number" min="1" max="20" id="custRoom" name="custRoomNum" placeholder="Enter Room Number e.g. 01"
-            required style="margin-top: 10px;">
+            <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
         </div>
         <div class="form-group">
           <label>Phone Number</label>
@@ -798,6 +797,25 @@
     if (sessionStorage.getItem("allowed") !== "true") {
       window.location.href = "index.html"; // landing page
     }
+    window.onload = function () {
+    loadRoomNumbers();
+};
+
+    function loadRoomNumbers() {
+    let select = document.getElementById("custRoom");
+
+    select.innerHTML = ""; // clear old options
+
+    for (let i = 1; i <= 20; i++) {
+        let num = i.toString().padStart(2, "0"); 
+
+        let option = document.createElement("option");
+        option.value = num;
+        option.textContent = num;
+
+        select.appendChild(option);
+    }
+}
 
     const i = {
       'kurkure': 'https://imgs.search.brave.com/Xva87qXgqGthKCYBU1RHctPgoFtCIYSp9RLmna14cS4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/emVwdG9ub3cuY29t/L3Byb2R1Y3Rpb24v/dHI6dy00MDMsYXIt/MjAwMC0yMDAwLHBy/LXRydWUsZi1hdXRv/LCxxLTQwLGRwci0y/L2Ntcy9wcm9kdWN0/X3ZhcmlhbnQvNDZh/MzFkYzQtMzhjYS00/MWIwLWI0MmUtMDM0/ZTU5ZTlkZTZkLmpw/ZWc',
