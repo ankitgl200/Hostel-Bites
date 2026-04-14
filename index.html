@@ -285,7 +285,7 @@
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 20 || hour < 1;
+            return hour >= 20 || hour < 23;
         }
 
         function enterStore() {
