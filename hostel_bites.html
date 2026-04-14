@@ -224,18 +224,19 @@
       width: 100%;
       margin-top: 8px
     }
-    .old-price {
-    color: #999;
-    text-decoration: line-through;
-    font-size: 13px;
-    margin-right: 6px;
-}
 
-.product-price {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
+    .old-price {
+      color: #999;
+      text-decoration: line-through;
+      font-size: 13px;
+      margin-right: 6px;
+    }
+
+    .product-price {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
     .qty-controls {
       display: flex;
@@ -738,7 +739,12 @@
         </div>
         <div class="form-group">
           <label>Room Number</label>
-          <input type="text" id="custRoom" name="custRoom" placeholder="e.g. B-204">
+          <select name="custRoomAlpha" id="custRoomAlpha"
+            style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
+            <option value="A" selected>X</option>
+          </select>
+          <input type="number" min="1" max="20" id="custRoom" name="custRoomNum" placeholder="Enter Room Number e.g. 01"
+            required style="margin-top: 10px;">
         </div>
         <div class="form-group">
           <label>Phone Number</label>
@@ -803,9 +809,11 @@
       'Punjabi_Tadka': 'https://dukaan.b-cdn.net/700x700/webp/media/42575158-e15d-4495-8220-365d56f9a90f.jpg',
       'Sunfeast_Dark_Fantasy_Bourbon': 'https://m.media-amazon.com/images/I/81OToL9KoRL._SX679_.jpg',
       'Aloo_Bhujia': 'https://m.media-amazon.com/images/I/4195rIIvYwL._SX342_SY445_QL70_FMwebp_.jpg',
-      'Mad_Angles': 'https://res.cloudinary.com/dozmmguxw/image/upload/q_auto/f_auto/v1776165339/madangle_trmygk.jpg'
+      'Mad_Angles': 'https://res.cloudinary.com/dozmmguxw/image/upload/q_auto/f_auto/v1776165339/madangle_trmygk.jpg',
+      '5-star': 'https://m.media-amazon.com/images/I/51QVFGccq8L._SX679_.jpg',
+      'kitkat': 'https://m.media-amazon.com/images/I/61mdKzzh+JL._SX679_.jpg'
     };
-   
+
     const s = {
       'in': 'Available',
       'out': 'Out of Stock'
@@ -821,11 +829,13 @@
       { id: 7, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant' },
       { id: 8, name: 'Bourbun', aval: s.in, oprice: 12, price: 11, src: i.bourbun, cat: 'Biscuits' },
       { id: 9, name: 'Tedhe Medhe', aval: s.in, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure' },
-      { id: 10, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.out, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits' }
+      { id: 10, name: '5-Star', aval: s.in, oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate' },
+      { id: 11, name: 'KitKat', aval: s.in, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate' },
+      { id: 12, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.out, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits' }
 
     ];
 
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant'];
+    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate'];
     let cart = {};
     let activeCat = 'All';
     let orders = JSON.parse(localStorage.getItem('hostelOrders') || '[]');
@@ -864,7 +874,7 @@
 
     function filterCat(c) { activeCat = c; renderCats(); renderProducts(); }
 
-   
+
     function addToCart(id) {
       const product = PRODUCTS.find(p => p.id === id);
 
@@ -958,12 +968,19 @@
 
     function placeOrder() {
       const name = document.getElementById('custName').value.trim();
-      const room = document.getElementById('custRoom').value.trim();
+      const roomno = document.getElementById('custRoom').value.trim();
+      const roomalpha = document.getElementById('custRoomAlpha').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const pay = document.getElementById('payMethod').value;
-      if (!name || !room || !phone) { showToast('Please fill all details!'); return; }
+      if (!name || !roomno || !phone || !roomalpha) { showToast('Please fill all details!'); return; }
       if (phone.length < 10) { showToast('Enter valid 10-digit phone'); return; }
 
+      let roomNum = parseInt(roomno);
+      if (isNaN(roomNum) || roomNum < 1 || roomNum > 20) {
+        showToast("Room number must be between 1 and 20");
+        return;
+      }
+      const room = roomalpha + "-" + roomno;
       orderCounter++;
       const orderId = 'HB' + orderCounter;
       const order = {
@@ -982,7 +999,6 @@
         const p = PRODUCTS.find(x => x.id == id);
         return `${p.name} x ${qty}`;
       }).join('\n ');
-
       emailjs.send("service_4r1oj5k", "template_h1gpir9", {
         name: name,
         room: room,
