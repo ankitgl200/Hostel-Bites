@@ -42,6 +42,10 @@
         .header span {
             font-size: 20px;
         }
+        .header img {
+            height: 30px;
+            vertical-align: middle;
+        }
 
         .dev-btn {
             padding: 8px 14px;
@@ -109,6 +113,10 @@
             font-size: 64px;
             line-height: 1;
             margin-bottom: 8px;
+        }
+        .emoji-icon img {
+            width: 100px;
+            height: 100px;
         }
 
         h1 {
@@ -208,7 +216,7 @@
 <body>
 
     <div class="header">
-        <span>🍟 Hostel Bites</span>
+        <span><img src="hostelbites_wbg.png" alt="logo"> Hostel Bites</span>
         <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
     </div>
 
@@ -218,12 +226,13 @@
     </div>
 
     <div class="container">
-        <div class="emoji-icon">🛒</div>
+        <div class="emoji-icon"><img src="hostelbites_wbg.png" alt="logo"></div>
         <h1>Welcome to Hostel Bites</h1>
         <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
         <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
         <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
         <button class="btn" onclick="enterStore()">Enter Store</button>
+        <button class="btn" onclick="downloadApp()">Download App</button>
     </div>
 
     <div id="popup" class="popup">
@@ -236,6 +245,9 @@
     </div>
 
     <script>
+        function downloadApp() {
+            window.location.href = "Hostel_Bites.apk";
+        }
 
         window.onload = function () {
 
@@ -321,7 +333,7 @@ Enjoy your snacks! 😋`);
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 20 || hour == 1;
+            return hour >= 16 || hour == 1;
         }
 
         function enterStore() {
