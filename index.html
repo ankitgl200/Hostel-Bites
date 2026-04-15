@@ -221,13 +221,13 @@
         <div class="emoji-icon">🛒</div>
         <h1>Welcome to Hostel Bites</h1>
         <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
-        <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
+        <p class="timing">Open only from <b>8 PM to 1 AM</b></p>
         <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
         <button class="btn" onclick="enterStore()">Enter Store</button>
     </div>
 
     <div id="popup" class="popup">
-        ⏰ Store is open only from 4 PM to 12 AM
+        ⏰ Store is open only from 4 PM to 1 AM
     </div>
 
     <div class="footer">
@@ -239,22 +239,26 @@
 
         window.onload = function () {
 
+            // 🔥 Remove ONLY update flag (not dev)
+            localStorage.removeItem("updateShown");
+
             if (!localStorage.getItem("updateShown")) {
                 alert(`🔥 New Updates in Hostel Bites!
-                Added Bills:
-                → Get bill after placing order.You can Download or print it.
 
-    New Item available:
-     → Oreo Biscuits 🍪  
+Added Bills:
+→ Get bill after placing order. You can download or print it.
+
+New Item available:
+→ Oreo Biscuits 🍪  
 
 1️⃣ Improved Address Section  
 → Select Block + Enter Room Number (1–20)
 
 2️⃣ Smart Cart Limit  
-→ You can now only add items up to available stock
+→ Based on available stock
 
-3️⃣ Store Timing Updated  
-→ Open from 8 PM to 12 AM ⏰
+3️⃣ Store Timing  
+→ 8 PM to 12 AM ⏰
 
 Enjoy your snacks! 😋`);
 
@@ -317,7 +321,7 @@ Enjoy your snacks! 😋`);
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 16 || hour < 1;
+            return hour >= 16 || hour == 1;
         }
 
         function enterStore() {
