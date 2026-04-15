@@ -687,15 +687,6 @@
     }
   </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-72DXTE0FJB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-72DXTE0FJB');
-</script>
 
 <body>
 
@@ -752,7 +743,7 @@
             style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
             <option value="X" selected>X</option>
           </select>
-            <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
+          <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
         </div>
         <div class="form-group">
           <label>Phone Number</label>
@@ -807,24 +798,24 @@
       window.location.href = "index.html"; // landing page
     }
     window.onload = function () {
-    loadRoomNumbers();
-};
+      loadRoomNumbers();
+    };
 
     function loadRoomNumbers() {
-    let select = document.getElementById("custRoom");
+      let select = document.getElementById("custRoom");
 
-    select.innerHTML = ""; // clear old options
+      select.innerHTML = ""; // clear old options
 
-    for (let i = 1; i <= 20; i++) {
-        let num = i.toString().padStart(2, "0"); 
+      for (let i = 1; i <= 20; i++) {
+        let num = i.toString().padStart(2, "0");
 
         let option = document.createElement("option");
         option.value = num;
         option.textContent = num;
 
         select.appendChild(option);
+      }
     }
-}
 
     const i = {
       'kurkure': 'https://imgs.search.brave.com/Xva87qXgqGthKCYBU1RHctPgoFtCIYSp9RLmna14cS4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/emVwdG9ub3cuY29t/L3Byb2R1Y3Rpb24v/dHI6dy00MDMsYXIt/MjAwMC0yMDAwLHBy/LXRydWUsZi1hdXRv/LCxxLTQwLGRwci0y/L2Ntcy9wcm9kdWN0/X3ZhcmlhbnQvNDZh/MzFkYzQtMzhjYS00/MWIwLWI0MmUtMDM0/ZTU5ZTlkZTZkLmpw/ZWc',
@@ -847,18 +838,18 @@
     };
     const PRODUCTS = [
 
-      { id: 1, name: 'Bingo! Mad Angles', aval: s.out, oprice: 7, price: 6, src: i.Mad_Angles, cat: 'Chips' },
-      { id: 2, name: 'Aloo Bhujia', aval: s.in, oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen' },
-      { id: 3, name: 'Punjabi Tadka', aval: s.out, oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen' },
-      { id: 4, name: 'Kurkure Masala', aval: s.in, oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure' },
-      { id: 5, name: "Chips", aval: s.out, oprice: 12, price: 11, src: i.chips, cat: 'Chips' },
-      { id: 6, name: "Takatak", aval: s.in, oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure' },
-      { id: 7, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant' },
-      { id: 8, name: 'Bourbun', aval: s.out, oprice: 12, price: 11, src: i.bourbun, cat: 'Biscuits' },
-      { id: 9, name: 'Tedhe Medhe', aval: s.out, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure' },
-      { id: 10, name: '5-Star', aval: s.in, oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate' },
-      { id: 11, name: 'KitKat', aval: s.in, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate' },
-      { id: 12, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.out, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits' }
+      { id: 12, name: 'Bingo! Mad Angles', aval: s.out, oprice: 7, price: 6, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
+      { id: 11, name: 'Aloo Bhujia', aval: s.in, oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 2 },
+      { id: 10, name: 'Punjabi Tadka', aval: s.out, oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
+      { id: 9, name: 'Kurkure Masala', aval: s.in, oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 5 },
+      { id: 8, name: "Chips", aval: s.in, oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 5 },
+      { id: 7, name: "Takatak", aval: s.in, oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 5 },
+      { id: 6, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 4 },
+      { id: 5, name: 'Bourbun', aval: s.out, oprice: 12, price: 11, src: i.bourbun, cat: 'Biscuits', stock: 0 },
+      { id: 4, name: 'Tedhe Medhe', aval: s.out, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 0 },
+      { id: 3, name: '5-Star', aval: s.in, oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 3 },
+      { id: 2, name: 'KitKat', aval: s.in, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 5 },
+      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.out, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 0 }
 
     ];
 
@@ -902,41 +893,41 @@
     function filterCat(c) { activeCat = c; renderCats(); renderProducts(); }
 
 
-   function addToCart(id) {
-  const product = PRODUCTS.find(p => p.id === id);
+    function addToCart(id) {
+      const product = PRODUCTS.find(p => p.id === id);
 
-  if (product.aval === s.out) {
-    showToast('❌ Item is out of stock');
-    return;
-  }
+      if (product.aval === s.out) {
+        showToast('❌ Item is out of stock');
+        return;
+      }
 
-  let currentQty = cart[id] || 0;
+      let currentQty = cart[id] || 0;
 
-  // 🔥 LIMIT CHECK
-  if (currentQty >= 5) {
-    showToast("⚠️ You can only order max 5 of this item");
-    return;
-  }
+      // 🔥 STOCK LIMIT CHECK
+      if (currentQty >= product.stock) {
+        showToast(`⚠️ Only ${product.stock} items available`);
+        return;
+      }
 
-  cart[id] = currentQty + 1;
+      cart[id] = currentQty + 1;
 
-  updateCartCount();
-  renderProducts();
-  renderCartDrawer();
-}
-function removeFromCart(id) {
-  if (!cart[id]) return;
+      updateCartCount();
+      renderProducts();
+      renderCartDrawer();
+    }
+    function removeFromCart(id) {
+      if (!cart[id]) return;
 
-  if (cart[id] > 1) {
-    cart[id]--;
-  } else {
-    delete cart[id]; // remove completely when 0
-  }
+      if (cart[id] > 1) {
+        cart[id]--;
+      } else {
+        delete cart[id]; // remove completely when 0
+      }
 
-  updateCartCount();
-  renderProducts();
-  renderCartDrawer();
-}
+      updateCartCount();
+      renderProducts();
+      renderCartDrawer();
+    }
 
     function updateCartCount() {
       const total = Object.values(cart).reduce((a, b) => a + b, 0);
