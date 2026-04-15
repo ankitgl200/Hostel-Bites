@@ -1006,13 +1006,28 @@
       document.getElementById('summaryTotal').textContent = `₹${cartTotal()}`;
     }
 
+
     function placeOrder() {
       const name = document.getElementById('custName').value.trim();
       const roomno = document.getElementById('custRoom').value.trim();
       const roomalpha = document.getElementById('custRoomAlpha').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const pay = document.getElementById('payMethod').value;
-      if (!name || !roomno || !phone || !roomalpha) { showToast('Please fill all details!'); return; }
+      if (!name || !roomno || !phone || !roomalpha) {
+        showToast('Please fill all details!');
+        return;
+      }
+      function isValidName(name) {
+        // Only letters + space, min 3 characters
+        const regex = /^[A-Za-z ]{3,30}$/;
+
+        return regex.test(name.trim());
+      }
+
+      if (!isValidName(name)) {
+        showToast("❌ Enter a valid name (only letters, min 3 chars)");
+        return;
+      }
       if (phone.length < 10) { showToast('Enter valid 10-digit phone'); return; }
 
       let roomNum = parseInt(roomno);
