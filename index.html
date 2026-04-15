@@ -229,13 +229,13 @@
         <div class="emoji-icon">🛒</div>
         <h1>Welcome to Hostel Bites</h1>
         <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
-        <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
+        <p class="timing">Open only from <b>9PM to 12 AM</b></p>
         <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
         <button class="btn" onclick="enterStore()">Enter Store</button>
     </div>
 
     <div id="popup" class="popup">
-        ⏰ Store is open only from 8 PM to 12 AM
+        ⏰ Store is open only from 9 PM to 12 AM
     </div>
 
     <div class="footer">
@@ -295,7 +295,7 @@
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 20 || hour < 0;
+            return hour >= 21 || hour < 0;
         }
 
         function enterStore() {
