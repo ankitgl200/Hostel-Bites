@@ -8,7 +8,21 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <style>
+
+
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function (OneSignal) {
+      await OneSignal.init({
+        appId: "70754819-46a1-46bf-a99f-531e03334700",
+      });
+    });
+  </script>
+  
+</head>
+
+<style>
     * {
       box-sizing: border-box;
       margin: 0;
@@ -686,7 +700,6 @@
       text-align: center;
     }
   </style>
-</head>
 
 <body>
 
@@ -845,7 +858,7 @@
       { id: 8, name: "Lay's Chips", aval: s.out, oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
       { id: 7, name: "Takatak", aval: s.in, oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 2 },
       { id: 6, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 4 },
-      { id: 5, name: 'Oreo', aval: s.in, oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 3 },
+      { id: 5, name: 'Oreo', aval: s.in, oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 2 },
       { id: 4, name: 'Tedhe Medhe', aval: s.out, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 0 },
       { id: 3, name: '5-Star', aval: s.out, oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 0 },
       { id: 2, name: 'KitKat', aval: s.out, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 0 },
