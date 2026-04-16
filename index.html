@@ -346,7 +346,7 @@ Enjoy your snacks! 😋`);
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 16 || hour == 1;
+            return hour >= 20 || hour == 1;
         }
 
         function enterStore() {
