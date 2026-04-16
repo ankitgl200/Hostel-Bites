@@ -803,6 +803,20 @@
       loadRoomNumbers();
     };
 
+    function isStoreOpen() {
+    let devAccess = localStorage.getItem("dev") === "true";
+    if (devAccess) return true;
+
+    let hour = new Date().getHours();
+    return hour >= 20 || hour === 0;
+}
+
+// 🔥 BLOCK ACCESS IF CLOSED
+if (!isStoreOpen()) {
+    alert("⏰ Store is closed (8 PM - 12 AM)");
+    window.location.href = "index.html";
+}
+
     function loadRoomNumbers() {
       let select = document.getElementById("custRoom");
 
