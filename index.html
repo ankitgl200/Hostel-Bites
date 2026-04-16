@@ -221,6 +221,7 @@
 
     <div class="header">
         <span><img src="hostelbites_wbg.png" alt="logo"> Hostel Bites</span>
+        <button  class="dev-btn" onclick="Contact()">Help</button>
         <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
     </div>
 
@@ -271,6 +272,10 @@ Enjoy your snacks! 😋`);
 
             updateDevButton();
         };
+
+        function Contact() {
+            alert("For any help, contact us at:\n📧 8218325600, 9149020075\n");
+        }
 
 
         function showDevInput() {
