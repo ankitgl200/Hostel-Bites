@@ -206,6 +206,16 @@
     margin-bottom: 6px
   }
 
+  .in-stock {
+  color: grey;
+  font-weight: 600;
+}
+
+.out-stock {
+  color: red;
+  font-weight: bolder;
+}
+
   .product-price {
     font-size: 16px;
     font-weight: 700;
@@ -882,7 +892,9 @@
       <div class="product-emoji"><img src="${p.src}" alt="product-image"></div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
-        <div class="product-brand">${aval}</div>
+        <div class="product-brand ${p.stock > 0 ? 'in-stock' : 'out-stock'}">
+  ${p.stock > 0 ? 'Available' : 'Out of Stock'}
+</div>
         <div class="product-price">
     <span class="old-price">₹${p.oprice}</span>
     ₹${p.price}
@@ -905,7 +917,7 @@
     function addToCart(id) {
       const product = PRODUCTS.find(p => p.id === id);
 
-      if (product.aval === s.out) {
+      if (product.stock === 0) {
         showToast('❌ Item is out of stock');
         return;
       }
