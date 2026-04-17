@@ -860,7 +860,7 @@
       { id: 4, name: 'Tedhe Medhe',  oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 2 },
       { id: 3, name: '5-Star',  oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 0 },
       { id: 2, name: 'KitKat',  oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 0 },
-      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon',  oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 4 }
+      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon',  oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 2 }
 
     ];
 
@@ -878,7 +878,6 @@
 
     function renderProducts() {
       let aval = "Out of Stock";
-      let show = document.getElementsByClassName('product-brand');
       const filtered = activeCat === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeCat);
       document.getElementById('productGrid').innerHTML = filtered.map(p => {
         const qty = cart[p.id] || 0;
