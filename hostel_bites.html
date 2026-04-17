@@ -743,7 +743,7 @@
           <select name="custRoomAlpha" id="custRoomAlpha"
             style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
             <option value="X" selected>X</option>
-            <!-- <option value="Y" >Y</option> -->
+            <option value="Y" >Y</option>
           </select>
           <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
         </div>
@@ -803,20 +803,6 @@
       loadRoomNumbers();
     };
 
-    function isStoreOpen() {
-    let devAccess = localStorage.getItem("dev") === "true";
-    if (devAccess) return true;
-
-    let hour = new Date().getHours();
-    return hour >= 20 || hour === 0;
-}
-
-// 🔥 BLOCK ACCESS IF CLOSED
-if (!isStoreOpen()) {
-    alert("⏰ Store is closed (8 PM - 12 AM)");
-    window.location.href = "index.html";
-}
-
     function loadRoomNumbers() {
       let select = document.getElementById("custRoom");
 
@@ -855,19 +841,19 @@ if (!isStoreOpen()) {
     };
     const PRODUCTS = [
 
-      { id: 13, name: 'Bingo! Mad Angles', aval: s.in, oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 5 },
+      { id: 13, name: 'Bingo! Mad Angles', aval: s.in, oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 4 },
       { id: 12, name: 'Aloo Bhujia', aval: s.out, oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
-      { id: 11, name: 'Punjabi Tadka', aval: s.out, oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
+      { id: 11, name: 'Punjabi Tadka', aval: s.out, oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 4 },
       { id: 10, name: 'Kurkure Masala', aval: s.out, oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 0 },
-      { id: 9, name: "Lay's Chips", aval: s.out, oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
+      { id: 9, name: "Lay's Chips", aval: s.in, oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 2 },
       { id: 8, name: "Takatak", aval: s.out, oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
-      { id: 7, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 5 },
+      { id: 7, name: 'Maggie', aval: s.in, oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 10 },
       { id: 6, name: 'Maggie Masala', aval: s.in, oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 2 },
       { id: 5, name: 'Oreo', aval: s.out, oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 0 },
-      { id: 4, name: 'Tedhe Medhe', aval: s.in, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 1 },
+      { id: 4, name: 'Tedhe Medhe', aval: s.in, oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 5 },
       { id: 3, name: '5-Star', aval: s.out, oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 0 },
-      { id: 2, name: 'KitKat', aval: s.in, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 1 },
-      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.in, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 3 }
+      { id: 2, name: 'KitKat', aval: s.in, oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 5 },
+      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', aval: s.in, oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 5 }
 
     ];
 
@@ -1111,6 +1097,10 @@ if (!isStoreOpen()) {
       let roomNum = parseInt(roomno);
       if (isNaN(roomNum) || roomNum < 1 || roomNum > 20) {
         showToast("Room number must be between 1 and 20");
+        return;
+      }
+      if (roomalpha.toUpperCase().trim() === "Y" && cartTotal() < 50) {
+        showToast("Minimum order for Y block is ₹50 \n Please add more items to your cart.\n\n For queries contact: 9149020075");
         return;
       }
       const room = roomalpha + "-" + roomno;
