@@ -782,9 +782,9 @@
           <div id="summaryItems"></div>
           <div class="order-summary-total"><span>Total</span><span id="summaryTotal">₹0</span></div>
         </div>
-        <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" data-callback="enableOrderBtn">
+        <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-">
         </div>
-        <button class="place-order-btn" onclick="placeOrder()" id="orderBtn" disabled>✅ Place Order</button>
+        <button class="place-order-btn" onclick="placeOrder()" >✅ Place Order</button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -1099,9 +1099,6 @@
     }
 
 
-    function enableOrderBtn() {
-      document.getElementById("orderBtn").disabled = false;
-    }
 
     function placeOrder() {
       const name = document.getElementById('custName').value.trim();
@@ -1138,7 +1135,7 @@
       let captcha = grecaptcha.getResponse();
 
       if (!captcha) {
-        showToast("Please verify captcha");
+        showToast("⚠️ Please verify captcha");
         return;
       }
 
