@@ -8,7 +8,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
+
 
 <style>
   * {
@@ -207,14 +209,14 @@
   }
 
   .in-stock {
-  color: grey;
-  font-weight: 600;
-}
+    color: grey;
+    font-weight: 600;
+  }
 
-.out-stock {
-  color: red;
-  font-weight: bolder;
-}
+  .out-stock {
+    color: red;
+    font-weight: bolder;
+  }
 
   .product-price {
     font-size: 16px;
@@ -753,7 +755,7 @@
           <select name="custRoomAlpha" id="custRoomAlpha"
             style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
             <option value="X" selected>X</option>
-            <option value="Y" >Y</option>
+            <option value="Y">Y</option>
           </select>
           <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
         </div>
@@ -780,7 +782,9 @@
           <div id="summaryItems"></div>
           <div class="order-summary-total"><span>Total</span><span id="summaryTotal">₹0</span></div>
         </div>
-        <button class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
+        <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" data-callback="enableOrderBtn">
+        </div>
+        <button class="place-order-btn" onclick="placeOrder()" id="orderBtn" disabled>✅ Place Order</button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -801,6 +805,7 @@
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
+
     (function () {
       emailjs.init("_xs49of60mQDX4STa");
     })();
@@ -850,18 +855,18 @@
     const PRODUCTS = [
 
       { id: 13, name: 'Bingo! Mad Angles', oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
-      { id: 12, name: 'Aloo Bhujia',  oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
+      { id: 12, name: 'Aloo Bhujia', oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
       { id: 11, name: 'Punjabi Tadka', oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 1 },
       { id: 10, name: 'Kurkure Masala', oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 0 },
-      { id: 9, name: "Lay's Chips",  oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
-      { id: 8, name: "Takatak",  oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
-      { id: 7, name: 'Maggie',  oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 8 },
-      { id: 6, name: 'Maggie Masala',  oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 1 },
-      { id: 5, name: 'Oreo',  oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 0 },
-      { id: 4, name: 'Tedhe Medhe',  oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 5 },
-      { id: 3, name: 'Munch',  oprice: 12, price: 11, src: i.munch, cat: 'Choclate', stock: 5 },
-      { id: 2, name: 'KitKat',  oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 3 },
-      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon',  oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 5 }
+      { id: 9, name: "Lay's Chips", oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
+      { id: 8, name: "Takatak", oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
+      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 8 },
+      { id: 6, name: 'Maggie Masala', oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 1 },
+      { id: 5, name: 'Oreo', oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 0 },
+      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 5 },
+      { id: 3, name: 'Munch', oprice: 12, price: 11, src: i.munch, cat: 'Choclate', stock: 5 },
+      { id: 2, name: 'KitKat', oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 3 },
+      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 5 }
 
     ];
 
@@ -879,10 +884,16 @@
 
     function renderProducts() {
       let aval = "Out of Stock";
-      const filtered = activeCat === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeCat);
+      let filtered = activeCat === 'All'
+        ? [...PRODUCTS]
+        : PRODUCTS.filter(p => p.cat === activeCat);
+
+      // 🔥 SORT: Available first, Out of stock last
+      filtered.sort((a, b) => b.stock - a.stock);
+
       document.getElementById('productGrid').innerHTML = filtered.map(p => {
         const qty = cart[p.id] || 0;
-        if(p.stock > 0){
+        if (p.stock > 0) {
           aval = "Available";
         } else {
           aval = "Out of Stock";
@@ -918,7 +929,7 @@
       const product = PRODUCTS.find(p => p.id === id);
 
       if (product.stock === 0) {
-        showToast('❌ Item is out of stock');
+        showToast(`❌ ${product.name} is out of stock`);
         return;
       }
 
@@ -926,7 +937,7 @@
 
       // 🔥 STOCK LIMIT CHECK
       if (currentQty >= product.stock) {
-        showToast(`⚠️ Only ${product.stock} items available`);
+        showToast(`⚠️ Only ${product.stock} ${product.name} left in stock!`);
         return;
       }
 
@@ -1005,6 +1016,8 @@
       document.getElementById('checkoutForm').style.display = 'block';
       renderSummary();
       document.getElementById('checkoutModal').classList.add('open');
+      grecaptcha.reset();
+      document.getElementById("orderBtn").disabled = true;
     }
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
     function closeAll() {
@@ -1086,7 +1099,9 @@
     }
 
 
-
+    function enableOrderBtn() {
+      document.getElementById("orderBtn").disabled = false;
+    }
 
     function placeOrder() {
       const name = document.getElementById('custName').value.trim();
@@ -1120,6 +1135,13 @@
         showToast("Minimum order for Y block is ₹50 \n Please add more items to your cart.\n\n For queries contact: 9149020075");
         return;
       }
+      let captcha = grecaptcha.getResponse();
+
+      if (!captcha) {
+        showToast("Please verify captcha");
+        return;
+      }
+
       const room = roomalpha + "-" + roomno;
       orderCounter++;
       const orderId = 'HB' + orderCounter;
@@ -1148,9 +1170,11 @@
         total: cartTotal()
       })
         .then(function (response) {
-          console.log("✅ Email sent!", response);
+          showToast('✅ Order placed successfully!');
+          // console.log("✅ Email sent!", response);
         })
         .catch(function (error) {
+          showToast('⚠️ Failed to place order. Please contact to owner with order details.');
           console.error("❌ Email failed:", error);
         });
       orders.unshift(order);
@@ -1162,6 +1186,7 @@
       document.getElementById('successScreen').classList.add('show');
       showToast('🎉 Order placed successfully!');
       generateBill(order);
+      
     }
 
     function renderOrders() {
