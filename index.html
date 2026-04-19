@@ -221,7 +221,7 @@
 
     <div class="header">
         <span><img src="hostelbites_wbg.png" alt="logo"> Hostel Bites</span>
-        <button  class="dev-btn" onclick="Contact()">Help</button>
+        <button class="dev-btn" onclick="Contact()">Help</button>
         <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
     </div>
 
@@ -236,6 +236,9 @@
         <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
         <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
         <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
+        <button id="adminPayBtn" class="btn" style="display:none;" onclick="openQRPage()">
+            💰 Generate Payment QR
+        </button>
         <button class="btn" onclick="enterStore()">Enter Store</button>
         <button class="btn" onclick="downloadApp()">Download App</button>
     </div>
@@ -252,6 +255,9 @@
     <script>
         function downloadApp() {
             window.location.href = "Hostel_bites.apk";
+        }
+        function openQRPage() {
+            window.location.href = "payment.html";
         }
 
         window.onload = function () {
@@ -313,12 +319,21 @@ Enjoy your snacks! 😋`);
 
         function updateDevButton() {
             let btn = document.getElementById("devButton");
+            let adminBtn = document.getElementById("adminPayBtn");
+
             if (localStorage.getItem("dev") === "true") {
                 btn.innerText = "Logout Dev";
                 btn.onclick = logoutDev;
+
+                // 🔥 SHOW ADMIN BUTTON
+                if (adminBtn) adminBtn.style.display = "block";
+
             } else {
                 btn.innerText = "Dev Mode";
                 btn.onclick = handleDevClick;
+
+                // 🔥 HIDE ADMIN BUTTON
+                if (adminBtn) adminBtn.style.display = "none";
             }
         }
 
