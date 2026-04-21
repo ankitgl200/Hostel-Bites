@@ -848,29 +848,32 @@
       '5-star': 'https://m.media-amazon.com/images/I/51QVFGccq8L._SX679_.jpg',
       'kitkat': 'https://m.media-amazon.com/images/I/61mdKzzh+JL._SX679_.jpg',
       'maggie-masala': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776348344/879cb14b-f49d-4c02-ac5a-0dcc514565e1_r6qwwi.png',
-      'munch': 'https://m.media-amazon.com/images/I/31b3R0qZvuL._SY300_SX300_QL70_FMwebp_.jpg'
+      'munch': 'https://m.media-amazon.com/images/I/31b3R0qZvuL._SY300_SX300_QL70_FMwebp_.jpg',
+      'jimjam': 'https://m.media-amazon.com/images/I/61cB9RCwTcL._SX679_.jpg',
+      'appy': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776763315/0829720e-475e-4fc7-8b59-f5c25c43d545_uoe8s4.png'
     };
 
 
     const PRODUCTS = [
 
+      { id: 13, name: 'Appy Fizz ', oprice: 12, price: 11, src: i.appy, cat: 'Drinks', stock: 5 },
       { id: 13, name: 'Bingo! Mad Angles', oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
       { id: 12, name: 'Aloo Bhujia', oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
       { id: 11, name: 'Punjabi Tadka', oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
       { id: 10, name: 'Kurkure Masala', oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 0 },
-      { id: 9, name: "Lay's Chips", oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
-      { id: 8, name: "Takatak", oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
-      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 0 },
+      { id: 9, name: "Lay's Chips", oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 3 },
+      { id: 8, name: "Takatak", oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 2 },
+      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 5 },
       { id: 6, name: 'Maggie Masala', oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 0 },
-      { id: 5, name: 'Oreo', oprice: 12, price: 11, src: i.oreo, cat: 'Biscuits', stock: 0 },
-      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock:0 },
-      { id: 3, name: 'Munch', oprice: 12, price: 11, src: i.munch, cat: 'Choclate', stock: 0 },
-      { id: 2, name: 'KitKat', oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 0 },
+      { id: 5, name: 'Jim Jam', oprice: 12, price: 11, src: i.jimjam, cat: 'Biscuits', stock: 5 },
+      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock:5 },
+      { id: 3, name: 'Munch', oprice: 12, price: 11, src: i.munch, cat: 'Choclate', stock: 5 },
+      { id: 2, name: '5-Star', oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 5 },
       { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 0 }
 
     ];
 
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate',];
+    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
     let cart = {};
     let activeCat = 'All';
     let orders = JSON.parse(localStorage.getItem('hostelOrders') || '[]');
