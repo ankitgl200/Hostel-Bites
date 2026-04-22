@@ -1127,9 +1127,11 @@
       win.document.close();
     }
 
-    window.addEventListener("focus", function () {
-      if (sessionStorage.getItem("paid") === "true") {
-        document.getElementById("orderBtn").innerText = "Place Order";
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") {
+        if (sessionStorage.getItem("paid") === "true") {
+          document.getElementById("orderBtn").innerText = "Place Order";
+        }
       }
     });
 
@@ -1137,13 +1139,11 @@
     function handleOrderClick() {
       let payMethod = document.getElementById("payMethod").value;
 
-      // 🔥 IF CASH → NORMAL FLOW
       if (payMethod === "cash") {
         placeOrder();
         return;
       }
 
-      // 🔥 IF UPI → PAYMENT FLOW
       let paid = sessionStorage.getItem("paid");
 
       if (!paid) {
@@ -1153,7 +1153,15 @@
 
         sessionStorage.setItem("paid", "true");
 
-        window.location.href = link;
+        // 🔥 Detect mobile
+        let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobile) {
+          window.location.href = link;
+        } else {
+          showToast("📱 Please complete payment using your mobile");
+        }
+
       } else {
         placeOrder();
       }
