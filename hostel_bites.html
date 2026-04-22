@@ -767,7 +767,7 @@
           <label>Payment Method</label>
           <select id="payMethod" onchange="toggleUPI()">
             <option value="cash">Cash/Pay on Delivery</option>
-            <!-- <option value="upi">Online Comming Soon</option> -->
+            <option value="upi">Pay Online</option>
 
           </select>
         </div>
@@ -784,7 +784,9 @@
         </div>
         <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" alt="Captcha">
         </div>
-        <button class="place-order-btn" onclick="placeOrder()" >✅ Place Order</button>
+        <button class="place-order-btn" id="orderBtn" onclick="handleOrderClick()">
+          ✅ Place Order
+        </button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -1013,15 +1015,29 @@
     }
 
     function openCheckout() {
-      if (!Object.keys(cart).length) { showToast('Cart is empty!'); return; }
+      if (!Object.keys(cart).length) {
+        showToast('Cart is empty!');
+        return;
+      }
+
       closeCart();
+
       document.getElementById('successScreen').classList.remove('show');
       document.getElementById('checkoutForm').style.display = 'block';
+
       renderSummary();
       document.getElementById('checkoutModal').classList.add('open');
+
       grecaptcha.reset();
-      document.getElementById("orderBtn").disabled = true;
+
+      // 🔥 RESET PAYMENT STATE
+      sessionStorage.removeItem("paid");
+
+      // 🔥 RESET BUTTON TEXT
+      document.getElementById("orderBtn").innerText = "Pay Online";
     }
+
+
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
     function closeAll() {
       closeCheckout();
@@ -1032,7 +1048,17 @@
 
     function toggleUPI() {
       const v = document.getElementById('payMethod').value;
-      document.getElementById('upiSection').style.display = v === 'upi' ? 'block' : 'none';
+
+      document.getElementById('upiSection').style.display =
+        v === 'upi' ? 'block' : 'none';
+
+      let btn = document.getElementById("orderBtn");
+
+      if (v === "upi") {
+        btn.innerText = "Pay Online";
+      } else {
+        btn.innerText = "Place Order";
+      }
     }
 
     function renderSummary() {
@@ -1099,6 +1125,38 @@
       let win = window.open("", "_blank");
       win.document.write(billHTML);
       win.document.close();
+    }
+
+    window.addEventListener("focus", function () {
+      if (sessionStorage.getItem("paid") === "true") {
+        document.getElementById("orderBtn").innerText = "Place Order";
+      }
+    });
+
+
+    function handleOrderClick() {
+      let payMethod = document.getElementById("payMethod").value;
+
+      // 🔥 IF CASH → NORMAL FLOW
+      if (payMethod === "cash") {
+        placeOrder();
+        return;
+      }
+
+      // 🔥 IF UPI → PAYMENT FLOW
+      let paid = sessionStorage.getItem("paid");
+
+      if (!paid) {
+        let amount = cartTotal();
+
+        let link = `upi://pay?pa=9149020075@fam&pn=HostelBites&am=${amount}&cu=INR`;
+
+        sessionStorage.setItem("paid", "true");
+
+        window.location.href = link;
+      } else {
+        placeOrder();
+      }
     }
 
 
@@ -1186,7 +1244,7 @@
       document.getElementById('successScreen').classList.add('show');
       showToast('🎉 Order placed successfully!');
       generateBill(order);
-      
+
     }
 
     function renderOrders() {
