@@ -767,13 +767,13 @@
           <label>Payment Method</label>
           <select id="payMethod" onchange="toggleUPI()">
             <option value="cash">Cash/Pay on Delivery</option>
-            <option value="upi">Pay Online</option>
+            <option value="upi" selected>Pay Online</option>
 
           </select>
         </div>
         <div id="upiSection" class="upi-box">
           <div style="font-size:13px;font-weight:600;color:#16A34A">Pay via UPI</div>
-          <div class="upi-id">Comming Soon</div>
+          <!-- <div class="upi-id">Comming Soon</div> -->
           <div class="upi-note">You can pay online on delivery</div>
           <!-- <div class="upi-note">✅ Send screenshot after payment to confirm</div> -->
         </div>
@@ -858,7 +858,7 @@
 
     const PRODUCTS = [
 
-      { id: 13, name: 'Appy Fizz ', oprice: 12, price: 11, src: i.appy, cat: 'Drinks', stock: 1 },
+      { id: 14, name: 'Appy Fizz ', oprice: 12, price: 11, src: i.appy, cat: 'Drinks', stock: 1 },
       { id: 13, name: 'Bingo! Mad Angles', oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
       { id: 12, name: 'Aloo Bhujia', oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
       { id: 11, name: 'Punjabi Tadka', oprice: 12, price: 11, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
@@ -1015,27 +1015,27 @@
     }
 
     function openCheckout() {
-      if (!Object.keys(cart).length) {
-        showToast('Cart is empty!');
-        return;
-      }
+  if (!Object.keys(cart).length) {
+    showToast('Cart is empty!');
+    return;
+  }
 
-      closeCart();
+  closeCart();
 
-      document.getElementById('successScreen').classList.remove('show');
-      document.getElementById('checkoutForm').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('checkoutForm').style.display = 'block';
 
-      renderSummary();
-      document.getElementById('checkoutModal').classList.add('open');
+  renderSummary();
+  document.getElementById('checkoutModal').classList.add('open');
 
-      grecaptcha.reset();
+  grecaptcha.reset();
 
-      // 🔥 RESET PAYMENT STATE
-      sessionStorage.removeItem("paid");
+  // 🔥 RESET PAYMENT STATE
+  sessionStorage.removeItem("paid");
 
-      // 🔥 RESET BUTTON TEXT
-      document.getElementById("orderBtn").innerText = "Pay Online";
-    }
+  // 🔥 FIX BUTTON BASED ON PAYMENT
+  toggleUPI();
+}
 
 
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
@@ -1050,7 +1050,7 @@
       const v = document.getElementById('payMethod').value;
 
       document.getElementById('upiSection').style.display =
-        v === 'upi' ? 'block' : 'none';
+        v === 'cash' ? 'block' : 'none';
 
       let btn = document.getElementById("orderBtn");
 
