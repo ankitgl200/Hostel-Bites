@@ -854,25 +854,27 @@
       'jimjam': 'https://m.media-amazon.com/images/I/61cB9RCwTcL._SX679_.jpg',
       'appy': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776763315/0829720e-475e-4fc7-8b59-f5c25c43d545_uoe8s4.png',
       'cofee': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776864875/21a9d4c1-5cd0-4494-a05b-d7f45843ef64_ebnmjy.png',
-      'pepsi': 'https://m.media-amazon.com/images/I/51xCIV-ZJqL._SX679_.jpg'
+      'pepsi': 'https://m.media-amazon.com/images/I/51xCIV-ZJqL._SX679_.jpg',
+      'soda': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1777296666/c4fa7874-43fe-4a92-81b6-7eeb317cca3a_kwfmd2.png',
+      'moongdal': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1777296760/99174b61-c2a3-4175-a829-462e71fcb655_ruzhr3.png'
     };
 
 
     const PRODUCTS = [
 
       { id: 15, name: 'Instant Coffee Sachets Pack of 5', oprice: 12, price: 11, src: i.cofee, cat: 'Instant', stock: 30 },
-      { id: 14, name: 'Mountain Dew ', oprice: 24, price: 22, src: i.pepsi, cat: 'Drinks', stock: 0 },
+      { id: 14, name: 'Jodhpuri Jeera Soda ', oprice: 12, price: 11, src: i.soda, cat: 'Drinks', stock: 5 },
       { id: 13, name: 'Bingo! Mad Angles', oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
       { id: 12, name: 'Aloo Bhujia', oprice: 12, price: 11, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 0 },
-      { id: 11, name: 'Punjabi Tadka', oprice: 24, price: 22, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
+      { id: 11, name: 'Moong Dal', oprice: 7, price: 6, src: i.moongdal, cat: 'Namkeen', stock: 5 },
       { id: 10, name: 'Kurkure Masala', oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 0 },
       { id: 9, name: "Lay's Chips", oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
       { id: 8, name: "Takatak", oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
-      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 0 },
+      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 5 },
       { id: 6, name: 'Maggie Masala', oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 0 },
-      { id: 5, name: 'Jim Jam', oprice: 12, price: 11, src: i.jimjam, cat: 'Biscuits', stock: 0 },
-      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 0 },
-      { id: 3, name: 'Munch', oprice: 12, price: 11, src: i.munch, cat: 'Choclate', stock: 0 },
+      { id: 5, name: 'Jim Jam', oprice: 12, price: 11, src: i.jimjam, cat: 'Biscuits', stock: 5 },
+      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 5 },
+      { id: 3, name: 'Kitkat', oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 5 },
       { id: 2, name: '5-Star', oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 0 },
       { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 0 }
 
@@ -893,8 +895,8 @@
     function renderProducts() {
       let aval = "Out of Stock";
       let filtered = activeCat === 'All'
-        ? [...PRODUCTS]
-        : PRODUCTS.filter(p => p.cat === activeCat);
+        ? PRODUCTS.filter(p => p.stock > 0)
+        : PRODUCTS.filter(p => p.cat === activeCat && p.stock > 0);
 
       // 🔥 SORT: Available first, Out of stock last
       filtered.sort((a, b) => b.stock - a.stock);
@@ -1018,27 +1020,27 @@
     }
 
     function openCheckout() {
-  if (!Object.keys(cart).length) {
-    showToast('Cart is empty!');
-    return;
-  }
+      if (!Object.keys(cart).length) {
+        showToast('Cart is empty!');
+        return;
+      }
 
-  closeCart();
+      closeCart();
 
-  document.getElementById('successScreen').classList.remove('show');
-  document.getElementById('checkoutForm').style.display = 'block';
+      document.getElementById('successScreen').classList.remove('show');
+      document.getElementById('checkoutForm').style.display = 'block';
 
-  renderSummary();
-  document.getElementById('checkoutModal').classList.add('open');
+      renderSummary();
+      document.getElementById('checkoutModal').classList.add('open');
 
-  grecaptcha.reset();
+      grecaptcha.reset();
 
-  // 🔥 RESET PAYMENT STATE
-  sessionStorage.removeItem("paid");
+      // 🔥 RESET PAYMENT STATE
+      sessionStorage.removeItem("paid");
 
-  // 🔥 FIX BUTTON BASED ON PAYMENT
-  toggleUPI();
-}
+      // 🔥 FIX BUTTON BASED ON PAYMENT
+      toggleUPI();
+    }
 
 
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
