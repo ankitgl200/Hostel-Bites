@@ -236,6 +236,9 @@
         <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
         <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
         <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
+        <button id="adminPageBtn" class="btn" style="display:none;" onclick="openAdminPage()">
+            🛠️ Admin Panel
+        </button>
         <button id="adminPayBtn" class="btn" style="display:none;" onclick="openQRPage()">
             💰 Generate Payment QR
         </button>
@@ -249,7 +252,7 @@
 
     <div class="footer">
         © 2026 Hostel Bites | All rights reserved |
-        Last Updated: 18-04-2026.
+        Last Updated: 01-05-2026.
     </div>
 
     <script>
@@ -258,6 +261,9 @@
         }
         function openQRPage() {
             window.location.href = "payment.html";
+        }
+        function openAdminPage() {
+            window.location.href = "admin.html";
         }
 
         window.onload = function () {
@@ -289,45 +295,52 @@ Enjoy your snacks! 😋`);
             box.classList.toggle("visible");
         }
 
-        async function hashCode(text) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(text);
-            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-        }
-
-        async function checkDevCode() {
+        function checkDevCode() {
             let input = document.getElementById("devCode").value;
-            let hashedInput = await hashCode(input);
-            let correctHash = "dabf920f1e716a90dd51aab0e9604fc9bd1183a1791d737f86b5201190fe7798";
 
-            if (hashedInput === correctHash) {
-                localStorage.setItem("dev", "true");
-                alert("Dev Mode Activated 🔓");
-                updateDevButton();
-            } else {
-                alert("Wrong Code ❌");
-            }
+            fetch("https://backendhb.onrender.com/api/auth/dev-login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ password: input })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem("dev", "true");
+                        alert("Dev Mode Activated 🔓");
+                        updateDevButton();
+                    } else {
+                        alert("Wrong Code ❌");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Server error ❌");
+                });
         }
 
         function updateDevButton() {
             let btn = document.getElementById("devButton");
-            let adminBtn = document.getElementById("adminPayBtn");
+            let qrBtn = document.getElementById("adminPayBtn");
+            let adminPageBtn = document.getElementById("adminPageBtn");
 
             if (localStorage.getItem("dev") === "true") {
                 btn.innerText = "Logout Dev";
                 btn.onclick = logoutDev;
 
-                // 🔥 SHOW ADMIN BUTTON
-                if (adminBtn) adminBtn.style.display = "block";
+                // 🔥 SHOW BUTTONS
+                if (qrBtn) qrBtn.style.display = "block";
+                if (adminPageBtn) adminPageBtn.style.display = "block";
 
             } else {
                 btn.innerText = "Dev Mode";
                 btn.onclick = handleDevClick;
 
-                // 🔥 HIDE ADMIN BUTTON
-                if (adminBtn) adminBtn.style.display = "none";
+                // 🔥 HIDE BUTTONS
+                if (qrBtn) qrBtn.style.display = "none";
+                if (adminPageBtn) adminPageBtn.style.display = "none";
             }
         }
 
