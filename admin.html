@@ -1,189 +1,187 @@
-<!DOCTYPE html>
+const PASSWORD = "1234";
 
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Hostel Bites</title>
+let PRODUCTS = [];
 
-<style>
-* {
-  box-sizing: border-box;
+// 🔐 LOGIN
+function login() {
+    let pass = document.getElementById("adminPass").value;
+
+    fetch("https://backendhb.onrender.com/api/auth/admin-login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password: pass })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("adminPanel").classList.remove("hidden");
+            } else {
+                alert("Wrong password ❌");
+            }
+        });
 }
 
-body {
-  font-family: Arial;
-  background: #fff5eb;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+function goto() {
+    window.location.href = "order.html";
 }
 
-h2 {
-  color: #ff6a00;
-  text-align: center;
+
+
+// 🔄 LOAD PRODUCTS FROM DB
+function loadProducts() {
+    fetch("https://backendhb.onrender.com/api/products")
+        .then(res => res.json())
+        .then(data => {
+            PRODUCTS = data;
+
+            let select = document.getElementById("productSelect");
+            select.innerHTML = "";
+
+            data.forEach(p => {
+                let opt = document.createElement("option");
+                opt.value = p._id;
+                opt.textContent = p.name;
+                select.appendChild(opt);
+            });
+        });
+} // ✅ THIS WAS MISSING
+// 🔀 SWITCH MODE
+function switchMode() {
+    let mode = document.querySelector("input[name='mode']:checked").value;
+    let btn = document.querySelector("button[onclick='submitData()']");
+
+    if (mode === "add") {
+        btn.innerText = "Add Product";
+    } else {
+        btn.innerText = "Update Product";
+    }
+    if (mode === "update") {
+        loadProducts(); // 🔥 reload products when entering update mode
+    }
+
+    document.getElementById("addFields").classList.add("hidden");
+    document.getElementById("updateFields").classList.add("hidden");
+
+    document.getElementById("productSelect").classList.add("hidden");
+    document.getElementById("updateType").classList.add("hidden");
+    document.getElementById("updateValue").classList.add("hidden");
+
+    if (mode === "add") {
+        document.getElementById("addFields").classList.remove("hidden");
+    } else {
+        document.getElementById("updateFields").classList.remove("hidden");
+        document.getElementById("productSelect").classList.remove("hidden");
+        document.getElementById("updateType").classList.remove("hidden");
+    }
 }
 
-.box {
-  max-width: 420px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+function showUpdateInput() {
+    let type = document.getElementById("updateType").value;
+    let input = document.getElementById("updateValue");
+
+    if (!type) {
+        input.classList.add("hidden");
+        return;
+    }
+
+    input.classList.remove("hidden");
+
+    // Change input type dynamically
+    if (type === "stock" || type === "price" || type === "oprice") {
+        input.type = "number";
+    } else {
+        input.type = "text";
+    }
+
+    input.placeholder = "Enter new " + type;
 }
 
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+
+// 🚀 SUBMIT DATA
+function submitData() {
+    let selected = document.querySelector("input[name='mode']:checked");
+
+    if (!selected) {
+        alert("Select Add or Update");
+        return;
+    }
+
+    let mode = selected.value;
+    if (mode === "add") {
+
+        let name = document.getElementById("name").value.trim();
+
+        if (!name) {
+            alert("Enter product name");
+            return;
+        }
+
+        // 🔥 DUPLICATE CHECK (ADD HERE)
+        let exists = PRODUCTS.some(p =>
+            p.name.toLowerCase() === name.toLowerCase()
+        );
+
+        if (exists) {
+            alert("Product already exists ❌");
+            return;
+        }
+
+        let data = {
+            name: name,
+            src: document.getElementById("src").value.trim(),
+            price: parseInt(document.getElementById("price").value),
+            oprice: parseInt(document.getElementById("oprice").value),
+            cat: document.getElementById("cat").value,
+            stock: parseInt(document.getElementById("stockAdd").value)
+        };
+
+        fetch("https://backendhb.onrender.com/api/products/add-product", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(() => {
+                document.getElementById("msg").innerText = "✅ Product Added!";
+                loadProducts();
+            });
+    }
+    else {
+        let id = document.getElementById("productSelect").value;
+        let field = document.getElementById("updateType").value;
+        let value = document.getElementById("updateValue").value;
+
+        if (!field || value.trim() === "") {
+            alert("Enter valid value");
+            return;
+        }
+
+        let data = { id };
+
+        // dynamic field update
+        if (field === "stock" || field === "price" || field === "oprice") {
+            data[field] = parseInt(value) || 0;
+        } else {
+            if (field === "name") {
+                data[field] = value.trim();
+            } else {
+                data[field] = value;
+            }
+        }
+
+        fetch("https://backendhb.onrender.com/api/products/update-product", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(() => {
+                document.getElementById("msg").innerText = "✅ Product Updated!";
+                loadProducts();
+            });
+    }
 }
-
-button {
-  background: #ff6a00;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.hidden { display:none; }
-
-.mode-select {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.mode-select label {
-  flex: 1;
-  background: #fff3e8;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-}
-.mode-select input { display:none; }
-
-/* Mobile responsiveness */
-@media (max-width: 480px) {
-  body {
-    padding: 12px;
-  }
-
-  .box {
-    padding: 16px;
-    border-radius: 10px;
-  }
-
-  h2 {
-    font-size: 18px;
-  }
-
-  input, select, button {
-    padding: 12px 10px;
-    font-size: 15px;
-  }
-
-  .mode-select {
-    gap: 8px;
-  }
-
-  .mode-select label {
-    padding: 10px 6px;
-    font-size: 14px;
-  }
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="box">
-
-<!-- LOGIN -->
-
-<div id="loginBox">
-  <h2>🔐 Admin Login</h2>
-  <input type="password" id="adminPass" placeholder="Enter Admin Password">
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- ADMIN PANEL -->
-
-<div id="adminPanel" class="hidden">
-  <button onclick=goto()>Orders</button>
-
-<h2>📦 Manage Products</h2>
-
-<!-- MODE -->
-
-<div class="mode-select">
-  <label>
-    <input type="radio" name="mode" value="add" onchange="switchMode()"> Add
-  </label>
-  <label>
-    <input type="radio" name="mode" value="update" onchange="switchMode()"> Update
-  </label>
-</div>
-
-<!-- COMMON PRODUCT SELECT -->
-
-<select id="productSelect" class="hidden"></select>
-
-<!-- ADD -->
-
-<div id="addFields" class="hidden">
-  <input type="text" id="name" placeholder="Product Name">
-  <input type="text" id="src" placeholder="Image URL">
-  <input type="number" id="price" placeholder="Price">
-  <input type="number" id="oprice" placeholder="Old Price">
-
-  <!-- CATEGORY DROPDOWN -->
-
-  <select id="cat">
-    <option value="" selected>Select Category</option>
-    <option>Instant</option>
-    <option>Kurkure</option>
-    <option>Chips</option>
-    <option>Chocolate</option>
-    <option>Biscuits</option>
-    <option>Namkeen</option>
-  </select>
-
-  <input type="number" id="stockAdd" placeholder="Stock">
-</div>
-
-<!-- UPDATE -->
-
-<div id="updateFields" class="hidden">
-
-  <select id="updateType" onchange="showUpdateInput()" class="hidden">
-    <option value="" selected>Select field</option>
-    <option value="stock">Stock</option>
-    <option value="price">Price</option>
-    <option value="oprice">Old Price</option>
-    <option value="src">Image</option>
-    <option value="cat">Category</option>
-  </select>
-
-  <input type="text" id="updateValue" class="hidden">
-
-</div>
-
-<button onclick="submitData()">Submit</button>
-
-<p id="msg"></p>
-
-</div>
-
-</div>
-
-<script src="js/admin.js"></script>
-
-</body>
-</html>
