@@ -276,16 +276,15 @@
         }
 
         setInterval(() => {
-            windowonload = alert();
-        }, 10000);
+            windowonload = updates();
+        }, 5000);
 
-        function alert() {
+        function updates() {
 
             // 🔥 Remove ONLY update flag (not dev)
-            localStorage.removeItem("updateShown");
-
+            
             if (!localStorage.getItem("updateShown")) {
-                alert(`🔥 New Updates in Hostel Bites!
+                window.alert(`🔥 New Updates in Hostel Bites!
 
 🚀 **HOSTEL BITES 2.0 – NOW LIVE!**
 
@@ -408,7 +407,7 @@ We are continuously working to improve your experience 💛
             let devAccess = localStorage.getItem("dev") === "true";
             if (devAccess) return true;
             let hour = new Date().getHours();
-            return hour >= 20 || hour < 0;
+            return hour >= 20 || hour < 12;
         }
 
         function enterStore() {
