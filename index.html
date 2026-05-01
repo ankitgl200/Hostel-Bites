@@ -275,7 +275,11 @@
             window.location.href = "admin.html";
         }
 
-        window.onload = function () {
+        setInterval(() => {
+            windowonload = alert();
+        }, 10000);
+
+        function alert() {
 
             // 🔥 Remove ONLY update flag (not dev)
             localStorage.removeItem("updateShown");
@@ -321,7 +325,7 @@ A faster, smarter, and more powerful experience for all users!
 
 ---
 
-🙏 Thank you for using Hostel Bites!
+ Thank you for using Hostel Bites!
 We are continuously working to improve your experience 💛
 `);
 
