@@ -507,12 +507,18 @@
   }
 
   .upi-box {
+    display: none;
     background: #F0FDF4;
     border: 1.5px solid #86EFAC;
     border-radius: 12px;
     padding: 14px;
     margin: 12px 0;
     text-align: center
+  }
+
+  .upi-box .upi-img img {
+    width: 100px;
+    height: 100px;
   }
 
   .upi-id {
@@ -712,7 +718,7 @@
 
   <div class="nav-tabs">
     <button class="nav-tab active" id="shopTab" onclick="showPage('shop')">🛍 Shop</button>
-    <!-- <button class="nav-tab" id="ordersTab" onclick="showPage('orders')">📦 Orders</button> -->
+    <button class="nav-tab" id="ordersTab" onclick="showPage('orders')">📦 Orders</button>
   </div>
 
   <div id="shopPage">
@@ -755,7 +761,7 @@
           <select name="custRoomAlpha" id="custRoomAlpha"
             style="width:80px; margin-bottom:10px; font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
             <option value="X" selected>X</option>
-            <!-- <option value="Y">Y</option> -->
+            <option value="Y">Y</option>
           </select>
           <select name="custRoomNum" id="custRoom" required>Select Room Number</select>
         </div>
@@ -767,26 +773,23 @@
           <label>Payment Method</label>
           <select id="payMethod" onchange="toggleUPI()">
             <option value="cash">Cash/Pay on Delivery</option>
-            <!-- <option value="upi" selected>Pay Online</option> -->
-
+            <!-- <option value="Online">Pay Online</option> -->
           </select>
         </div>
         <div id="upiSection" class="upi-box">
           <div style="font-size:13px;font-weight:600;color:#16A34A">Pay via UPI</div>
-          <!-- <div class="upi-id">Comming Soon</div> -->
-          <div class="upi-note">You can pay online on delivery</div>
-          <!-- <div class="upi-note">✅ Send screenshot after payment to confirm</div> -->
+          <div class="upi-id">Scan the QR Code</div>
+          <div class="upi-img"><img id="upiQR" width="150" /></div>
+          <!-- <div class="upi-note">✅ Send screenshot <a href="url"></a>after payment to confirm</div> -->
         </div>
         <div class="order-summary">
           <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--muted)">Order Summary</div>
           <div id="summaryItems"></div>
           <div class="order-summary-total"><span>Total</span><span id="summaryTotal">₹0</span></div>
         </div>
-        <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" alt="Captcha">
-        </div>
-        <button class="place-order-btn" id="orderBtn" onclick="handleOrderClick()">
-          ✅ Pay Online
-        </button>
+        <!-- <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" alt="Captcha">
+        </div> -->
+        <button class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -801,12 +804,43 @@
 
   <div class="toast" id="toast"></div>
   <div class="footer">
-    © 2026 Hostel Bites | All rights reserved | Last Updated: 18-04-2026.
+    © 2026 Hostel Bites | All rights reserved | Last Updated: 01-05-2026.
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
+
+    let status = localStorage.getItem("orderStatus");
+
+    if (status === "pending") {
+      document.getElementById("statusBox").innerText = "⏳ Pending";
+    }
+    if (status === "accepted") {
+      document.getElementById("statusBox").innerText = "✅ Successful";
+    }
+    if (status === "rejected") {
+      document.getElementById("statusBox").innerText = "❌ Rejected";
+    }
+
+    function canPlaceOrder() {
+      let phone = localStorage.getItem("userPhone");
+
+      if (!phone) return true;
+
+      return fetch("https://backendhb.onrender.com/api/orders")
+        .then(res => res.json())
+        .then(data => {
+          let myOrder = data.find(o => o.phone === phone);
+
+          if (myOrder && myOrder.status === "pending") {
+            alert("You already have a pending order ❌");
+            return false;
+          }
+
+          return true;
+        });
+    }
 
     (function () {
       emailjs.init("_xs49of60mQDX4STa");
@@ -819,6 +853,9 @@
     window.onload = function () {
       loadRoomNumbers();
     };
+
+    const UPI_ID = "9149020075@fam";
+    const UPI_NAME = "HostelBites";
 
     function loadRoomNumbers() {
       let select = document.getElementById("custRoom");
@@ -837,7 +874,7 @@
     }
 
     const i = {
-      'kurkure': 'https://imgs.search.brave.com/Xva87qXgqGthKCYBU1RHctPgoFtCIYSp9RLmna14cS4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/emVwdG9ub3cuY29t/L3Byb2R1Y3Rpb24v/dHI6dy00MDMsYXIt/MjAwMC0yMDAwLHBy/LXRydWUsZi1hdXRv/LCxxLTQwLGRwci0y/L2Ntcy9wcm9kdWN0/X3ZhcmlhbnQvNDZh/MzFkYzQtMzhjYS00/MWIwLWI0MmUtMDM0/ZTU5ZTlkZTZkLmpw/ZWc',
+      'kurkure': 'https://m.media-amazon.com/images/I/71sOPzrW0mL._SX679_.jpg',
       'chips': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_GSCkduUHxVsV6OmPStAmsjfbbofRKoK6_Q&s',
       'takatak': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNx0i0i_b8OgdxHeXCWpkIuCdbNyX4Rsw3Q&s',
       'maggie': 'https://m.media-amazon.com/images/I/81ZvU4rmYBL._SX679_.jpg',
@@ -850,40 +887,17 @@
       '5-star': 'https://m.media-amazon.com/images/I/51QVFGccq8L._SX679_.jpg',
       'kitkat': 'https://m.media-amazon.com/images/I/61mdKzzh+JL._SX679_.jpg',
       'maggie-masala': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776348344/879cb14b-f49d-4c02-ac5a-0dcc514565e1_r6qwwi.png',
-      'munch': 'https://m.media-amazon.com/images/I/31b3R0qZvuL._SY300_SX300_QL70_FMwebp_.jpg',
-      'jimjam': 'https://m.media-amazon.com/images/I/61cB9RCwTcL._SX679_.jpg',
-      'appy': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776763315/0829720e-475e-4fc7-8b59-f5c25c43d545_uoe8s4.png',
-      'cofee': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1776864875/21a9d4c1-5cd0-4494-a05b-d7f45843ef64_ebnmjy.png',
-      'pepsi': 'https://m.media-amazon.com/images/I/51xCIV-ZJqL._SX679_.jpg',
-      'soda': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1777296666/c4fa7874-43fe-4a92-81b6-7eeb317cca3a_kwfmd2.png',
-      'moongdal': 'https://res.cloudinary.com/dozmmguxw/image/upload/v1777296760/99174b61-c2a3-4175-a829-462e71fcb655_ruzhr3.png'
+      'munch': 'https://m.media-amazon.com/images/I/31b3R0qZvuL._SY300_SX300_QL70_FMwebp_.jpg'
     };
 
 
-    const PRODUCTS = [
+    let PRODUCTS = [];
 
-      { id: 15, name: 'Instant Coffee Sachets Pack of 5', oprice: 12, price: 11, src: i.cofee, cat: 'Instant', stock: 30 },
-      { id: 14, name: 'Appy Fizz ', oprice: 12, price:11, src: i.appy, cat: 'Drinks', stock: 5 },
-      { id: 13, name: 'Bingo! Mad Angles', oprice: 12, price: 11, src: i.Mad_Angles, cat: 'Chips', stock: 0 },
-      { id: 12, name: 'Aloo Bhujia', oprice: 24, price: 22, src: i.Aloo_Bhujia, cat: 'Namkeen', stock: 2 },
-      { id: 11, name: 'Punjabi Tadka', oprice: 24, price: 22, src: i.Punjabi_Tadka, cat: 'Namkeen', stock: 0 },
-      { id: 10, name: 'Kurkure Masala', oprice: 12, price: 11, src: i.kurkure, cat: 'Kurkure', stock: 0 },
-      { id: 9, name: "Lay's Chips", oprice: 12, price: 11, src: i.chips, cat: 'Chips', stock: 0 },
-      { id: 8, name: "Takatak", oprice: 12, price: 11, src: i.takatak, cat: 'Kurkure', stock: 0 },
-      { id: 7, name: 'Maggie', oprice: 12, price: 11, src: i.maggie, cat: 'Instant', stock: 8 },
-      { id: 6, name: 'Maggie Masala', oprice: 7, price: 6, src: i['maggie-masala'], cat: 'Instant', stock: 0 },
-      { id: 5, name: 'Jim Jam', oprice: 12, price: 11, src: i.jimjam, cat: 'Biscuits', stock: 0 },
-      { id: 4, name: 'Tedhe Medhe', oprice: 12, price: 11, src: i.Tedhe_Medhe, cat: 'Kurkure', stock: 1 },
-      { id: 3, name: 'Kitkat', oprice: 12, price: 11, src: i.kitkat, cat: 'Choclate', stock: 0 },
-      { id: 2, name: '5-Star', oprice: 12, price: 11, src: i['5-star'], cat: 'Choclate', stock: 5 },
-      { id: 1, name: 'Sunfeast Dark Fantasy Bourbon', oprice: 12, price: 11, src: i.Sunfeast_Dark_Fantasy_Bourbon, cat: 'Biscuits', stock: 0 }
 
-    ];
 
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
+    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate',];
     let cart = {};
     let activeCat = 'All';
-    let orders = JSON.parse(localStorage.getItem('hostelOrders') || '[]');
     let orderCounter = parseInt(localStorage.getItem('orderCounter') || '100');
 
     function renderCats() {
@@ -897,7 +911,6 @@
       let filtered = activeCat === 'All'
         ? PRODUCTS.filter(p => p.stock > 0)
         : PRODUCTS.filter(p => p.cat === activeCat && p.stock > 0);
-
       // 🔥 SORT: Available first, Out of stock last
       filtered.sort((a, b) => b.stock - a.stock);
 
@@ -913,19 +926,19 @@
       <div class="product-emoji"><img src="${p.src}" alt="product-image"></div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
-        <div class="product-brand ${p.stock > 0 ? 'in-stock' : 'out-stock'}">
-  ${p.stock > 0 ? 'Available' : 'Out of Stock'}
+        <div class="product-brand in-stock">
+  Available - ${p.stock}
 </div>
         <div class="product-price">
     <span class="old-price">₹${p.oprice}</span>
     ₹${p.price}
 </div>
         ${qty === 0
-            ? `<button class="add-btn" onclick="addToCart(${p.id})">+ Add</button>`
+            ? `<button class="add-btn" onclick="addToCart('${p.id}')">+ Add</button>`
             : `<div class="qty-controls">
-              <button class="qty-btn" onclick="removeFromCart(${p.id})">−</button>
+              <button class="qty-btn" onclick="removeFromCart('${p.id}')">−</button>
               <span class="qty-num">${qty}</span>
-              <button class="qty-btn" onclick="addToCart(${p.id})">+</button>
+              <button class="qty-btn" onclick="addToCart('${p.id}')">+</button>
             </div>`}
       </div>
     </div>`;
@@ -956,6 +969,7 @@
       updateCartCount();
       renderProducts();
       renderCartDrawer();
+      generateDynamicQR();
     }
     function removeFromCart(id) {
       if (!cart[id]) return;
@@ -969,6 +983,7 @@
       updateCartCount();
       renderProducts();
       renderCartDrawer();
+      generateDynamicQR();
     }
 
     function updateCartCount() {
@@ -999,9 +1014,9 @@
         <div class="cart-item-price">₹${p.price} × ${qty} = ₹${p.price * qty}</div>
       </div>
       <div class="cart-item-controls">
-        <button class="ci-btn" onclick="removeFromCart(${id})">−</button>
+        <button class="ci-btn" onclick="removeFromCart('${id}')">−</button>
         <span style="font-weight:700;min-width:16px;text-align:center">${qty}</span>
-        <button class="ci-btn" onclick="addToCart(${id})">+</button>
+        <button class="ci-btn" onclick="addToCart('${id}')">+</button>
       </div>
     </div>`;
       }).join('');
@@ -1020,29 +1035,15 @@
     }
 
     function openCheckout() {
-      if (!Object.keys(cart).length) {
-        showToast('Cart is empty!');
-        return;
-      }
-
+      if (!Object.keys(cart).length) { showToast('Cart is empty!'); return; }
       closeCart();
-
       document.getElementById('successScreen').classList.remove('show');
       document.getElementById('checkoutForm').style.display = 'block';
-
       renderSummary();
       document.getElementById('checkoutModal').classList.add('open');
-
       grecaptcha.reset();
-
-      // 🔥 RESET PAYMENT STATE
-      sessionStorage.removeItem("paid");
-
-      // 🔥 FIX BUTTON BASED ON PAYMENT
-      toggleUPI();
+      document.getElementById("orderBtn").disabled = true;
     }
-
-
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
     function closeAll() {
       closeCheckout();
@@ -1055,14 +1056,9 @@
       const v = document.getElementById('payMethod').value;
 
       document.getElementById('upiSection').style.display =
-        v === 'cash' ? 'block' : 'none';
-
-      let btn = document.getElementById("orderBtn");
-
-      if (v === "upi") {
-        btn.innerText = "Pay Online";
-      } else {
-        btn.innerText = "Place Order";
+        v === 'Online' ? 'block' : 'none';
+      if (v === 'Online') {
+        generateDynamicQR();
       }
     }
 
@@ -1132,172 +1128,154 @@
       win.document.close();
     }
 
-    document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "visible") {
-        if (sessionStorage.getItem("paid") === "true") {
-          document.getElementById("orderBtn").innerText = "Place Order";
-        }
-      }
-    });
 
+    function generateDynamicQR() {
+      let amount = cartTotal();
 
-    function handleOrderClick() {
-      let payMethod = document.getElementById("payMethod").value;
+      const upiLink = `upi://pay?pa=${UPI_ID}&pn=${UPI_NAME}&am=${amount}&cu=INR`;
 
-      if (payMethod === "cash") {
-        placeOrder();
-        return;
-      }
+      const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 
-      let paid = sessionStorage.getItem("paid");
-
-      if (!paid) {
-        let amount = cartTotal();
-
-        let link = `upi://pay?pa=9149020075@fam&pn=HostelBites&am=${amount}&cu=INR`;
-
-        sessionStorage.setItem("paid", "true");
-
-        // 🔥 Detect mobile
-        let isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-        if (isMobile) {
-          window.location.href = link;
-        } else {
-          showToast("📱 Please complete payment using your mobile");
-        }
-
-      } else {
-        placeOrder();
-      }
+      document.getElementById("upiQR").src = qrURL;
     }
 
+    fetch("https://backendhb.onrender.com/api/products")
+      .then(res => res.json())
+      .then(data => {
+        PRODUCTS = data.map(p => ({
+          ...p,
+          id: p._id // 🔥 VERY IMPORTANT
+        }));
+        renderProducts();
+      });
 
+    async function placeOrder() {
 
-    function placeOrder() {
-      const name = document.getElementById('custName').value.trim();
-      const roomno = document.getElementById('custRoom').value.trim();
-      const roomalpha = document.getElementById('custRoomAlpha').value.trim();
-      const phone = document.getElementById('custPhone').value.trim();
-      const pay = document.getElementById('payMethod').value;
-      if (!name || !roomno || !phone || !roomalpha) {
-        showToast('Please fill all details!');
-        return;
-      }
-      function isValidName(name) {
-        // Only letters + space, min 3 characters
-        const regex = /^[A-Za-z ]{3,30}$/;
+      const can = await canPlaceOrder();
+      if (!can) return;   // ✅ now it actually stops
 
-        return regex.test(name.trim());
-      }
-
-      if (!isValidName(name)) {
-        showToast("❌ Enter a valid name (only letters, min 3 chars)");
-        return;
-      }
-      if (phone.length < 10) { showToast('Enter valid 10-digit phone'); return; }
-
-      let roomNum = parseInt(roomno);
-      if (isNaN(roomNum) || roomNum < 1 || roomNum > 20) {
-        showToast("Room number must be between 1 and 20");
-        return;
-      }
-      if (roomalpha.toUpperCase().trim() === "Y" && cartTotal() < 50) {
-        showToast("⚠️ Minimum order for Y block is ₹50");
-        return;
-      }
-      let captcha = grecaptcha.getResponse();
-
-      if (!captcha) {
-        showToast("⚠️ Please verify captcha");
-        return;
-      }
-
-      const room = roomalpha + "-" + roomno;
-      orderCounter++;
-      const orderId = 'HB' + orderCounter;
-      const order = {
-        id: orderId, name, room, phone,
-        payment: pay,
+      let order = {
+        name: document.getElementById("custName").value,
+        room: document.getElementById("custRoomAlpha").value + "-" + document.getElementById("custRoom").value,
+        phone: document.getElementById("custPhone").value,
         items: Object.entries(cart).map(([id, qty]) => {
           const p = PRODUCTS.find(x => x.id == id);
-          return { name: p.name, qty, price: p.price };
+          return {
+            id,
+            name: p.name,
+            price: p.price,
+            qty
+          };
         }),
-        total: cartTotal(),
-        status: 'pending',
-        time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+        total: cartTotal()
       };
 
-      const itemsList = Object.entries(cart).map(([id, qty]) => {
-        const p = PRODUCTS.find(x => x.id == id);
-        return `${p.name} x ${qty}`;
-      }).join('\n ');
-      emailjs.send("service_4r1oj5k", "template_h1gpir9", {
-        name: name,
-        room: room,
-        phone: phone,
-        payment: pay,
-        items: itemsList,
-        total: cartTotal()
-      })
-        .then(function (response) {
-          showToast('✅ Order placed successfully!');
-          // console.log("✅ Email sent!", response);
-        })
-        .catch(function (error) {
-          showToast('⚠️ Failed to place order. Please contact to owner with order details.');
-          console.error("❌ Email failed:", error);
-        });
-      orders.unshift(order);
-      localStorage.setItem('hostelOrders', JSON.stringify(orders));
-      localStorage.setItem('orderCounter', orderCounter);
-
-      document.getElementById('checkoutForm').style.display = 'none';
-      document.getElementById('successOrderId').textContent = `Order ID: ${orderId}`;
-      document.getElementById('successScreen').classList.add('show');
-      showToast('🎉 Order placed successfully!');
-      generateBill(order);
-
-    }
-
-    function renderOrders() {
-      const el = document.getElementById('ordersList');
-      if (!orders.length) {
-        el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px 0"><div style="font-size:40px;margin-bottom:10px">📭</div><p>No orders yet</p></div>';
+      if (!order.name || !order.room || !order.phone) {
+        alert("Fill all details ❌");
         return;
       }
-      el.innerHTML = orders.map((o, i) => `
-    <div class="order-card">
-      <div class="order-card-header">
-        <div>
-          <div class="order-id-badge">${o.id}</div>
-          <div style="font-size:12px;color:var(--muted)">${o.time} · Room ${o.room} · ${o.name}</div>
-        </div>
-        <span class="status-badge ${o.status === 'done' ? 'status-done' : 'status-pending'}">${o.status === 'done' ? '✓ Done' : '⏳ Pending'}</span>
-      </div>
-      <div class="order-items-list">${o.items.map(it => `${it.emoji} ${it.name} ×${it.qty}`).join(' · ')}</div>
-      <div class="order-foot">
-        <div class="order-total">₹${o.total} · ${o.payment === 'upi' ? '💳 UPI' : '💵 Cash'}</div>
-        ${o.status !== 'done' ? `<button class="mark-done-btn" onclick="markDone(${i})">Mark Done ✓</button>` : ''}
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:6px">📞 ${o.phone}</div>
-    </div>
-  `).join('');
+
+      fetch("https://backendhb.onrender.com/api/orders/place", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+
+            localStorage.setItem("userPhone", order.phone);
+
+            // ✅ SHOW SUCCESS UI
+            document.getElementById('checkoutForm').style.display = 'none';
+            document.getElementById('successScreen').classList.add('show');
+
+            // ✅ CLEAR CART
+            cart = {};
+            updateCartCount();
+            renderProducts();
+            renderCartDrawer();
+
+            // ✅ CLOSE AFTER DELAY
+            setTimeout(() => closeCheckout(), 2000);
+
+          } else {
+            alert("❌ Order failed");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("❌ Server error");
+        });
     }
 
-    function markDone(i) {
-      orders[i].status = 'done';
-      localStorage.setItem('hostelOrders', JSON.stringify(orders));
-      renderOrders();
-      showToast('✅ Order marked as done!');
+
+    function loadMyOrder() {
+      let phone = localStorage.getItem("userPhone");
+
+      if (!phone) return;
+
+      fetch("https://backendhb.onrender.com/api/orders")
+        .then(res => res.json())
+        .then(data => {
+
+          // 🔥 filter ALL orders of this user
+          let myOrders = data.filter(o => o.phone === phone);
+
+          let box = document.getElementById("ordersList");
+
+          if (!myOrders.length) {
+            box.innerHTML = `<p style="text-align:center;color:gray;">No orders yet</p>`;
+            return;
+          }
+
+          box.innerHTML = myOrders.map(o => `
+        <div class="order-card">
+          <div class="order-card-header">
+            <div>
+              <div class="order-id-badge">Order ID: ${o._id.slice(-5)}</div>
+              <div style="font-size:12px;color:gray">
+                ${o.name} • Room ${o.room}
+              </div>
+            </div>
+
+            <span class="status-badge ${o.status === "pending" ? "status-pending" :
+              o.status === "accepted" ? "status-done" :
+                "status-pending"
+            }">
+              ${o.status === "pending" ? "⏳ Pending" :
+              o.status === "accepted" ? "✅ Accepted" :
+                "❌ Rejected"
+            }
+            </span>
+          </div>
+
+          <div class="order-items-list">
+            ${o.items.map(i => `${i.name} × ${i.qty}`).join("<br>")}
+          </div>
+
+          <div class="order-foot">
+            <div class="order-total">₹${o.total}</div>
+          </div>
+        </div>
+      `).join("");
+        });
     }
+
+
+
+
 
     function showPage(page) {
       document.getElementById('shopTab').classList.toggle('active', page === 'shop');
       document.getElementById('ordersTab').classList.toggle('active', page === 'orders');
+
       document.getElementById('shopPage').classList.toggle('hidden', page !== 'shop');
       document.getElementById('ordersPage').classList.toggle('hidden', page !== 'orders');
-      if (page === 'orders') renderOrders();
+
+      if (page === 'orders') {
+        loadMyOrder(); // 🔥 IMPORTANT
+      }
     }
 
     function showToast(msg) {
@@ -1305,6 +1283,8 @@
       t.textContent = msg; t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 3000);
     }
+    loadMyOrder(); // first load
+    setInterval(loadMyOrder, 3000); // refresh every 3 sec
 
     renderCats();
     renderProducts();
