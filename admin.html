@@ -72,7 +72,7 @@ button {
 
 <div id="loginBox">
   <h2>🔐 Admin Login</h2>
-  <input type="password" id="adminPass">
+  <input type="password" id="adminPass" placeholder="Enter Admin Password">
   <button onclick="login()">Login</button>
 </div>
 
@@ -109,12 +109,13 @@ button {
   <!-- CATEGORY DROPDOWN -->
 
   <select id="cat">
-    <option value="">Select Category</option>
+    <option value="" selected>Select Category</option>
     <option>Instant</option>
     <option>Kurkure</option>
     <option>Chips</option>
     <option>Chocolate</option>
     <option>Biscuits</option>
+    <option>Namkeen</option>
   </select>
 
   <input type="number" id="stockAdd" placeholder="Stock">
@@ -125,7 +126,7 @@ button {
 <div id="updateFields" class="hidden">
 
   <select id="updateType" onchange="showUpdateInput()" class="hidden">
-    <option value="">Select field</option>
+    <option value="" selected>Select field</option>
     <option value="stock">Stock</option>
     <option value="price">Price</option>
     <option value="oprice">Old Price</option>
