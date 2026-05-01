@@ -7,12 +7,23 @@
     <title>Hostel Bites</title>
 
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
+
         OneSignalDeferred.push(async function (OneSignal) {
+
             await OneSignal.init({
                 appId: "0b256047-4540-4b4f-8c86-7198f65c8a62",
+                notifyButton: { enable: true }
             });
+
+            // 🔔 Force subscription popup
+            setTimeout(() => {
+                OneSignal.Slidedown.promptPush();
+            }, 1500);
+
         });
     </script>
 </head>
@@ -227,6 +238,44 @@
 
 
 <body>
+    <div id="updatePopup" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+">
+        <div style="
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 350px;
+        width: 90%;
+        text-align: center;
+    ">
+            <h3 style="color:#ff6a00;">🔥 Hostel Bites 2.0</h3>
+            <p style="font-size:14px; color:#444;">
+                🚀 New update is live!<br><br>
+                📦 Track orders<br>
+                ⏳ Live status<br>
+                ⚡ Faster experience
+            </p>
+            <button onclick="closeUpdatePopup()" style="
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            background: #ff6a00;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        ">Got it</button>
+        </div>
+    </div>
 
     <div class="header">
         <span><img src="hostelbites_wbg.png" alt="logo"> Hostel Bites 2.0</span>
@@ -274,65 +323,30 @@
         function openAdminPage() {
             window.location.href = "admin.html";
         }
-
-        setInterval(() => {
-            windowonload = updates();
-        }, 100);
-
-        function updates() {
-
-            // 🔥 Remove ONLY update flag (not dev)
-            
-            if (!localStorage.getItem("updateShown")) {
-                window.alert(`🔥 New Updates in Hostel Bites!
-
-🚀 **HOSTEL BITES 2.0 – NOW LIVE!**
-
-We are excited to announce the launch of **Hostel Bites 2.0** 🎉
-A faster, smarter, and more powerful experience for all users!
-
----
-
-✨ **What’s New?**
-
-* 📦 You can now **track your orders**
-* ⏳ View **real-time order status** (Pending / Accepted / Rejected)
-* 🛒 Improved ordering system for smoother experience
-* ⚡ Better performance and updated interface
-
----
-
-⚠️ **Important Instructions**
-
-* 🚧 Since this is a **new launch**, you may experience:
-
-  * Slight delay in loading products
-  * Delay while placing orders
-
-* ❗ **Avoid clicking buttons multiple times**
-
-  * Multiple clicks may result in **duplicate orders**
-
-* 🌐 Ensure stable internet connection for best performance
-
----
-
-📞 **Need Help?**
-
-* 🔧 Technical Support: **8218325600**
-* 📋 Other Issues: **9149020075**
-
----
-
- Thank you for using Hostel Bites!
-We are continuously working to improve your experience 💛
-`);
-
-                localStorage.setItem("updateShown", "true");
-            }
+        document.addEventListener("DOMContentLoaded", () => {
 
             updateDevButton();
-        };
+
+            // ⏳ Wait for OneSignal first, then show popup
+            setTimeout(() => {
+
+                if (!localStorage.getItem("updateShown")) {
+                    document.getElementById("updatePopup").style.display = "flex";
+                }
+
+            }, 4000); // delay increased
+
+        });
+        function showUpdatePopup() {
+            if (!localStorage.getItem("updateShown")) {
+                document.getElementById("updatePopup").style.display = "flex";
+            }
+        }
+
+        function closeUpdatePopup() {
+            document.getElementById("updatePopup").style.display = "none";
+            localStorage.setItem("updateShown", "true");
+        }
 
         function Contact() {
             alert("For any help, contact us at:\n📧 8218325600, 9149020075\n");
