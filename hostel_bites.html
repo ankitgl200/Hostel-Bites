@@ -1139,15 +1139,18 @@
       document.getElementById("upiQR").src = qrURL;
     }
 
-    fetch("https://backendhb.onrender.com/api/products")
-      .then(res => res.json())
-      .then(data => {
-        PRODUCTS = data.map(p => ({
-          ...p,
-          id: p._id // 🔥 VERY IMPORTANT
-        }));
-        renderProducts();
-      });
+    function loadProducts() {
+      fetch("https://backendhb.onrender.com/api/products")
+        .then(res => res.json())
+        .then(data => {
+          PRODUCTS = data.map(p => ({
+            ...p,
+            id: p._id
+          }));
+          renderProducts();
+        })
+        .catch(err => console.error("❌ Product load error:", err));
+    }
 
     async function placeOrder() {
 
@@ -1287,7 +1290,12 @@
     setInterval(loadMyOrder, 3000); // refresh every 3 sec
 
     renderCats();
-    renderProducts();
+    loadProducts();   // 🔥 instead of renderProducts()
+    setInterval(() => {
+      if (!document.getElementById("shopPage").classList.contains("hidden")) {
+        loadProducts();
+      }
+    }, 3000);
   </script>
 </body>
 
