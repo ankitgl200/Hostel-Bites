@@ -31,8 +31,8 @@ function loadOrders() {
             data.forEach(o => {
                 let statusClass =
                     o.status === "pending" ? "pending" :
-                    o.status === "accepted" ? "accepted" :
-                    "rejected";
+                        o.status === "accepted" ? "accepted" :
+                            "rejected";
 
                 let isDone = o.status !== "pending";
 
@@ -48,9 +48,15 @@ function loadOrders() {
                 </div>
 
                 <div class="order-details">
-                    📞 ${o.phone}<br>
-                    💰 Total: ₹${o.total}
-                </div>
+                        📞 ${o.phone}<br>
+                        🛒 Items:<br>
+                        ${o.items && o.items.length > 0
+                        ? o.items.map(i => `• ${i.name} x ${i.qty}`).join("<br>")
+                        : "No items"
+                    }
+    <br><br>
+    💰 Total: ₹${o.total}
+</div>
 
                 <div class="order-actions">
                     <button class="accept" ${isDone ? "disabled" : ""} onclick="update('${o._id}','accepted')">Accept</button>
