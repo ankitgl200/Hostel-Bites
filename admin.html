@@ -1,15 +1,23 @@
-
 <!DOCTYPE html>
 
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel - Hostel Bites</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial;
   background: #fff5eb;
   padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h2 {
@@ -60,6 +68,35 @@ button {
 }
 .mode-select input { display:none; }
 
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  .box {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  input, select, button {
+    padding: 12px 10px;
+    font-size: 15px;
+  }
+
+  .mode-select {
+    gap: 8px;
+  }
+
+  .mode-select label {
+    padding: 10px 6px;
+    font-size: 14px;
+  }
+}
 </style>
 
 </head>
@@ -79,7 +116,7 @@ button {
 <!-- ADMIN PANEL -->
 
 <div id="adminPanel" class="hidden">
-  <button onclick=  goto()>Orders</button>
+  <button onclick=goto()>Orders</button>
 
 <h2>📦 Manage Products</h2>
 
