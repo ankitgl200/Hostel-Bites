@@ -1,196 +1,156 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Hostel Bites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Hostel Bites</title>
 
-<style>
-* {
-  box-sizing: border-box;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial;
+      background: #fff5eb;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h2 {
+      color: #ff6a00;
+      text-align: center;
+    }
+
+    .box {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #adminPanel {
+  flex-direction: column;
+  gap: 12px;
 }
 
-body {
-  font-family: Arial;
-  background: #fff5eb;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    button {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-h2 {
-  color: #ff6a00;
-  text-align: center;
-}
+    .hidden {
+      display: none;
+    }
 
-.box {
-  max-width: 420px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
+    .mode-select {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+    .mode-select label {
+      flex: 1;
+      background: #fff3e8;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
 
-button {
-  background: #ff6a00;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .mode-select input {
+      display: none;
+    }
 
-.hidden { display:none; }
+    /* Mobile responsiveness */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
 
-.mode-select {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+      .box {
+        padding: 16px;
+        border-radius: 10px;
+      }
 
-.mode-select label {
-  flex: 1;
-  background: #fff3e8;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-}
-.mode-select input { display:none; }
+      h2 {
+        font-size: 18px;
+      }
 
-/* Mobile responsiveness */
-@media (max-width: 480px) {
-  body {
-    padding: 12px;
-  }
+      input,
+      select,
+      button {
+        padding: 12px 10px;
+        font-size: 15px;
+      }
 
-  .box {
-    padding: 16px;
-    border-radius: 10px;
-  }
+      .mode-select {
+        gap: 8px;
+      }
 
-  h2 {
-    font-size: 18px;
-  }
-
-  input, select, button {
-    padding: 12px 10px;
-    font-size: 15px;
-  }
-
-  .mode-select {
-    gap: 8px;
-  }
-
-  .mode-select label {
-    padding: 10px 6px;
-    font-size: 14px;
-  }
-}
-</style>
+      .mode-select label {
+        padding: 10px 6px;
+        font-size: 14px;
+      }
+    }
+  </style>
 
 </head>
 
 <body>
 
-<div class="box">
+  <div class="box">
 
-<!-- LOGIN -->
+    <!-- LOGIN -->
 
-<div id="loginBox">
-  <h2>🔐 Admin Login</h2>
-  <input type="password" id="adminPass" placeholder="Enter Admin Password">
-  <button onclick="login()">Login</button>
-</div>
-<div>
-  
-
-<!-- ADMIN PANEL -->
-
-<div id="adminPanel" class="hidden">
-  <button onclick=goto()>Orders</button>
-
-<h2>📦 Manage Products</h2>
-
-<!-- MODE -->
-
-<div class="mode-select">
-  <label>
-    <input type="radio" name="mode" value="add" onchange="switchMode()"> Add
-  </label>
-  <label>
-    <input type="radio" name="mode" value="update" onchange="switchMode()"> Update
-  </label>
-</div>
-
-<!-- COMMON PRODUCT SELECT -->
-
-<select id="productSelect" class="hidden"></select>
-
-<!-- ADD -->
-
-<div id="addFields" class="hidden">
-  <input type="text" id="name" placeholder="Product Name">
-  <input type="text" id="src" placeholder="Image URL">
-  <input type="number" id="price" placeholder="Price">
-  <input type="number" id="oprice" placeholder="Old Price">
-
-  <!-- CATEGORY DROPDOWN -->
-
-  <select id="cat">
-    <option value="" selected>Select Category</option>
-    <option>Instant</option>
-    <option>Kurkure</option>
-    <option>Chips</option>
-    <option>Chocolate</option>
-    <option>Biscuits</option>
-    <option>Namkeen</option>
-    <option>Drinks</option>
-  </select>
-
-  <input type="number" id="stockAdd" placeholder="Stock">
-</div>
-
-<!-- UPDATE -->
-
-<div id="updateFields" class="hidden">
-
-  <select id="updateType" onchange="showUpdateInput()" class="hidden">
-    <option value="" selected>Select field</option>
-    <option value="name">Name</option>
-    <option value="stock">Stock</option>
-    <option value="price">Price</option>
-    <option value="oprice">Old Price</option>
-    <option value="src">Image</option>
-    <option value="cat">Category</option>
-  </select>
-
-  <input type="text" id="updateValue" class="hidden">
-
-</div>
-
-<button onclick="submitData()">Submit</button>
-<button onclick="logout()">Logout</button>
-</div>
-
-<p id="msg"></p>
-
-</div>
-
-</div>
+    <div id="loginBox">
+      <h2>🔐 Admin Login</h2>
+      <input type="password" id="adminPass" placeholder="Enter Admin Password">
+      <button onclick="login()">Login</button>
+    </div>
+    <div>
 
 
-<script src="js/admin.js"></script>
+      <!-- ADMIN PANEL -->
+
+      <div id="adminPanel" style="display:none;">
+
+        <h2>⚙️ Admin Dashboard</h2>
+
+        <button onclick="goto()">📦 Orders</button>
+        <button onclick="gotoProducts()">🛒 Manage Products</button>
+        <button onclick="logout()">🚪 Logout</button>
+
+      </div>
+
+      <p id="msg"></p>
+
+    </div>
+
+  </div>
+
+
+  <script src="js/admin.js"></script>
 
 </body>
+
 </html>
