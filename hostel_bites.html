@@ -833,6 +833,33 @@
     font-size: 14px;
     text-align: center;
   }
+
+
+  .loader {
+    width: 18px;
+    height: 18px;
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Disabled button style */
+  .place-order-btn:disabled {
+    background: #166534;
+    /* dark green */
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
 </style>
 
 <body>
@@ -917,7 +944,7 @@
         </div>
         <!-- <div class="g-recaptcha" data-sitekey="6Lf4-70sAAAAADZcK5O7bo3JLQXX9-As3WToZmB-" alt="Captcha">
         </div> -->
-        <button class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
+        <button id="orderBtn" class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -938,6 +965,8 @@
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
+
+    let isPlacingOrder = false;
 
     let status = localStorage.getItem("orderStatus");
 
@@ -1151,10 +1180,12 @@
       closeCart();
       document.getElementById('successScreen').classList.remove('show');
       document.getElementById('checkoutForm').style.display = 'block';
+      // documen          lementById('successS          ).classList.remove('show');
+      // document.getElementById('          utForm').style.display = 'block';
       renderSummary();
       document.getElementById('checkoutModal').classList.add('open');
-      grecaptcha.reset();
-      document.getElementById("orderBtn").disabled = true;
+
+
     }
     function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
     function closeAll() {
@@ -1266,8 +1297,22 @@
 
     async function placeOrder() {
 
+      const btn = document.getElementById("orderBtn");
+
+      // 🚫 Prevent double click
+      if (isPlacingOrder) return;
+
+      isPlacingOrder = true;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="loader"></span> Placing...`;
+
       const can = await canPlaceOrder();
-      if (!can) return;   // ✅ now it actually stops
+      if (!can) {
+        btn.disabled = false;
+        btn.innerHTML = "✅ Place Order";
+        isPlacingOrder = false;
+        return;
+      }
 
       let order = {
         name: document.getElementById("custName").value,
@@ -1287,41 +1332,72 @@
 
       if (!order.name || !order.room || !order.phone) {
         alert("Fill all details ❌");
+
+        btn.disabled = false;
+        btn.innerHTML = "✅ Place Order";
+        isPlacingOrder = false;
+
         return;
       }
 
-      fetch("https://backendhb.onrender.com/api/orders/place", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(order)
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-
-            localStorage.setItem("userPhone", order.phone);
-
-            // ✅ SHOW SUCCESS UI
-            document.getElementById('checkoutForm').style.display = 'none';
-            document.getElementById('successScreen').classList.add('show');
-
-            // ✅ CLEAR CART
-            cart = {};
-            updateCartCount();
-            renderProducts();
-            renderCartDrawer();
-
-            // ✅ CLOSE AFTER DELAY
-            setTimeout(() => closeCheckout(), 2000);
-
-          } else {
-            alert("❌ Order failed");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("❌ Server error");
+      try {
+        let res = await fetch("https://backendhb.onrender.com/api/orders/place", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(order)
         });
+
+        let data = await res.json();
+
+        if (data.success) {
+
+          console.log("SUCCESS TRIGGERED");
+
+          localStorage.setItem("userPhone", order.phone);
+
+          let orderId = data._id;
+
+          if (!orderId) {
+            console.warn("⚠️ Order ID missing, using temp");
+            orderId = "TEMP" + Date.now();
+          }
+
+          document.getElementById("successOrderId").innerText =
+            "Order ID: " + orderId.toString().slice(-5);
+
+          document.getElementById('checkoutForm').style.display = 'none';
+          document.getElementById('successScreen').classList.add('show');
+
+          // 🔥 RESET BUTTON
+          btn.disabled = false;
+          btn.innerHTML = "✅ Place Order";
+
+          // 🔥 RESET FLAG
+          isPlacingOrder = false;
+
+          // 🔥 CLEAR CART
+          cart = {};
+          updateCartCount();
+          renderProducts();
+          renderCartDrawer();
+        } else {
+          alert("❌ Order failed");
+
+          btn.disabled = false;
+          btn.innerHTML = "✅ Place Order";
+          isPlacingOrder = false;
+        }
+
+
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = "✅ Place Order";
+        isPlacingOrder = false;
+      }
+
+      // 🔁 RESET BUTTON AFTER PROCESS
+
     }
 
 
@@ -1434,7 +1510,20 @@
       setTimeout(() => t.classList.remove('show'), 3000);
     }
     loadMyOrder(); // first load
-    setInterval(loadMyOrder, 3000); // refresh every 3 sec
+    let lastOrders = "";
+
+    setInterval(() => {
+      fetch("https://backendhb.onrender.com/api/orders")
+        .then(res => res.json())
+        .then(data => {
+          let newData = JSON.stringify(data);
+
+          if (newData !== lastOrders) {
+            lastOrders = newData;
+            loadMyOrder();
+          }
+        });
+    }, 3000); // refresh every 3 sec
 
     renderCats();
     loadProducts();   // 🔥 instead of renderProducts()
