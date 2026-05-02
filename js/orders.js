@@ -29,12 +29,14 @@ function loadOrders() {
             box.innerHTML = "";
 
             data.forEach(o => {
+                let isDelivered = o.status === "delivered";
+                let isPending = o.status === "pending";
                 let statusClass =
                     o.status === "pending" ? "pending" :
                         o.status === "accepted" ? "accepted" :
-                            "rejected";
+                            o.status === "delivered" ? "delivered" :
+                                "rejected";
 
-                let isDone = o.status !== "pending";
 
                 let div = document.createElement("div");
                 div.className = "order";
@@ -45,9 +47,10 @@ function loadOrders() {
                     <div class="status ${statusClass}">
                         ${o.status.toUpperCase()}
                     </div>
+                    <button onclick="toggleDetails('${o._id}')" style="background:#555;">More</button>
                 </div>
 
-                <div class="order-details">
+                <div class="order-details hidden" id="details-${o._id}">
                         📞 ${o.phone}<br>
                         🛒 Items:<br>
                         ${o.items && o.items.length > 0
@@ -59,9 +62,13 @@ function loadOrders() {
 </div>
 
                 <div class="order-actions">
-                    <button class="accept" ${isDone ? "disabled" : ""} onclick="update('${o._id}','accepted')">Accept</button>
-                    <button class="reject" ${isDone ? "disabled" : ""} onclick="update('${o._id}','rejected')">Reject</button>
-                    <button class="delete" ${!isDone ? "disabled" : ""} onclick="del('${o._id}')">Delete</button>
+                    <button class="accept" ${isDelivered ? "disabled" : ""} onclick="update('${o._id}','accepted')">Accept</button>
+
+<button class="reject" ${isDelivered ? "disabled" : ""} onclick="update('${o._id}','rejected')">Reject</button>
+
+<button class="delivered" onclick="update('${o._id}','delivered')">Delivered</button>
+
+<button class="delete" ${isPending ? "disabled" : ""} onclick="del('${o._id}')">Delete</button>
                 </div>
                 `;
 
@@ -70,6 +77,16 @@ function loadOrders() {
 
         })
         .catch(err => console.error(err));
+}
+
+function toggleDetails(id) {
+    let el = document.getElementById("details-" + id);
+
+    if (el.classList.contains("hidden")) {
+        el.classList.remove("hidden");
+    } else {
+        el.classList.add("hidden");
+    }
 }
 
 function update(id, status) {
