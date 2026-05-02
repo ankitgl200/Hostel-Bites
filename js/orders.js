@@ -1,5 +1,6 @@
 let audio = new Audio("asset/notify.mp3");
 let lastOrderId = null;
+let lastOrders = "";
 let firstLoad = true; // 🚀 ADD THIS
 
 function loadOrders() {
@@ -26,7 +27,7 @@ function loadOrders() {
                 lastOrderId = data[0]._id;
             }
 
-            box.innerHTML = "";
+            box.innerHTML = "Loading orders...";
 
             data.forEach(o => {
                 let isDelivered = o.status === "delivered";
@@ -96,8 +97,9 @@ function update(id, status) {
         body: JSON.stringify({ id, status })
     })
         .then(res => res.json())
-        .then(() => loadOrders())
-        .catch(err => console.error(err));
+        .then(() => {
+            setTimeout(loadOrders, 500); // 🔥 wait for backend update
+        });
 }
 
 function del(id) {
@@ -119,4 +121,13 @@ let lastOrderCount = 0;
 
 
 loadOrders();
-setInterval(loadOrders, 3000); // optional auto refresh
+setInterval(() => {
+    fetch("https://backendhb.onrender.com/api/orders")
+        .then(res => res.json())
+        .then(data => {
+            if (JSON.stringify(data) !== lastOrders) {
+                lastOrders = JSON.stringify(data);
+                loadOrders(); // only update when changed
+            }
+        });
+}, 3000);
