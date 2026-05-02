@@ -1,4 +1,4 @@
-const PASSWORD = "1234";
+
 
 let PRODUCTS = [];
 
@@ -16,6 +16,7 @@ function login() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                localStorage.setItem("adminLoggedIn", "true");
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("adminPanel").classList.remove("hidden");
             } else {
@@ -184,4 +185,19 @@ function submitData() {
                 loadProducts();
             });
     }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (localStorage.getItem("adminLoggedIn") === "true") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").classList.remove("hidden");
+    }
+
+});
+function logout() {
+    localStorage.removeItem("adminLoggedIn");
+
+    document.getElementById("adminPanel").classList.add("hidden");
+    document.getElementById("loginBox").style.display = "block";
 }
