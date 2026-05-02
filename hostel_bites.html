@@ -613,18 +613,125 @@
     margin-bottom: 12px
   }
 
-  .order-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px
-  }
 
   .order-id-badge {
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
     font-size: 14px;
     color: var(--orange)
+  }
+
+  .order-flex {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .order-left {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .order-right {
+    flex: 1;
+    display: flex;
+    min-width: 120px;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  /* Better spacing */
+  .order-user {
+    font-size: 12px;
+    color: gray;
+    margin-bottom: 6px;
+  }
+
+  .order-total {
+    font-weight: bold;
+    margin-top: 6px;
+  }
+
+  /* 📱 MOBILE FIX */
+  @media (max-width: 600px) {
+    .order-flex {
+      flex-direction: column;
+    }
+
+    .order-right {
+      margin-top: 10px;
+    }
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    opacity: 0.5;
+    transition: 0.4s;
+  }
+
+  .step.active {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+
+  .step.rejected .circle {
+    background: red;
+  }
+
+  .circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ccc;
+    transition: 0.4s;
+  }
+
+  .step.active .circle {
+    background: green;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+  }
+
+  .line {
+    height: 20px;
+    width: 2px;
+    background: #ccc;
+    margin-left: 6px;
+    transition: 0.4s;
+  }
+
+  .line.active {
+    background: green;
+  }
+
+  .text {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .order-msg {
+    margin-top: 8px;
+    font-size: 13px;
+    color: gray;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .status-badge {
@@ -649,6 +756,8 @@
     color: var(--muted);
     margin-bottom: 8px
   }
+
+
 
   .order-foot {
     display: flex;
@@ -696,6 +805,25 @@
 
   .hidden {
     display: none !important
+  }
+
+  .progress-bar {
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, orange, green);
+    transition: height 1.5s ease-in-out;
+    /* 🔥 smooth animation */
   }
 
   .footer {
@@ -1217,33 +1345,68 @@
           }
 
           box.innerHTML = myOrders.map(o => `
-        <div class="order-card">
-          <div class="order-card-header">
-            <div>
-              <div class="order-id-badge">Order ID: ${o._id.slice(-5)}</div>
-              <div style="font-size:12px;color:gray">
-                ${o.name} • Room ${o.room}
-              </div>
-            </div>
+          <div class="order-card">
 
-            <span class="status-badge ${o.status === "pending" ? "status-pending" :
-              o.status === "accepted" ? "status-done" :
-                "status-pending"
-            }">
-              ${o.status === "pending" ? "⏳ Pending" :
-              o.status === "accepted" ? "✅ Accepted" :
-                "❌ Rejected"
+  <div class="order-flex">
+
+    <!-- LEFT SIDE -->
+    <div class="order-left">
+      <div class="order-id-badge">Order ID: ${o._id.slice(-5)}</div>
+      <div class="order-user">${o.name} • Room ${o.room}</div>
+
+      <div class="order-items-list">
+        ${o.items.map(i => `${i.name} × ${i.qty}`).join("<br>")}
+      </div>
+
+      <div class="order-total">₹${o.total}</div>
+
+      
+    </div>
+
+    <!-- RIGHT SIDE TRACKER -->
+    <div class="order-right">
+      <div class="progress-bar">
+  <div class="progress-fill" style="
+    height:${o.status === "pending" ? "10%" :
+              o.status === "accepted" ? "60%" :
+                o.status === "delivered" ? "100%" :
+                  o.status === "rejected" ? "40%" : "0%"
             }
-            </span>
-          </div>
+  "></div>
+</div>
 
-          <div class="order-items-list">
-            ${o.items.map(i => `${i.name} × ${i.qty}`).join("<br>")}
-          </div>
+      <div class="step active">
+        <div class="circle"></div>
+        <div class="text">⏳Order Placed.</div>
+      </div>
 
-          <div class="order-foot">
-            <div class="order-total">₹${o.total}</div>
+      <div class="line ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}"></div>
+
+      <div class="step ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}">
+        <div class="circle"></div>
+        <div class="text">✔️Order Accepted</div>
+      </div>
+
+      ${o.status === "rejected"
+              ? `<div class="step rejected">
+            <div class="circle"></div>
+            <div class="text">❌Order Rejected</div>
+          </div>`
+              : `
+          <div class="line ${o.status === "delivered" ? "active" : ""}"></div>
+          <div class="step ${o.status === "delivered" ? "active" : ""}">
+            <div class="circle"></div>
+            <div class="text">Order Delivered! Thanks❤️</div>
           </div>
+        `
+            }
+
+    </div>
+    
+
+  </div>
+
+
         </div>
       `).join("");
         });
