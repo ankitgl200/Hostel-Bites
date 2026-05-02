@@ -30,8 +30,10 @@ function loadOrders() {
             box.innerHTML = "";
 
             data.forEach(o => {
-                let isDelivered = o.status === "delivered";
                 let isPending = o.status === "pending";
+                let isAccepted = o.status === "accepted";
+                let isRejected = o.status === "rejected";
+                let isDelivered = o.status === "delivered";
                 let statusClass =
                     o.status === "pending" ? "pending" :
                         o.status === "accepted" ? "accepted" :
@@ -63,14 +65,32 @@ function loadOrders() {
 </div>
 
                 <div class="order-actions">
-                    <button class="accept" ${isDelivered ? "disabled" : ""} onclick="update('${o._id}','accepted')">Accept</button>
 
-<button class="reject" ${isDelivered ? "disabled" : ""} onclick="update('${o._id}','rejected')">Reject</button>
+<button class="accept"
+${isDelivered ? "disabled" : ""}
+onclick="update('${o._id}','accepted')">
+Accept
+</button>
 
-<button class="delivered" onclick="update('${o._id}','delivered')">Delivered</button>
+<button class="reject"
+${isDelivered ? "disabled" : ""}
+onclick="update('${o._id}','rejected')">
+Reject
+</button>
 
-<button class="delete" ${isPending ? "disabled" : ""} onclick="del('${o._id}')">Delete</button>
-                </div>
+<button class="delivered"
+${(isPending || isRejected || isDelivered) ? "disabled" : ""}
+onclick="update('${o._id}','delivered')">
+Delivered
+</button>
+
+<button class="delete"
+${(isPending || isAccepted) ? "disabled" : ""}
+onclick="del('${o._id}')">
+Delete
+</button>
+
+</div>
                 `;
 
                 box.appendChild(div);
