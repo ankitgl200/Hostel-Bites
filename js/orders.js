@@ -27,7 +27,7 @@ function loadOrders() {
                 lastOrderId = data[0]._id;
             }
 
-            box.innerHTML = "Loading orders...";
+            box.innerHTML = "";
 
             data.forEach(o => {
                 let isDelivered = o.status === "delivered";
