@@ -34,10 +34,12 @@ function loadOrders() {
                 let isAccepted = o.status === "accepted";
                 let isRejected = o.status === "rejected";
                 let isDelivered = o.status === "delivered";
+                let s = o.status.toLowerCase();
+
                 let statusClass =
-                    o.status === "pending" ? "pending" :
-                        o.status === "accepted" ? "accepted" :
-                            o.status === "delivered" ? "delivered" :
+                    s === "pending" ? "pending" :
+                        s === "accepted" ? "accepted" :
+                            s === "delivered" ? "delivered" :
                                 "rejected";
 
 
