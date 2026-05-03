@@ -662,6 +662,10 @@
         <span class="feed-pill ${isReview ? 'pill-review' : 'pill-request'}">
           ${isReview ? '✍️ Review' : '📦 Request'}
         </span>
+        <button class="del-btn"
+onclick="toggleDisplay('${item._id}', this)">
+${item.display ? "👁 Hide" : "👁 Show"}
+</button>
 
         <!-- 🔥 DELETE BUTTON -->
         <button class="del-btn" onclick="deleteItem('${item._id}', this)">
@@ -682,6 +686,25 @@
   `;
 
             return card;
+        }
+
+        async function toggleDisplay(id, btn) {
+
+            btn.disabled = true;
+
+            const res = await fetch("https://backendhb.onrender.com/api/feedback/toggle-display", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                btn.innerText = result.display ? "👁 Hide" : "👁 Show";
+            }
+
+            btn.disabled = false;
         }
 
         async function loadData() {
