@@ -3,6 +3,23 @@ let lastOrderId = null;
 let lastOrders = "";
 let firstLoad = true; // 🚀 ADD THIS
 
+function formatDateTime(dateStr) {
+    const d = new Date(dateStr);
+
+    const date = d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+
+    const time = d.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    return `${date} • ${time}`;
+}
+
 function loadOrders() {
     fetch("https://backendhb.onrender.com/api/orders")
         .then(res => res.json())
@@ -48,7 +65,14 @@ function loadOrders() {
 
                 div.innerHTML = `
                 <div class="order-header">
-    <div class="order-name">${o.name} (Room: ${o.room})</div>
+    <div>
+        <div class="order-name">${o.name} (Room: ${o.room})</div>
+
+        <!-- 🔥 NEW DATE TIME -->
+        <div style="font-size:12px; color:#aaa;">
+            📅 ${formatDateTime(o.createdAt)}
+        </div>
+    </div>
 
     <div class="status ${statusClass}">
         ${o.status.toUpperCase()}
@@ -193,7 +217,7 @@ function startAdminTimers(orders) {
 
         updateTimer();
         let interval = setInterval(updateTimer, 1000);
-window.adminTimers.push(interval);
+        window.adminTimers.push(interval);
     });
 }
 
