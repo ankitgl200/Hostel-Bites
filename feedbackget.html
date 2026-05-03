@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Feedback Dashboard – Hostel Bites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --orange: #ff6b00;
+            --orange-dim: rgba(255, 107, 0, 0.12);
+            --orange-glow: rgba(255, 107, 0, 0.25);
+            --bg: #0a0a0b;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(255, 107, 0, 0.5);
+            --text: #f0ece6;
+            --muted: #8a8680;
+            --green: #22c55e;
+            --green-dim: rgba(34, 197, 94, 0.12);
+            --blue: #3b82f6;
+            --blue-dim: rgba(59, 130, 246, 0.12);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255, 107, 0, 0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 90% 80%, rgba(255, 107, 0, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10, 10, 11, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.01em;
+        }
+
+        .logo-text span {
+            color: var(--orange);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-tag {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 999px;
+        }
+
+        .refresh-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+
+        .refresh-btn.spin {
+            animation: spin 0.6s linear;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 12px;
+            padding: 20px 24px 0;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            animation: riseUp 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .stat-card {
+            flex: 1;
+            padding: 16px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-value.orange {
+            color: var(--orange);
+        }
+
+        .stat-value.green {
+            color: var(--green);
+        }
+
+        .stat-value.blue {
+            color: var(--blue);
+        }
+
+        /* ── TABS ── */
+        .tabs-wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px 24px 0;
+            animation: riseUp 0.5s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .tab-btn .badge {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: var(--surface-hover);
+            color: var(--muted);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--orange-dim);
+            color: var(--orange);
+            box-shadow: 0 0 12px rgba(255, 107, 0, 0.08);
+        }
+
+        .tab-btn.active .badge {
+            background: rgba(255, 107, 0, 0.2);
+            color: var(--orange);
+        }
+
+        .tab-btn.active-blue {
+            background: var(--blue-dim);
+            color: var(--blue);
+        }
+
+        .tab-btn.active-blue .badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--blue);
+        }
+
+        /* ── CONTENT ── */
+        .main {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px 24px 48px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: riseUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .empty .icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* ── SKELETON ── */
+        .skeleton-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .skeleton-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+            animation: shimmer 1.4s infinite;
+        }
+
+        /* ── FEEDBACK CARD ── */
+        .feed-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .feed-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feed-card:hover {
+            background: var(--surface-hover);
+            border-color: rgba(255, 255, 255, 0.13);
+        }
+
+        /* left accent stripe */
+        .feed-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .feed-card.review::before {
+            background: var(--orange);
+        }
+
+        .feed-card.request::before {
+            background: var(--blue);
+        }
+
+        .feed-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-left: 12px;
+        }
+
+        .feed-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .feed-meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .feed-pill {
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .pill-review {
+            background: var(--orange-dim);
+            color: var(--orange);
+            border: 1px solid rgba(255, 107, 0, 0.25);
+        }
+
+        .pill-request {
+            background: var(--blue-dim);
+            color: var(--blue);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        .feed-msg {
+            margin: 0 0 14px 12px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.875rem;
+            line-height: 1.65;
+            color: #ccc;
+        }
+
+        .feed-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 12px;
+        }
+
+        .feed-info {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .feed-info-item {
+            font-size: 0.78rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feed-info-item span {
+            color: #aaa;
+        }
+
+        .feed-date {
+            font-size: 0.72rem;
+            color: #555;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 8px 0 16px;
+        }
+
+        .del-btn {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff4d4d;
+            border-radius: 8px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .del-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes riseUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: translateX(-100%);
+            }
+
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-logo">
+            <div class="logo-icon"><img src="hostelbites_wbg.png" alt="Logo"></div>
+            <div class="logo-text">Hostel <span>Bites</span></div>
+        </div>
+        <div class="header-right">
+            <div class="header-tag">Dashboard</div>
+            <button class="refresh-btn" id="refreshBtn" onclick="refresh()" title="Refresh">↻</button>
+        </div>
+    </header>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Total</div>
+            <div class="stat-value orange" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Reviews</div>
+            <div class="stat-value orange" id="statReviews">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Requests</div>
+            <div class="stat-value blue" id="statRequests">—</div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-wrap">
+        <div class="tabs">
+            <button class="tab-btn active" id="tabReview" onclick="switchTab('review')">
+                ✍️ Reviews <span class="badge" id="badgeReview">0</span>
+            </button>
+            <button class="tab-btn" id="tabRequest" onclick="switchTab('request')">
+                📦 Requests <span class="badge" id="badgeRequest">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- Reviews panel -->
+        <div class="tab-panel active" id="panelReview">
+            <div class="feed-grid" id="reviews">
+                <!-- skeleton -->
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+
+        <!-- Requests panel -->
+        <div class="tab-panel" id="panelRequest">
+            <div class="feed-grid" id="requests"></div>
+        </div>
+
+    </main>
+
+    <script>
+
+        let currentTab = 'review';
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            const tabReview = document.getElementById('tabReview');
+            const tabRequest = document.getElementById('tabRequest');
+
+            tabReview.className = 'tab-btn' + (tab === 'review' ? ' active' : '');
+            tabRequest.className = 'tab-btn' + (tab === 'request' ? ' active-blue' : '');
+
+            document.getElementById('panelReview').classList.toggle('active', tab === 'review');
+            document.getElementById('panelRequest').classList.toggle('active', tab === 'request');
+        }
+        async function deleteItem(id, btn) {
+
+            const confirmDelete = confirm("Delete this item?");
+            if (!confirmDelete) return;
+
+            btn.disabled = true;
+            btn.innerText = "⌛";
+
+            try {
+                const res = await fetch(`https://backendhb.onrender.com/api/feedback/${id}`, {
+                    method: "DELETE"
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    // 🔥 Remove card instantly (no reload)
+                    btn.closest(".feed-card").remove();
+                } else {
+                    alert("Failed to delete");
+                    btn.disabled = false;
+                    btn.innerText = "🗑";
+                }
+
+            } catch (err) {
+                alert("Server error");
+                btn.disabled = false;
+                btn.innerText = "🗑";
+            }
+        }
+
+        function refresh() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('spin');
+            setTimeout(() => btn.classList.remove('spin'), 650);
+            loadData();
+        }
+
+        function fmt(dateStr) {
+            return new Date(dateStr).toLocaleString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function makeCard(item) {
+            const isReview = item.type === 'review';
+            const card = document.createElement('div');
+            card.className = `feed-card ${isReview ? 'review' : 'request'}`;
+
+            card.innerHTML = `
+    <div class="feed-top">
+      <div>
+        <div class="feed-name">${item.name}</div>
+        <div class="feed-meta">Room ${item.room || '—'}</div>
+      </div>
+
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="feed-pill ${isReview ? 'pill-review' : 'pill-request'}">
+          ${isReview ? '✍️ Review' : '📦 Request'}
+        </span>
+
+        <!-- 🔥 DELETE BUTTON -->
+        <button class="del-btn" onclick="deleteItem('${item._id}', this)">
+          🗑
+        </button>
+      </div>
+    </div>
+
+    <div class="feed-msg">${item.message}</div>
+
+    <div class="feed-footer">
+      <div class="feed-info">
+        <div class="feed-info-item">📞 <span>${item.phone}</span></div>
+        ${item.email ? `<div class="feed-info-item">✉️ <span>${item.email}</span></div>` : ''}
+      </div>
+      <div class="feed-date">${fmt(item.createdAt)}</div>
+    </div>
+  `;
+
+            return card;
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch('https://backendhb.onrender.com/api/feedback');
+                const result = await res.json();
+
+                if (!result.success) {
+                    console.error("API failed");
+                    return;
+                }
+
+                const reviewsEl = document.getElementById('reviews');
+                const requestsEl = document.getElementById('requests');
+
+                // Clear UI
+                reviewsEl.innerHTML = '';
+                requestsEl.innerHTML = '';
+
+                // 🔥 Separate data first (BEST PRACTICE)
+                const reviews = result.data.filter(item => item.type === "review");
+                const requests = result.data.filter(item => item.type === "request");
+
+                // 🔥 Render Reviews
+                reviews.forEach(item => {
+                    reviewsEl.appendChild(makeCard(item));
+                });
+
+                // 🔥 Render Requests
+                requests.forEach(item => {
+                    requestsEl.appendChild(makeCard(item));
+                });
+
+                // 🔥 Stats
+                const rCount = reviews.length;
+                const qCount = requests.length;
+
+                document.getElementById('statTotal').textContent = rCount + qCount;
+                document.getElementById('statReviews').textContent = rCount;
+                document.getElementById('statRequests').textContent = qCount;
+                document.getElementById('badgeReview').textContent = rCount;
+                document.getElementById('badgeRequest').textContent = qCount;
+
+                // 🔥 Empty states
+                if (rCount === 0) {
+                    reviewsEl.innerHTML = `<div class="empty"><div class="icon">✍️</div>No reviews yet</div>`;
+                }
+
+                if (qCount === 0) {
+                    requestsEl.innerHTML = `<div class="empty"><div class="icon">📦</div>No product requests yet</div>`;
+                }
+
+            } catch (err) {
+                console.error('Failed to load:', err);
+            }
+        }
+
+        loadData();
+
+    </script>
+
+</body>
+
+</html>
