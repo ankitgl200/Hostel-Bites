@@ -699,11 +699,16 @@
   }
 
   .line {
-    height: 20px;
+    height: 18px;
     width: 2px;
     background: #ccc;
     margin-left: 6px;
-    transition: 0.4s;
+    position: relative;
+  }
+
+  /* 🔥 STOP LINE AFTER LAST STEP */
+  .step:last-child+.line {
+    display: none;
   }
 
   .line.active {
@@ -810,8 +815,9 @@
   .progress-bar {
     position: absolute;
     left: 6px;
-    top: 0;
-    bottom: 0;
+    top: 10px;
+    height: calc(100% - 30px);
+    /* 🔥 LIMIT HEIGHT */
     width: 3px;
     background: #ddd;
     border-radius: 10px;
@@ -946,13 +952,17 @@
         </div> -->
         <button id="orderBtn" class="place-order-btn" onclick="placeOrder()">✅ Place Order</button>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
+        <audio id="successSound" src="success.mp3" preload="auto"></audio>
       </div>
       <div class="success-screen" id="successScreen">
         <div class="success-icon">🎉</div>
         <h3>Order Placed!</h3>
         <div class="order-id-box" id="successOrderId"></div>
         <p>Your snacks will be delivered to your room shortly!</p>
-        <button class="place-order-btn" onclick="closeAll()" style="margin-top:16px">🏠 Back to Shop</button>
+        <p>Estimated delivery time: 7 minutes</p>
+        <button class="place-order-btn" onclick="goToOrders()" style="margin-top:16px">
+          📦 Track Order
+        </button>
       </div>
     </div>
   </div>
@@ -961,8 +971,6 @@
   <div class="footer">
     © 2026 Hostel Bites | All rights reserved | Last Updated: 01-05-2026.
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
 
@@ -998,12 +1006,11 @@
           return true;
         });
     }
+    function goToOrders() {
+      closeCheckout();        // close popup
+      showPage('orders');     // open orders tab
+    }
 
-    (function () {
-      emailjs.init("_xs49of60mQDX4STa");
-    })();
-  </script>
-  <script>
     if (localStorage.getItem("allowed") !== "true") {
       window.location.href = "index.html";
     }
@@ -1352,6 +1359,7 @@
         if (data.success) {
 
           console.log("SUCCESS TRIGGERED");
+          document.getElementById("successSound").play().catch(() => { });
 
           localStorage.setItem("userPhone", order.phone);
 
@@ -1435,49 +1443,55 @@
       </div>
 
       <div class="order-total">₹${o.total}</div>
+      <div id="timer-${o._id}" style="
+  margin-top:6px;
+  font-size:13px;
+  font-weight:700;
+  color:#FF6B00;
+"></div>
+
+<div id="msg-${o._id}" style="
+  font-size:12px;
+  margin-top:4px;
+  color:gray;
+"></div>
 
       
     </div>
 
     <!-- RIGHT SIDE TRACKER -->
     <div class="order-right">
-      <div class="progress-bar">
-  <div class="progress-fill" style="
-    height:${o.status === "pending" ? "10%" :
-              o.status === "accepted" ? "60%" :
-                o.status === "delivered" ? "100%" :
-                  o.status === "rejected" ? "40%" : "0%"
-            }
-  "></div>
-</div>
 
-      <div class="step active">
+  <div class="step active">
+    <div class="circle"></div>
+    <div class="text">⏳ Order Placed</div>
+  </div>
+
+  <div class="line ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}"></div>
+
+  <div class="step ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}">
+    <div class="circle"></div>
+    <div class="text">✔️ Order Accepted</div>
+  </div>
+
+  ${o.status === "rejected"
+              ? `
+      <div class="line active"></div>
+      <div class="step rejected active">
         <div class="circle"></div>
-        <div class="text">⏳Order Placed.</div>
+        <div class="text">❌ Order Rejected</div>
       </div>
-
-      <div class="line ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}"></div>
-
-      <div class="step ${o.status === "accepted" || o.status === "delivered" ? "active" : ""}">
-        <div class="circle"></div>
-        <div class="text">✔️Order Accepted</div>
-      </div>
-
-      ${o.status === "rejected"
-              ? `<div class="step rejected">
-            <div class="circle"></div>
-            <div class="text">❌Order Rejected</div>
-          </div>`
+    `
               : `
-          <div class="line ${o.status === "delivered" ? "active" : ""}"></div>
-          <div class="step ${o.status === "delivered" ? "active" : ""}">
-            <div class="circle"></div>
-            <div class="text">Order Delivered! Thanks❤️</div>
-          </div>
-        `
+      <div class="line ${o.status === "delivered" ? "active" : ""}"></div>
+      <div class="step ${o.status === "delivered" ? "active" : ""}">
+        <div class="circle"></div>
+        <div class="text">📦 Delivered</div>
+      </div>
+    `
             }
 
-    </div>
+</div>
     
 
   </div>
@@ -1485,6 +1499,7 @@
 
         </div>
       `).join("");
+          startOrderTimers(myOrders);
         });
     }
 
@@ -1509,6 +1524,72 @@
       t.textContent = msg; t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 3000);
     }
+    function startOrderTimers(orders) {
+
+      orders.forEach(o => {
+
+        const timerEl = document.getElementById("timer-" + o._id);
+        const msgEl = document.getElementById("msg-" + o._id);
+
+        if (!timerEl) return;
+
+        const startTime = new Date(o.createdAt).getTime();
+
+        function updateTimer() {
+
+          let now = Date.now();
+          let diff = now - startTime;
+
+          let remaining = 7 * 60 * 1000 - diff;
+
+          // ✅ STATUS BASED CONTROL
+          if (o.status === "delivered") {
+            timerEl.innerHTML = "✅ Delivered";
+            msgEl.innerHTML = "🎉 Order Completed";
+            return;
+          }
+
+          if (o.status === "rejected") {
+            timerEl.innerHTML = "❌ Rejected";
+            msgEl.innerHTML = "Order Rejected";
+            return;
+          }
+
+          // ⏱ TIMER RUNNING
+          if (remaining > 0) {
+            let min = Math.floor(remaining / 60000);
+            let sec = Math.floor((remaining % 60000) / 1000);
+
+            timerEl.innerHTML = `Estimated time: ⏱ ${min}:${sec.toString().padStart(2, '0')}`;
+
+            // 🔴 last 1 min warning
+            if (remaining < 60000) {
+              timerEl.style.color = "red";
+            }
+
+          } else {
+            // ⏰ TIME OVER
+            timerEl.innerHTML = "⏰ Delay";
+
+            msgEl.innerHTML = "You will receive your order at same price";
+          }
+        }
+        if (window.timerIntervals) {
+          window.timerIntervals.forEach(clearInterval);
+        }
+        window.timerIntervals = [];
+
+        let interval = setInterval(updateTimer, 1000);
+        window.timerIntervals.push(interval);
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+      });
+    }
+
+
+
+
     loadMyOrder(); // first load
     let lastOrders = "";
 
