@@ -261,9 +261,9 @@
             <h3 style="color:#ff6a00;">🔥 Hostel Bites 2.0</h3>
             <p style="font-size:14px; color:#444;">
                 🚀 New update is live!<br><br>
-                📦 Track orders<br>
+                📦 Track orders:Track your orders<br>
                 ⏳ Live status<br>
-                ⚡ Faster experience
+                ⚡ Review/ Request Page: Send review or Request for any product
             </p>
             <button onclick="closeUpdatePopup()" style="
             margin-top: 10px;
@@ -301,6 +301,7 @@
             💰 Generate Payment QR
         </button>
         <button class="btn" onclick="enterStore()">Enter Store</button>
+        <button class="btn" onclick="requestPage()">Request/Review</button>
         <button class="btn" onclick="downloadApp()">Download App</button>
     </div>
 
@@ -320,6 +321,9 @@
         function openQRPage() {
             window.location.href = "payment.html";
         }
+        function requestPage() {
+            window.location.href = "request.html";
+        }
         function openAdminPage() {
             window.location.href = "admin.html";
         }
@@ -334,7 +338,7 @@
                     document.getElementById("updatePopup").style.display = "flex";
                 }
 
-            }, 4000); // delay increased
+            }, 2000); // delay increased
 
         });
         function showUpdatePopup() {
