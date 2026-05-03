@@ -840,6 +840,140 @@
     text-align: center;
   }
 
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer-links button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  /* POPUP */
+  /* POPUP OVERLAY */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    z-index: 999;
+  }
+
+  /* POPUP BOX */
+  .popup-box {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+
+    background: linear-gradient(180deg, #111, #1f1f1f);
+    color: #fff;
+
+    border-radius: 25px 25px 0 0;
+    padding: 20px;
+
+    height: 85vh;
+    /* 🔥 bigger height */
+    overflow-y: auto;
+
+    transition: 0.4s ease;
+    z-index: 1000;
+  }
+
+  .popup-box.open {
+    bottom: 0;
+  }
+
+  .popup-overlay.show {
+    display: block;
+  }
+
+  /* HEADER */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 18px;
+    font-weight: 900;
+    color: #FF6B00;
+
+    margin-bottom: 15px;
+  }
+
+  .popup-header button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  /* CONTENT */
+  .popup-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #ddd;
+    font-weight: 600;
+  }
+
+  /* CONTACT BUTTONS */
+  .contact-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 15px;
+    margin-top: 10px;
+
+    backdrop-filter: blur(10px);
+  }
+
+  .contact-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFD600;
+    margin-bottom: 10px;
+  }
+
+  .contact-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .contact-btn {
+    flex: 1;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    transition: 0.2s;
+  }
+
+  .call-btn {
+    background: #22C55E;
+  }
+
+  .mail-btn {
+    background: #FF6B00;
+  }
+
+  .contact-btn:hover {
+    transform: scale(1.05);
+  }
 
   .loader {
     width: 18px;
@@ -969,7 +1103,34 @@
 
   <div class="toast" id="toast"></div>
   <div class="footer">
-    © 2026 Hostel Bites | All rights reserved | Last Updated: 01-05-2026.
+
+    <div class="footer-links">
+      <button onclick="openPopup('terms')">Terms & Conditions</button>
+      <button onclick="openPopup('privacy')">Privacy Policy</button>
+      <button onclick="openPopup('contact')">Contact</button>
+      <button onclick="window.location.href='request.html'">Request Product</button>
+      <button onclick="window.location.href='about.html'">About Us</button>
+    </div>
+
+    <div style="margin-top:10px;">
+      © 2026 Hostel Bites | Last Updated: 01-05-2026
+    </div>
+
+  </div>
+  <!-- POPUP OVERLAY -->
+  <div id="popupOverlay" class="popup-overlay" onclick="closePopup()"></div>
+
+  <!-- POPUP BOX -->
+  <div id="popupBox" class="popup-box">
+
+    <div class="popup-header">
+      <span id="popupTitle">Title</span>
+      <button onclick="closePopup()">✖</button>
+    </div>
+
+    <div class="popup-content" id="popupContent">
+    </div>
+
   </div>
 
   <script>
@@ -1585,6 +1746,193 @@
         updateTimer();
         setInterval(updateTimer, 1000);
       });
+    }
+
+    function openPopup(type) {
+
+      const overlay = document.getElementById("popupOverlay");
+      const box = document.getElementById("popupBox");
+      const title = document.getElementById("popupTitle");
+      const content = document.getElementById("popupContent");
+
+      overlay.classList.add("show");
+      box.classList.add("open");
+
+      if (type === "terms") {
+        title.innerText = "Terms & Conditions";
+
+        content.innerHTML = `
+    <div style="font-family:sans-serif; line-height:1.6;">
+
+<h2 style="color:#FF6B00; font-weight:900;">📜 Terms & Conditions</h2>
+
+<br>
+
+<h3 style="color:#FFD600; font-weight:800;">1️⃣ Order Conditions</h3>
+
+• You can order any product that is currently available on the website.<br><br>
+
+• Only <b>one active order</b> is allowed at a time.  
+You cannot place a new order until your previous order is <b>accepted or rejected</b>.<br><br>
+
+• It is <b>mandatory to enter correct and original details</b> (Name, Room, Phone) to ensure timely delivery.<br><br>
+
+• Orders with <b>fake or incomplete details</b> may be cancelled or ignored.<br><br>
+
+• Repeated fake or spam orders may lead to <b>temporary or permanent restriction</b> from using the service.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">2️⃣ Delivery & Timing</h3>
+
+• Your order will be delivered within <b>7 minutes</b> after confirmation.<br><br>
+
+• If we fail to deliver within the promised time, the price of each product will be adjusted to its <b>original/base price</b> (no extra charges).<br><br>
+
+<b>This benefit is valid only if the following conditions are met:</b><br><br>
+
+• You provide <b>correct and complete details</b> while placing the order.<br>
+• You enter a <b>valid room/address</b>.<br>
+• You are <b>available at the delivery location</b> at the time of delivery.<br>
+• You respond to calls/messages if required.<br><br>
+
+• Delay due to <b>unreachable user, wrong details, or external factors</b> (network, crowd, etc.) will not be considered under this condition.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">3️⃣ Request Product</h3>
+
+• You can request any product you want using the <b>"Request Product"</b> button available in the footer.<br><br>
+
+• Simply fill in the required details, and our team will review your request.<br><br>
+
+• If the product is feasible, we may add it to the store and <b>contact you</b> for confirmation.<br><br>
+
+• Not all requests are guaranteed to be accepted, as availability depends on demand and feasibility.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">4️⃣ General Guidelines</h3>
+
+• Please use the platform responsibly.<br>
+• Misuse, abuse, or intentional disruption may lead to account restriction.<br>
+• Prices, availability, and services are subject to change without prior notice.<br>
+
+<br><br>
+
+<div style="text-align:center; color:#aaa; font-size:13px;">
+Thank you for using <b style="color:#FF6B00;">Hostel Bites</b> ❤️
+</div>
+
+</div>`;
+      }
+
+      if (type === "privacy") {
+        title.innerText = "Privacy Policy";
+
+        content.innerHTML = `
+    <div style="font-family:sans-serif; line-height:1.6;">
+
+<h2 style="color:#FF6B00; font-weight:900;">🔐 Privacy Policy</h2>
+
+<br>
+
+<h3 style="color:#FFD600; font-weight:800;">1️⃣ Data Collection</h3>
+
+• We only collect basic information required to process your order:<br><br>
+
+• <b>Name</b><br>
+• <b>Room Number</b><br>
+• <b>Phone Number</b><br><br>
+
+• This data is collected <b>temporarily</b> only for order processing and delivery purposes.<br><br>
+
+• Once the order is completed, your data is either removed or no longer actively used.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">2️⃣ Data Usage</h3>
+
+• Your information is used only for:<br><br>
+
+• Processing your order<br>
+• Contacting you for delivery<br>
+• Ensuring smooth service<br><br>
+
+• We do <b>not use your data for marketing</b>, spam, or any unrelated purpose.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">3️⃣ Data Security</h3>
+
+• Your data is kept <b>secure and confidential</b>.<br><br>
+
+• We do <b>not share your personal information</b> with any third party.<br><br>
+
+• We do <b>not store any payment details</b> such as card information, UPI credentials, or banking data.<br><br>
+
+• No sensitive data such as <b>passwords, IP addresses, or private identifiers</b> is collected or stored.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">4️⃣ User Rights</h3>
+
+• You have the right to know what data is associated with your orders.<br><br>
+
+• You can request to view or confirm your data by contacting us through the <b>Contact section</b> in the footer.<br><br>
+
+• If needed, you may request removal of your data.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">5️⃣ Learn More About Us</h3>
+
+• To know more about our platform, services, and updates, please visit the <b>“About Us”</b> page available in the footer section of the website.
+
+<br><br>
+
+<h3 style="color:#FFD600; font-weight:800;">6️⃣ Policy Updates</h3>
+
+• This Privacy Policy may be updated from time to time to improve transparency and service quality.<br><br>
+
+• Any major changes will be reflected within the application.
+
+<br><br>
+
+<div style="text-align:center; color:#aaa; font-size:13px;">
+Your privacy matters to us at <b style="color:#FF6B00;">Hostel Bites</b> ❤️
+</div>
+
+</div>
+  `;
+      }
+
+      if (type === "contact") {
+        title.innerText = "Contact Us";
+
+        content.innerHTML = `
+    <div class="contact-box">
+
+      <div class="contact-title">Need Help? 📞</div>
+
+      <div class="contact-row">
+        <a href="tel:8218325600" class="contact-btn call-btn">
+          📞 Call Us
+        </a>
+
+        <a href="mailto:biteshostel@gmail.com" class="contact-btn mail-btn">
+          📧 Email Us
+        </a>
+      </div>
+
+    </div>
+  `;
+      }
+    }
+
+    function closePopup() {
+      document.getElementById("popupOverlay").classList.remove("show");
+      document.getElementById("popupBox").classList.remove("open");
     }
 
 
