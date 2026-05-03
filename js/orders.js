@@ -48,12 +48,20 @@ function loadOrders() {
 
                 div.innerHTML = `
                 <div class="order-header">
-                    <div class="order-name">${o.name} (Room: ${o.room})</div>
-                    <div class="status ${statusClass}">
-                        ${o.status.toUpperCase()}
-                    </div>
-                    <button onclick="toggleDetails('${o._id}')" style="background:#555;">More</button>
-                </div>
+    <div class="order-name">${o.name} (Room: ${o.room})</div>
+
+    <div class="status ${statusClass}">
+        ${o.status.toUpperCase()}
+    </div>
+
+    <div id="timer-${o._id}" style="
+        font-size:12px;
+        font-weight:bold;
+        color:#ff6a00;
+    ">
+        ⏱ Loading...
+    </div>
+</div>
 
                 <div class="order-details hidden" id="details-${o._id}">
                         📞 ${o.phone}<br>
@@ -97,6 +105,7 @@ Delete
 
                 box.appendChild(div);
             });
+            startAdminTimers(data);
 
         })
         .catch(err => console.error(err));
@@ -133,6 +142,59 @@ function del(id) {
         .then(res => res.json())
         .then(() => loadOrders())
         .catch(err => console.error(err));
+}
+
+function startAdminTimers(orders) {
+    if (window.adminTimers) {
+        window.adminTimers.forEach(clearInterval);
+    }
+    window.adminTimers = [];
+
+    orders.forEach(o => {
+
+        const timerEl = document.getElementById("timer-" + o._id);
+        if (!timerEl) return;
+
+        const startTime = new Date(o.createdAt).getTime();
+
+        function updateTimer() {
+
+            let now = Date.now();
+            let diff = now - startTime;
+            let remaining = 7 * 60 * 1000 - diff;
+
+            // ✅ STATUS BASED
+            if (o.status === "delivered") {
+                timerEl.innerHTML = "✅ Completed";
+                return;
+            }
+
+            if (o.status === "rejected") {
+                timerEl.innerHTML = "❌ Rejected";
+                return;
+            }
+
+            // ⏱ RUNNING
+            if (remaining > 0) {
+                let min = Math.floor(remaining / 60000);
+                let sec = Math.floor((remaining % 60000) / 1000);
+
+                timerEl.innerHTML =
+                    `Estimated: ⏱ ${min}:${sec.toString().padStart(2, '0')}`;
+
+                if (remaining < 60000) {
+                    timerEl.style.color = "red";
+                }
+
+            } else {
+                timerEl.innerHTML = "⏰ Delay!";
+            }
+        }
+
+        updateTimer();
+        let interval = setInterval(updateTimer, 1000);
+window.adminTimers.push(interval);
+    });
 }
 
 document.addEventListener("click", () => {
