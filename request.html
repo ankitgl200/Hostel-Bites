@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hostel Bites - Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #ff6b00;
+      --orange-dim: rgba(255, 107, 0, 0.12);
+      --orange-glow: rgba(255, 107, 0, 0.25);
+      --bg: #0a0a0b;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --border-focus: rgba(255, 107, 0, 0.5);
+      --border-error: rgba(239, 68, 68, 0.6);
+      --text: #f0ece6;
+      --muted: #8a8680;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,107,0,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(255,107,0,0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* HEADER */
+    .header {
+      position: relative; z-index: 10;
+      padding: 22px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.6);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      animation: slideDown 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .header-logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.25rem; letter-spacing: 0.01em; }
+    .logo-text span { color: var(--orange); }
+    .header-tag {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 5px 12px; border-radius: 999px;
+    }
+
+    /* MAIN */
+    .main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 48px 20px 60px; position: relative; z-index: 1; }
+    .card { width: 100%; max-width: 520px; animation: riseUp 0.7s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
+    .card-heading { margin-bottom: 32px; }
+    .card-heading h1 { font-family: 'Playfair Display', serif; font-size: 1.85rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .card-heading h1 em { font-style: normal; color: var(--orange); }
+    .card-heading p { font-size: 0.875rem; color: var(--muted); font-weight: 300; line-height: 1.6; }
+
+    .form-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* FIELDS */
+    .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .field { position: relative; margin-bottom: 12px; }
+
+    .field > label {
+      display: block; font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px; padding-left: 2px;
+    }
+    .field > label .req { color: var(--orange); margin-left: 2px; }
+
+    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+      width: 100%; padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 12px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 400;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      appearance: none; -webkit-appearance: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: #555; font-weight: 300; }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--border-focus);
+      background: rgba(255,107,0,0.04);
+      box-shadow: 0 0 0 3px rgba(255,107,0,0.08);
+    }
+
+    input.invalid, textarea.invalid, select.invalid {
+      border-color: var(--border-error) !important;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.08) !important;
+    }
+
+    .field-error { font-size: 0.72rem; color: #f87171; margin-top: 4px; padding-left: 2px; display: none; }
+    .field-error.show { display: block; }
+
+    textarea { height: 110px; resize: none; line-height: 1.6; }
+
+    /* SELECT */
+    .select-wrap { position: relative; }
+    .select-wrap::after { content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 0.8rem; }
+    select { padding-right: 36px; cursor: pointer; }
+    select option { background: #1a1a1a; color: var(--text); }
+    select option[value=""] { color: #555; }
+
+    .room-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* RADIO TYPE */
+    .type-toggle { margin: 20px 0; }
+    .type-toggle > label { display: block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .toggle-options { display: flex; gap: 10px; }
+    .toggle-options input[type="radio"] { display: none; }
+    .toggle-options .option { flex: 1; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; text-align: center; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--muted); background: transparent; user-select: none; }
+    .toggle-options input[type="radio"]:checked + .option { background: var(--orange-dim); border-color: var(--border-focus); color: var(--orange); box-shadow: 0 0 12px rgba(255,107,0,0.1); }
+
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+    button { flex: 1; padding: 13px; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; }
+    .reset { background: transparent; color: var(--muted); border: 1px solid var(--border); flex: 0 0 auto; width: 110px; }
+    .reset:hover { background: var(--surface-hover); color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .submit { background: var(--orange); color: #fff; box-shadow: 0 4px 20px rgba(255,107,0,0.3); }
+    .submit:hover:not(:disabled) { background: #ff7f1a; box-shadow: 0 6px 28px rgba(255,107,0,0.45); transform: translateY(-1px); }
+    .submit:active:not(:disabled) { transform: translateY(0); box-shadow: 0 2px 12px rgba(255,107,0,0.3); }
+    .submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* LOADER */
+    .loader { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; color: var(--muted); font-size: 0.82rem; }
+    .loader.active { display: flex; }
+    .dots { display: flex; gap: 4px; }
+    .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--orange); animation: bounce 1.2s infinite ease-in-out; }
+    .dots span:nth-child(2) { animation-delay: 0.15s; }
+    .dots span:nth-child(3) { animation-delay: 0.3s; }
+
+    /* POPUP */
+    .popup { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); padding: 14px 24px; border-radius: 12px; font-size: 0.875rem; font-weight: 500; display: flex; align-items: center; gap: 8px; z-index: 100; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .popup.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .popup.success { background: #16412b; border: 1px solid #22c55e44; color: #4ade80; }
+    .popup.error   { background: #401616; border: 1px solid #ef444444; color: #f87171; }
+
+    /* WORD COUNT */
+    .word-count { text-align: right; font-size: 0.72rem; color: var(--muted); margin-top: 4px; padding-right: 2px; }
+    .word-count.over { color: var(--error); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes riseUp   { from { opacity: 0; transform: translateY(24px); }  to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce   { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-logo">
+    <div class="logo-icon"><img src="hostelbites_wbg.png" alt="Logo"></div>
+    <div class="logo-text">Hostel <span>Bites</span></div>
+  </div>
+  <div class="header-tag">Feedback Portal</div>
+</header>
+
+<main class="main">
+  <div class="card">
+
+    <div class="card-heading">
+      <h1>Share your <em>thoughts</em></h1>
+      <p>We read every submission and use your feedback to improve the hostel dining experience.</p>
+    </div>
+
+    <div class="form-box">
+
+      <!-- Name & Phone -->
+      <div class="field-group">
+        <div class="field">
+          <label>Name <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="Your name" maxlength="60"
+            oninput="onlyLetters(this)" onblur="validate('name')">
+          <div class="field-error" id="err-name">Enter a valid name (letters only)</div>
+        </div>
+        <div class="field">
+          <label>Phone <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="10-digit number" maxlength="10"
+            oninput="onlyDigits(this)" onblur="validate('phone')">
+          <div class="field-error" id="err-phone">Enter a valid 10-digit number</div>
+        </div>
+      </div>
+
+      <!-- Email & Room -->
+      <div class="field-group">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="you@example.com" maxlength="80"
+            onblur="validate('email')">
+          <div class="field-error" id="err-email">Enter a valid email address</div>
+        </div>
+
+        <div class="field">
+          <label>Room No. <span class="req">*</span></label>
+          <div class="room-row">
+            <div class="select-wrap">
+              <select id="block" onchange="validate('room')">
+                <option value="">Block</option>
+                <option>A</option><option>B</option><option>C</option>
+                <option>D</option><option>E</option><option>F</option>
+                <option>G</option><option>H</option><option>I</option>
+                <option>J</option><option>K</option><option>L</option>
+                <option>M</option><option>N</option><option>O</option>
+                <option>P</option><option>Q</option><option>R</option>
+                <option>S</option><option>T</option><option>U</option>
+                <option>V</option><option>W</option><option>X</option>
+                <option>Y</option><option>Z</option>
+              </select>
+            </div>
+            <div class="select-wrap">
+              <select id="roomNum" onchange="validate('room')">
+                <option value="">Room</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+                <option>13</option><option>14</option><option>15</option><option>16</option>
+                <option>17</option><option>18</option><option>19</option><option>20</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-error" id="err-room">Select both block and room number</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Type toggle -->
+      <div class="type-toggle">
+        <label>Submission type</label>
+        <div class="toggle-options">
+          <label>
+            <input type="radio" name="type" value="review" checked>
+            <span class="option">✍️ &nbsp;Review</span>
+          </label>
+          <label>
+            <input type="radio" name="type" value="request">
+            <span class="option">📦 &nbsp;Request Product</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="field">
+        <label>Message <span class="req">*</span></label>
+        <textarea id="message" placeholder="Tell us what you think — suggestions, complaints, or praise..."
+          oninput="updateCount()" onblur="validate('message')"></textarea>
+        <div class="word-count" id="wordCount">0 / 200 words</div>
+        <div class="field-error" id="err-message">Please write a message (max 200 words)</div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="reset" onclick="resetForm()">Reset</button>
+        <button class="submit" onclick="submitForm()" id="submitBtn">Submit Feedback</button>
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="dots"><span></span><span></span><span></span></div>
+        Sending your feedback…
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="popup" id="popup"></div>
+
+<script>
+
+  /* ── Input filters ── */
+  function onlyLetters(el) {
+    // Allow letters and spaces only
+    el.value = el.value.replace(/[^a-zA-Z\s]/g, '');
+  }
+
+  function onlyDigits(el) {
+    // Allow digits only, max 10
+    el.value = el.value.replace(/\D/g, '').slice(0, 10);
+  }
+
+  /* ── Per-field validators ── */
+  const rules = {
+    name: v => /^[a-zA-Z ]{2,40}$/.test(v.trim()),
+    phone:   v => /^\d{10}$/.test(v.trim()),
+    phone: v => /^[6-9]\d{9}$/.test(v.trim()),
+    message: v => {
+      if (/[<>]/.test(v)) return false;
+      const w = v.trim().split(/\s+/).filter(Boolean).length;
+      return v.trim().length > 0 && w <= 200;
+    }
+  };
+
+  function setError(id, show) {
+    const el = document.getElementById('err-' + id);
+    if (el) el.classList.toggle('show', show);
+  }
+
+  function setInvalid(el, invalid) {
+    if (el) el.classList.toggle('invalid', invalid);
+  }
+
+  function validate(field) {
+    if (field === 'room') {
+      const block   = document.getElementById('block');
+      const roomNum = document.getElementById('roomNum');
+      const badBlock   = !block.value;
+      const badRoomNum = !roomNum.value;
+      setInvalid(block,   badBlock);
+      setInvalid(roomNum, badRoomNum);
+      setError('room', badBlock || badRoomNum);
+      return !badBlock && !badRoomNum;
+    }
+
+    const el = document.getElementById(field);
+    if (!el || !rules[field]) return true;
+    const ok = rules[field](el.value);
+    setInvalid(el, !ok);
+    setError(field, !ok);
+    return ok;
+  }
+
+  function validateAll() {
+    let ok = true;
+    if (!validate('name'))    ok = false;
+    if (!validate('phone'))   ok = false;
+    if (!validate('email'))   ok = false;
+    if (!validate('room'))    ok = false;
+    if (!validate('message')) ok = false;
+    return ok;
+  }
+
+  /* ── Word count ── */
+  function updateCount() {
+    const msg   = document.getElementById('message').value.trim();
+    const words = msg ? msg.split(/\s+/).filter(Boolean).length : 0;
+    const el    = document.getElementById('wordCount');
+    el.textContent = `${words} / 200 words`;
+    el.className   = 'word-count' + (words > 200 ? ' over' : '');
+  }
+
+  /* ── Popup ── */
+  function showPopup(msg, success = true) {
+    const p = document.getElementById('popup');
+    p.textContent = msg;
+    p.className = 'popup ' + (success ? 'success' : 'error');
+    p.classList.add('show');
+    setTimeout(() => p.classList.remove('show'), 3200);
+  }
+
+  /* ── Reset ── */
+  function resetForm() {
+    ['name','phone','email','message'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('block').value   = '';
+    document.getElementById('roomNum').value = '';
+    document.querySelector('input[name="type"][value="review"]').checked = true;
+    updateCount();
+    document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+    document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
+  }
+
+  /* ── Submit ── */
+  async function submitForm() {
+    if (!validateAll()) {
+      showPopup('⚠️ Please fix the errors above', false);
+      return;
+    }
+
+    const btn    = document.getElementById('submitBtn');
+    const loader = document.getElementById('loader');
+    const block  = document.getElementById('block').value;
+    const room   = document.getElementById('roomNum').value;
+
+    const data = {
+      name:    document.getElementById('name').value.trim(),
+      phone:   document.getElementById('phone').value.trim(),
+      email:   document.getElementById('email').value.trim(),
+      room:    `${block}-${room}`,
+      type:    document.querySelector('input[name="type"]:checked').value,
+      message: document.getElementById('message').value.trim()
+    };
+
+    btn.disabled = true;
+    loader.classList.add('active');
+
+    try {
+      const res    = await fetch('https://backendhb.onrender.com/api/feedback', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data)
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        showPopup('✅ Submitted successfully — thank you!');
+        resetForm();
+      } else {
+        showPopup('❌ Submission failed, please try again', false);
+      }
+    } catch {
+      showPopup('⚠️ Server error — please try later', false);
+    }
+
+    btn.disabled = false;
+    loader.classList.remove('active');
+  }
+
+</script>
+
+</body>
+</html>
