@@ -8,105 +8,195 @@
 
   <style>
     * {
-      box-sizing: border-box;
-    }
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      font-family: Arial;
-      background: #fff5eb;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+:root {
+  --orange: #ff6b00;
+  --bg: #0a0a0b;
+  --card: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --text: #f0ece6;
+  --muted: #8a8680;
+}
 
-    h2 {
-      color: #ff6a00;
-      text-align: center;
-    }
+/* BODY */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-    .box {
-      max-width: 420px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+/* MAIN BOX */
+.box {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 26px;
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-    input,
-    select,
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+/* HEADING */
+h2 {
+  color: var(--orange);
+  text-align: center;
+}
 
-    button {
-      background: #ff6a00;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
+/* ADMIN PANEL */
+#adminPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-    .hidden {
-      display: none;
-    }
+/* 🔥 IMPORTANT FIX: HIDDEN CLASS */
+.hidden {
+  display: none !important;
+}
 
-    .mode-select {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+/* FIELD GROUPS */
+#addFields,
+#updateFields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .mode-select label {
-      flex: 1;
-      background: #fff3e8;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
+/* INPUTS */
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+}
+select {
+  background-color: rgba(255,255,255,0.05) !important;
+  color: var(--text) !important;
+}
 
-    .mode-select input {
-      display: none;
-    }
+/* 🔥 FIX DROPDOWN OPTIONS */
+select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
 
-    /* Mobile responsiveness */
-    @media (max-width: 480px) {
-      body {
-        padding: 12px;
-      }
+/* For better visibility when opened */
+select:focus option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
 
-      .box {
-        padding: 16px;
-        border-radius: 10px;
-      }
+input::placeholder {
+  color: #777;
+}
 
-      h2 {
-        font-size: 18px;
-      }
+input:focus,
+select:focus {
+  border-color: var(--orange);
+  background: rgba(255,107,0,0.05);
+  box-shadow: 0 0 0 2px rgba(255,107,0,0.15);
+}
 
-      input,
-      select,
-      button {
-        padding: 12px 10px;
-        font-size: 15px;
-      }
+/* BUTTONS */
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
 
-      .mode-select {
-        gap: 8px;
-      }
+/* TARGET BUTTONS DIRECTLY (FIX BUG) */
+button[onclick="submitData()"] {
+  background: var(--orange);
+  color: white;
+}
 
-      .mode-select label {
-        padding: 10px 6px;
-        font-size: 14px;
-      }
-    }
+button[onclick="submitData()"]:hover {
+  background: #ff7f1a;
+  transform: translateY(-1px);
+}
+
+button[onclick="goBack()"] {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+button[onclick="goBack()"]:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* MODE SELECT FIX */
+.mode-select {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-select label {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FIX RADIO STRUCTURE */
+.mode-select label input {
+  display: none;
+}
+
+.mode-select label:has(input:checked) {
+  background: rgba(255,107,0,0.15);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* MESSAGE */
+#msg {
+  text-align: center;
+  font-size: 14px;
+  color: #ff6b6b;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .box {
+    padding: 20px;
+  }
+
+  input,
+  select,
+  button {
+    font-size: 14px;
+  }
+}
   </style>
 
 </head>
