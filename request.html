@@ -575,7 +575,7 @@
                     <div class="field">
                         <label>Email</label>
                         <input type="email" id="email" placeholder="you@example.com" maxlength="80"
-                            onblur="validate('email')">
+                            oninput="validate('email')" onblur="validate('email')" required>
                         <div class="field-error" id="err-email">Enter a valid email address</div>
                     </div>
 
@@ -676,7 +676,7 @@
         /* ── Per-field validators ── */
         const rules = {
             name: v => /^[a-zA-Z ]{2,40}$/.test(v.trim()),
-            email: v => v.trim() === '' || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
+            email: v => /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(v.trim()),
             phone: v => /^[6-9]\d{9}$/.test(v.trim()),
             message: v => {
                 if (/[<>]/.test(v)) return false;
