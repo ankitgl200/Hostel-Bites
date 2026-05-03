@@ -5,113 +5,145 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Hostel Bites</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
     * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial;
-      background: #fff5eb;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    h2 {
-      color: #ff6a00;
-      text-align: center;
-    }
-
-    .box {
-      max-width: 420px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    input,
-    select,
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    #adminPanel {
-  flex-direction: column;
-  gap: 12px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-    button {
-      background: #ff6a00;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
+:root {
+  --orange: #ff6b00;
+  --bg: #0a0a0b;
+  --card: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --text: #f0ece6;
+  --muted: #8a8680;
+}
 
-    .hidden {
-      display: none;
-    }
+/* BODY */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-    .mode-select {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+/* MAIN BOX */
+.box {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px;
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* 🔥 FIX: spacing between sections */
+}
 
-    .mode-select label {
-      flex: 1;
-      background: #fff3e8;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
+/* HEADINGS */
+h2 {
+  text-align: center;
+  color: var(--orange);
+  margin-bottom: 5px;
+}
 
-    .mode-select input {
-      display: none;
-    }
+/* LOGIN + PANEL SECTIONS */
+#loginBox,
+#adminPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 🔥 FIX: spacing inside sections */
+}
 
-    /* Mobile responsiveness */
-    @media (max-width: 480px) {
-      body {
-        padding: 12px;
-      }
+/* INPUT */
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+}
 
-      .box {
-        padding: 16px;
-        border-radius: 10px;
-      }
+input::placeholder {
+  color: #777;
+}
 
-      h2 {
-        font-size: 18px;
-      }
+input:focus {
+  border-color: var(--orange);
+  background: rgba(255,107,0,0.05);
+  box-shadow: 0 0 0 2px rgba(255,107,0,0.15);
+}
 
-      input,
-      select,
-      button {
-        padding: 12px 10px;
-        font-size: 15px;
-      }
+/* BUTTON BASE */
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-      .mode-select {
-        gap: 8px;
-      }
+/* LOGIN BUTTON */
+#loginBox button {
+  background: var(--orange);
+  color: white;
+}
 
-      .mode-select label {
-        padding: 10px 6px;
-        font-size: 14px;
-      }
-    }
+#loginBox button:hover {
+  background: #ff7f1a;
+  transform: translateY(-1px);
+}
+
+/* ADMIN PANEL BUTTONS */
+#adminPanel button {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+#adminPanel button:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-1px);
+}
+
+/* MESSAGE */
+#msg {
+  text-align: center;
+  font-size: 14px;
+  color: #ff6b6b;
+  margin-top: 5px;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .box {
+    padding: 20px;
+    gap: 15px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  input,
+  button {
+    font-size: 14px;
+  }
+}
   </style>
 
 </head>
