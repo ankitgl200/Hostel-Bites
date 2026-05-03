@@ -1,24 +1,28 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Orders - Hostel Bites</title>
-
-<style>
 * {
   box-sizing: border-box;
 }
 
+:root {
+  --orange: #ff6b00;
+  --bg: #0a0a0b;
+  --card: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --text: #f0ece6;
+  --muted: #8a8680;
+}
+
 body {
-  font-family: Arial;
-  background: #fff5eb;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   padding: 20px;
 }
 
+/* Heading */
 h2 {
   text-align: center;
-  color: #ff6a00;
+  color: var(--orange);
+  margin-bottom: 20px;
 }
 
 #orders {
@@ -26,12 +30,19 @@ h2 {
   margin: auto;
 }
 
+/* Order Card */
 .order {
-  background: white;
+  background: var(--card);
   margin: 15px 0;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+.order:hover {
+  border-color: rgba(255,255,255,0.2);
 }
 
 /* Header */
@@ -50,34 +61,22 @@ h2 {
 
 /* Status badge */
 .status {
-  padding: 5px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 12px;
   color: white;
-  white-space: nowrap;
-}
-.pending {
-  background: orange;
 }
 
-.accepted {
-  background: green;
-}
-
-.rejected {
-  background: red;
-}
-
-.delivered {
-  background: blue;
-}
-
+.pending { background: #ff9800; }
+.accepted { background: #22c55e; }
+.rejected { background: #ef4444; }
+.delivered { background: #3b82f6; }
 
 /* Details */
 .order-details {
   margin-top: 10px;
   font-size: 14px;
-  color: #444;
+  color: #ccc;
 }
 
 /* Buttons */
@@ -92,43 +91,39 @@ button {
   flex: 1;
   min-width: 80px;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   color: white;
-  font-weight: bold;
+  font-weight: 500;
+  transition: 0.2s;
 }
+
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.accept { background: #28a745; }
-.reject { background: #dc3545; }
-.delete { background: #333; }
-.delivered { background: blue; }
+/* Button colors */
+.accept { background: #22c55e; }
+.reject { background: #ef4444; }
+.delete { background: #555; }
+.delivered { background: #3b82f6; }
 
-button:hover {
-  opacity: 0.85;
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
-/* Mobile responsiveness */
+/* Mobile */
 @media (max-width: 480px) {
-  body {
-    padding: 12px;
-  }
+  body { padding: 12px; }
 
-  h2 {
-    font-size: 18px;
-  }
+  h2 { font-size: 18px; }
 
   .order {
     padding: 12px;
     margin: 10px 0;
-  }
-
-  .order-name {
-    font-size: 15px;
   }
 
   .order-details {
@@ -145,17 +140,3 @@ button:hover {
     font-size: 14px;
   }
 }
-</style>
-
-</head>
-
-<body>
-
-<h2>📦 Received Orders</h2>
-
-<div id="orders"></div>
-
-<script src="js/orders.js"></script>
-
-</body>
-</html>
