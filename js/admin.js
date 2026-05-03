@@ -31,6 +31,9 @@ function gotoProducts() {
     window.location.href = "mproduct.html";
 }
 
+function gotoFeedbacks() {
+    window.location.href = "feedbackget.html";
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 
