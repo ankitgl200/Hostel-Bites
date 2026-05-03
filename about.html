@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Hostel Bites</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --orange: #ff6b00;
+            --bg: #0a0a0b;
+            --card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f0ece6;
+            --muted: #8a8680;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* HEADER */
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10, 10, 11, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--orange);
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* HEADINGS */
+        h2 {
+            color: var(--orange);
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* LIST */
+        ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .team-section {
+            margin-top: 40px;
+        }
+
+        .team-section h2 {
+            color: var(--orange);
+            margin-bottom: 20px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .team-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 2px solid var(--orange);
+            object-fit: cover;
+        }
+
+        .team-name {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .team-role {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .team-bio {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Hostel Bites 🍔</h1>
+    </div>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>🍔 About Hostel Bites</h2>
+            <p>
+                Hostel Bites is a simple and fast snack delivery platform.
+                We understand hostel life — late-night hunger, quick cravings, and the need for fast and reliable
+                service.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>🚀 What We Do</h2>
+            <p>
+                We deliver your favorite snacks like Kurkure, chips, cold drinks, and more directly to your room —
+                quickly and hassle-free.
+                <br><br>
+                No long waits, no unnecessary steps — just open the app, place your order, and relax.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>⚡ Our Promise</h2>
+            <ul>
+                <li>⏱ <b>Super Fast Delivery</b> – Get your order within 7 minutes</li>
+                <li>💯 <b>Fair Pricing</b> – If we fail to deliver on time, you get it at the same price</li>
+                <li>🛒 <b>Easy Ordering</b> – Simple and user-friendly interface</li>
+                <li>🔐 <b>Safe & Secure</b> – Your data stays private and protected</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Our Mission</h2>
+            <p>
+                To make hostel life easier by providing a quick, reliable, and student-friendly snack service
+                that saves time and satisfies cravings anytime.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>💡 Why Hostel Bites?</h2>
+            <ul>
+                <li>Late-night hunger is real 😄</li>
+                <li>Students need speed ⚡</li>
+                <li>Convenience matters</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📢 Stay Connected</h2>
+            <p>
+                Don’t forget to subscribe for notifications to get updates, new products, and offers.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>❤️ Built for You</h2>
+            <p>
+                Hostel Bites is built with the goal of improving everyday hostel life —
+                and your <a href="request.html" style="color: var(--orange);" >feedback</a> helps us grow better every day.
+            </p>
+        </div>
+        <div class="team-section">
+            <h2>👨‍💻 Our Team</h2>
+
+            <div class="team-grid" id="team-list"></div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Enjoy your bites. Anytime. Anywhere. 🍟
+    </div>
+
+</body>
+<script>
+    const teamMembers = [
+        {
+            name: "Ankit Ghugtyal",
+            role: "Founder & Developer",
+            img: "https://static.vecteezy.com/system/resources/thumbnails/035/857/753/small_2x/people-face-avatar-icon-cartoon-character-png.png",
+            bio: "Built Hostel Bites platform"
+        },
+        {
+            name: "Soham Joshi",
+            role: "Co-Founder & Developer",
+            img: "https://static.vecteezy.com/system/resources/thumbnails/035/857/753/small_2x/people-face-avatar-icon-cartoon-character-png.png",
+            bio: ""
+        },
+    ];
+
+    const teamList = document.getElementById("team-list");
+
+    teamMembers.forEach(member => {
+        const div = document.createElement("div");
+        div.className = "team-card";
+
+        div.innerHTML = `
+    <img src="${member.img}" class="team-img">
+    <div class="team-name">${member.name}</div>
+    <div class="team-role">${member.role}</div>
+    <div class="team-bio">${member.bio}</div>
+  `;
+
+        teamList.appendChild(div);
+    });
+</script>
+
+</html>
