@@ -8,6 +8,24 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
 
+
+    <script>
+        async function checkAuth() {
+            try {
+                const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
+                    credentials: "include"
+                });
+
+                if (!res.ok) {
+                    window.location.href = "admin.html";
+                }
+            } catch {
+                window.location.href = "admin.html";
+            }
+        }
+
+        checkAuth();
+    </script>
     <style>
         *,
         *::before,
@@ -709,7 +727,9 @@ ${item.display ? "👁 Hide" : "👁 Show"}
 
         async function loadData() {
             try {
-                const res = await fetch('https://backendhb.onrender.com/api/feedback');
+                const res = await fetch('https://backendhb.onrender.com/api/feedback', {
+                    credentials: "include"
+                });
                 const result = await res.json();
 
                 if (!result.success) {
