@@ -629,7 +629,8 @@
 
             try {
                 const res = await fetch(`https://backendhb.onrender.com/api/feedback/${id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    credentials: "include"
                 });
 
                 const result = await res.json();
@@ -713,6 +714,7 @@ ${item.display ? "👁 Hide" : "👁 Show"}
             const res = await fetch("https://backendhb.onrender.com/api/feedback/toggle-display", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify({ id })
             });
 
