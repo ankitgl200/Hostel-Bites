@@ -74,6 +74,9 @@ function gotoProducts() {
 function gotoFeedbacks() {
     window.location.href = "feedbackget.html";
 }
+function gotoPayment() {
+    window.location.href = "payment.html";
+}
 
 async function logout() {
     await fetch("https://backendhb.onrender.com/api/auth/logout", {
