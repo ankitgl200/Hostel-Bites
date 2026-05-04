@@ -1,117 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hostel Bites Payment</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Hostel Bites Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #ffcc00, #ff9900);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+    :root {
+      --orange: #ff6b00;
+      --orange-dim: rgba(255,107,0,0.13);
+      --orange-glow: rgba(255,107,0,0.3);
+      --bg: #090909;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.09);
+      --glass-strong: rgba(255,255,255,0.07);
+      --text: #f2ede7;
+      --text-secondary: #c4bdb5;
+      --muted: #7a736b;
+    }
 
-        h1 {
-            margin-bottom: 10px;
-            color: #333;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 16px 64px;
+      overflow-y: auto;
+    }
 
-        p {
-            color: #666;
-            font-size: 14px;
-        }
+    /* ── BACKGROUND GLOW ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 0%,   rgba(255,107,0,0.11) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 90% 90%,  rgba(255,80,0,0.06)  0%, transparent 55%),
+        radial-gradient(ellipse 30% 30% at 5%  70%,  rgba(255,140,0,0.04) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
 
-        input {
-            width: 90%;
-            padding: 12px;
-            margin-top: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            text-align: center;
-        }
+    /* Grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+      pointer-events: none; z-index: 0; opacity: 0.45;
+    }
 
-        button {
-            margin-top: 15px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #ff9900;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    /* ── CARD ── */
+    .card {
+      position: relative; z-index: 1;
+      width: min(92vw, 360px);
+      margin: auto;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 36px 28px 32px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 24px 60px rgba(0,0,0,0.5);
+      text-align: center;
+      animation: popIn 0.55s cubic-bezier(0.16,1,0.3,1) both;
+    }
 
-        button:hover {
-            background: #e68a00;
-        }
+    @keyframes popIn {
+      from { opacity:0; transform: scale(0.94) translateY(20px); }
+      to   { opacity:1; transform: scale(1)    translateY(0); }
+    }
 
-        #qrBox {
-            margin-top: 20px;
-        }
+    /* ── LOGO ROW ── */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
 
-        img {
-            width: 200px;
-            height: 200px;
-        }
+    .logo-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255,107,0,0.22);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
 
-        .upi {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #444;
-        }
-    </style>
+    .logo-icon img {
+      width: 24px; height: 24px; object-fit: contain;
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+
+    .logo-text span { color: var(--orange); }
+
+    .card-sub {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--glass-border);
+      margin: 0 0 24px;
+    }
+
+    /* ── FIELD ── */
+    .field {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .currency-prefix {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem; font-weight: 600;
+      color: var(--orange);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 13px 16px 13px 32px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 13px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 500;
+      outline: none;
+      text-align: left;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    input[type="number"]::placeholder { color: #555; font-weight: 400; }
+
+    input[type="number"]:focus {
+      border-color: rgba(255,107,0,0.5);
+      background: rgba(255,107,0,0.05);
+      box-shadow: 0 0 0 3px rgba(255,107,0,0.08);
+    }
+
+    /* ── BUTTON ── */
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 13px;
+      background: var(--orange);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255,107,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      margin-top: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+
+    button:hover {
+      background: #ff7f1a;
+      box-shadow: 0 6px 28px rgba(255,107,0,0.5);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(255,107,0,0.3);
+    }
+
+    /* ── QR BOX ── */
+    #qrBox {
+      margin-top: 24px;
+    }
+
+    .qr-wrap {
+      background: rgba(255,255,255,0.96);
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-block;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      margin-bottom: 14px;
+    }
+
+    #qrBox img {
+      width: 190px; height: 190px;
+      display: block; border-radius: 8px;
+    }
+
+    .qr-amount {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .qr-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ── UPI TAG ── */
+    .upi-tag {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--glass-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .upi-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 6px var(--orange-glow);
+      flex-shrink: 0;
+    }
+
+    .upi-id { color: var(--text); font-weight: 600; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Hostel Bites</h1>
-    <p>Scan & Pay via UPI</p>
+<div class="card">
 
-    <input type="number" id="amount" placeholder="Enter Amount (₹)">
+  <div class="logo-row">
+    <div class="logo-icon"><img src="hostelbites_wbg.png" alt="logo"></div>
+    <div class="logo-text">Hostel <span>Bites</span></div>
+  </div>
+  <div class="card-sub">Scan &amp; Pay via UPI</div>
 
-    <br>
-    <button onclick="generateQR()">Generate QR</button>
+  <hr class="divider">
 
-    <div id="qrBox"></div>
+  <div class="field">
+    <label>Amount <span style="color:var(--orange)">*</span></label>
+    <div class="input-wrap">
+      <span class="currency-prefix">₹</span>
+      <input type="number" id="amount" placeholder="0.00" min="1">
+    </div>
+  </div>
 
-    <div class="upi">UPI ID: 9149020075@fam</div>
+  <button onclick="generateQR()">
+    Generate QR Code
+  </button>
+
+  <div id="qrBox"></div>
+
+  <div class="upi-tag">
+    <div class="upi-dot"></div>
+    UPI ID: <span class="upi-id">9149020075@fam</span>
+  </div>
+
 </div>
 
 <script>
-    function generateQR() {
-        let amount = document.getElementById("amount").value;
-        let upiID = "9149020075@fam";  // CHANGE THIS
+  function generateQR() {
+    let amount = document.getElementById("amount").value;
+    let upiID  = "9149020075@fam";
 
-        if (amount === "" || amount <= 0) {
-            alert("Enter valid amount");
-            return;
-        }
-
-        let upiLink = `upi://pay?pa=${upiID}&pn=Hostel Bites&am=${amount}&cu=INR`;
-
-        let qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
-
-        document.getElementById("qrBox").innerHTML = `
-            <img src="${qrURL}" alt="QR Code">
-            <p>Amount: ₹${amount}</p>
-        `;
+    if (amount === "" || amount <= 0) {
+      alert("Enter valid amount");
+      return;
     }
+
+    let upiLink = `upi://pay?pa=${upiID}&pn=Hostel Bites&am=${amount}&cu=INR`;
+    let qrURL   = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+
+    const qrBox = document.getElementById("qrBox");
+    qrBox.innerHTML = `
+      <div class="qr-wrap">
+        <img src="${qrURL}" alt="QR Code">
+      </div>
+      <div class="qr-amount">₹${amount}</div>
+      <div class="qr-hint">Scan with any UPI app to pay</div>
+    `;
+    setTimeout(() => qrBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  }
 </script>
 
 </body>
