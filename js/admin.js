@@ -1,3 +1,18 @@
+async function checkAuth() {
+    const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
+        credentials: "include"
+    });
+
+    if (!res.ok) {
+        document.getElementById("loginBox").style.display = "block";
+        document.getElementById("adminPanel").style.display = "none";
+    } else {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "flex";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", checkAuth);
 
 // 🔐 LOGIN
 function login() {
@@ -5,18 +20,14 @@ function login() {
 
     fetch("https://backendhb.onrender.com/api/auth/admin-login", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ password: pass })
     })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                localStorage.setItem("adminLoggedIn", "true");
-
-                document.getElementById("loginBox").style.display = "none";
-                document.getElementById("adminPanel").style.display = "flex";
+                window.location.reload();
             } else {
                 alert("Wrong password ❌");
             }
@@ -39,8 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let loginBox = document.getElementById("loginBox");
     let adminPanel = document.getElementById("adminPanel");
-
-    let isLoggedIn = localStorage.getItem("adminLoggedIn");
 
     if (isLoggedIn === "true") {
         loginBox.style.display = "none";
