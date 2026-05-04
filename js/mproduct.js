@@ -117,6 +117,7 @@ function submitData() {
         fetch("https://backendhb.onrender.com/api/products/add-product", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify(data)
         })
             .then(res => res.json())
@@ -151,6 +152,7 @@ function submitData() {
         fetch("https://backendhb.onrender.com/api/products/update-product", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify(data)
         })
             .then(res => res.json())
