@@ -1,165 +1,212 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Orders - Hostel Bites</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Orders - Hostel Bites</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <script>
+    async function checkAuth() {
+      try {
+        const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
+          credentials: "include"
+        });
 
-:root {
-  --orange: #ff6b00;
-  --bg: #0a0a0b;
-  --card: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.1);
-  --text: #f0ece6;
-  --muted: #8a8680;
-}
+        if (!res.ok) {
+          window.location.href = "admin.html";
+        }
+      } catch {
+        window.location.href = "admin.html";
+      }
+    }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding: 20px;
-}
+    checkAuth();
+  </script>
 
-/* Heading */
-h2 {
-  text-align: center;
-  color: var(--orange);
-  margin-bottom: 20px;
-}
 
-#orders {
-  max-width: 700px;
-  margin: auto;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-/* Order Card */
-.order {
-  background: var(--card);
-  margin: 15px 0;
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
-  transition: 0.3s;
-}
+    :root {
+      --orange: #ff6b00;
+      --bg: #0a0a0b;
+      --card: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f0ece6;
+      --muted: #8a8680;
+    }
 
-.order:hover {
-  border-color: rgba(255,255,255,0.2);
-}
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+    }
 
-/* Header */
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+    /* Heading */
+    h2 {
+      text-align: center;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
 
-.order-name {
-  font-weight: bold;
-  font-size: 16px;
-}
+    #orders {
+      max-width: 700px;
+      margin: auto;
+    }
 
-/* Status badge */
-.status {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: white;
-}
+    /* Order Card */
+    .order {
+      background: var(--card);
+      margin: 15px 0;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition: 0.3s;
+    }
 
-.pending { background: #ff9800; }
-.accepted { background: #22c55e; }
-.rejected { background: #ef4444; }
-.delivered { background: #3b82f6; }
+    .order:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
 
-/* Details */
-.order-details {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #ccc;
-}
+    /* Header */
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-/* Buttons */
-.order-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+    .order-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
 
-button {
-  flex: 1;
-  min-width: 80px;
-  padding: 8px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  font-weight: 500;
-  transition: 0.2s;
-}
+    /* Status badge */
+    .status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: white;
+    }
 
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+    .pending {
+      background: #ff9800;
+    }
 
-/* Button colors */
-.accept { background: #22c55e; }
-.reject { background: #ef4444; }
-.delete { background: #555; }
-.delivered { background: #3b82f6; }
+    .accepted {
+      background: #22c55e;
+    }
 
-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  opacity: 0.9;
-}
+    .rejected {
+      background: #ef4444;
+    }
 
-/* Mobile */
-@media (max-width: 480px) {
-  body { padding: 12px; }
+    .delivered {
+      background: #3b82f6;
+    }
 
-  h2 { font-size: 18px; }
+    /* Details */
+    .order-details {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ccc;
+    }
 
-  .order {
-    padding: 12px;
-    margin: 10px 0;
-  }
+    /* Buttons */
+    .order-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-  .order-details {
-    font-size: 13px;
-  }
+    button {
+      flex: 1;
+      min-width: 80px;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      transition: 0.2s;
+    }
 
-  .order-actions {
-    flex-direction: column;
-  }
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-  button {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
-}
-</style>
+    /* Button colors */
+    .accept {
+      background: #22c55e;
+    }
+
+    .reject {
+      background: #ef4444;
+    }
+
+    .delete {
+      background: #555;
+    }
+
+    .delivered {
+      background: #3b82f6;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .order {
+        padding: 12px;
+        margin: 10px 0;
+      }
+
+      .order-details {
+        font-size: 13px;
+      }
+
+      .order-actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
 
 </head>
 
 <body>
 
-<h2>📦 Received Orders</h2>
+  <h2>📦 Received Orders</h2>
 
-<div id="orders"></div>
+  <div id="orders"></div>
 
-<script src="js/orders.js"></script>
+  <script src="js/orders.js"></script>
 
 </body>
+
 </html>
