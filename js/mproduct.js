@@ -5,7 +5,9 @@ let PRODUCTS = [];
 
 // 🔄 LOAD PRODUCTS FROM DB
 function loadProducts() {
-    fetch("https://backendhb.onrender.com/api/products")
+    fetch("https://backendhb.onrender.com/api/products", {
+        credentials: "include"
+    })
         .then(res => res.json())
         .then(data => {
             PRODUCTS = data;
