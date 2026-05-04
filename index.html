@@ -2,447 +2,892 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Bites</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Bites</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function (OneSignal) {
+      await OneSignal.init({
+        appId: "0b256047-4540-4b4f-8c86-7198f65c8a62",
+        notifyButton: { enable: true }
+      });
+      setTimeout(() => { OneSignal.Slidedown.promptPush(); }, 1500);
+    });
+  </script>
 
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-        OneSignalDeferred.push(async function (OneSignal) {
-
-            await OneSignal.init({
-                appId: "0b256047-4540-4b4f-8c86-7198f65c8a62",
-                notifyButton: { enable: true }
-            });
-
-            // 🔔 Force subscription popup
-            setTimeout(() => {
-                OneSignal.Slidedown.promptPush();
-            }, 1500);
-
-        });
-    </script>
-</head>
-
-<style>
+  <style>
     *,
     *::before,
     *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --orange: #ff6b00;
+      --orange-dim: rgba(255, 107, 0, 0.14);
+      --orange-glow: rgba(255, 107, 0, 0.35);
+      --bg: #080809;
+      --glass: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-hover: rgba(255, 255, 255, 0.07);
+      --text: #f4f0eb;
+      /* main text — near white warm */
+      --text-secondary: #c8c2bb;
+      /* subtitles — clearly readable */
+      --text-muted: #9e9890;
+      /* timing/tagline — still legible */
+      --muted: #9e9890;
+    }
+
+    html,
+    body {
+      height: 100%;
     }
 
     body {
-        font-family: Arial, sans-serif;
-        background: #fff5eb;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        min-height: 100dvh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* HEADER */
+    /* ── LAYERED BACKGROUND ── */
+    .bg-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Deep amber radial glow — top centre */
+    .bg-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -5%, rgba(255, 107, 0, 0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 92% 88%, rgba(255, 80, 0, 0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 35% at 4% 70%, rgba(255, 140, 0, 0.05) 0%, transparent 55%);
+    }
+
+    /* Grain texture */
+    .bg-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+      opacity: 0.5;
+    }
+
+    /* Floating orb — decorative */
+    .orb {
+      position: fixed;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 107, 0, 0.07) 0%, transparent 70%);
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: orb-drift 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes orb-drift {
+      from {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      to {
+        transform: translateX(-50%) translateY(30px);
+      }
+    }
+
+    /* ── HEADER ── */
     .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #ff6a00;
-        color: white;
-        padding: 14px 20px;
-        font-size: 20px;
-        font-weight: bold;
-        position: sticky;
-        top: 0;
-        z-index: 100;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      /* increase */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 16px 24px;
+      background: rgba(8, 8, 9, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--glass-border);
+      animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+
     }
 
-    .header span {
-        font-size: 20px;
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--text);
     }
 
-    .header img {
-        height: 30px;
-        vertical-align: middle;
+    .header-logo img {
+      height: 28px;
+      width: 28px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .header-logo span {
+      color: var(--orange);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 🔥 OFFER STRIP */
+    .offer-strip {
+      width: 100%;
+      overflow: hidden;
+      background: rgba(255, 107, 0, 0.08);
+      border-bottom: 1px solid rgba(255, 107, 0, 0.2);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+      z-index: 100;
+
+      margin-top: 8px;
+      /* 🔥 THIS FIXES VISUAL OVERLAP */
+    }
+
+    .offer-track {
+      display: flex;
+      gap: 60px;
+      white-space: nowrap;
+      padding: 10px 0;
+      width: max-content;
+      animation: scrollOffer 25s linear infinite;
+    }
+
+    .offer-track span {
+      font-size: 0.85rem;
+      color: var(--orange);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      flex: 0 0 auto;
+      text-shadow: 0 0 8px rgba(255, 107, 0, 0.4);
+    }
+
+    .offer-strip:hover .offer-track {
+      animation-play-state: paused;
+    }
+
+
+    /* smooth infinite scroll */
+    @keyframes scrollOffer {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
     }
 
     .dev-btn {
-        padding: 8px 14px;
-        border: none;
-        border-radius: 20px;
-        background: white;
-        color: #ff6a00;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: bold;
-        white-space: nowrap;
-        flex-shrink: 0;
+      padding: 7px 14px;
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      background: var(--glass);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+      white-space: nowrap;
     }
 
-    /* DEV INPUT BOX */
+    .dev-btn:hover {
+      background: var(--glass-hover);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ── DEV BOX ── */
     .dev-box {
-        display: none;
-        background: #fff3e8;
-        border-bottom: 1px solid #ffd4ab;
-        padding: 12px 16px;
-        gap: 10px;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 20px;
+      background: rgba(255, 107, 0, 0.05);
+      border-bottom: 1px solid rgba(255, 107, 0, 0.15);
+      position: relative;
+      z-index: 5;
     }
 
     .dev-box.visible {
-        display: flex;
+      display: flex;
     }
 
     .dev-box input {
-        flex: 1;
-        min-width: 0;
-        max-width: 280px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        font-size: 15px;
+      flex: 1;
+      min-width: 0;
+      max-width: 260px;
+      padding: 10px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .dev-box input:focus {
+      border-color: rgba(255, 107, 0, 0.4);
+    }
+
+    .dev-box input::placeholder {
+      color: #888;
     }
 
     .dev-box button {
-        padding: 10px 18px;
-        border: none;
-        background: #ff6a00;
-        color: white;
-        border-radius: 10px;
-        font-size: 15px;
-        cursor: pointer;
-        white-space: nowrap;
+      padding: 10px 20px;
+      background: var(--orange);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
     }
 
-    /* MAIN CONTAINER */
+    .dev-box button:hover {
+      background: #ff7f1a;
+      transform: translateY(-1px);
+    }
+
+    /* ── MAIN CONTENT ── */
     .container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 40px 24px;
-        gap: 12px;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 52px 24px 40px;
+      gap: 0;
     }
 
-    .emoji-icon {
-        font-size: 64px;
-        line-height: 1;
-        margin-bottom: 8px;
+    /* Logo ring */
+    .logo-ring {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin-bottom: 28px;
+      animation: riseUp 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .emoji-icon img {
-        width: 100px;
-        height: 100px;
+    .logo-ring::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 107, 0, 0.25);
+      animation: spin-ring 10s linear infinite;
+    }
+
+    .logo-ring::after {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 107, 0, 0.1);
+      animation: spin-ring 16s linear infinite reverse;
+    }
+
+    @keyframes spin-ring {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .logo-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255, 107, 0, 0.2);
+      box-shadow: 0 0 40px rgba(255, 107, 0, 0.2), 0 0 80px rgba(255, 107, 0, 0.07);
+      padding: 12px;
+    }
+
+    /* Live badge */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255, 107, 0, 0.25);
+      color: var(--orange);
+      margin-bottom: 18px;
+      animation: riseUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.7);
+      }
     }
 
     h1 {
-        font-size: clamp(24px, 7vw, 36px);
-        color: #222;
-        line-height: 1.2;
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 14px;
+      animation: riseUp 0.7s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--orange);
     }
 
     .subtitle {
-        font-size: clamp(15px, 4vw, 18px);
-        color: #555;
+      font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 8px;
+      animation: riseUp 0.7s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .timing {
-        font-size: clamp(14px, 3.5vw, 16px);
-        color: #777;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      animation: riseUp 0.7s 0.33s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .timing b {
-        color: #ff6a00;
+      color: var(--orange);
     }
 
-    /* ENTER BUTTON */
-    .btn {
-        margin-top: 16px;
-        padding: 16px 40px;
-        font-size: clamp(15px, 4vw, 18px);
-        border: none;
-        border-radius: 50px;
-        background: linear-gradient(45deg, #ff6a00, #ff8c42);
-        color: white;
-        cursor: pointer;
-        box-shadow: 0 5px 18px rgba(255, 106, 0, 0.35);
-        width: min(90%, 280px);
-        font-weight: bold;
-        letter-spacing: 0.3px;
-        transition: transform 0.15s, box-shadow 0.15s;
+    .tagline {
+      font-size: 0.84rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      animation: riseUp 0.7s 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .btn:active {
-        transform: scale(0.97);
-        box-shadow: 0 3px 10px rgba(255, 106, 0, 0.3);
+    /* ── GLASS CARD wrapping buttons ── */
+    .btn-card {
+      width: min(92%, 320px);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 22px 20px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: riseUp 0.7s 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
-    /* POPUP */
+    /* Primary CTA */
+    .btn-primary {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 14px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #ff7f1a;
+      box-shadow: 0 6px 28px rgba(255, 107, 0, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
+    }
+
+    /* Secondary ghost */
+    .btn-secondary {
+      width: 100%;
+      padding: 13px 20px;
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-hover);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Hidden admin buttons — same styling */
+    #adminPageBtn,
+    #adminPayBtn {
+      display: none;
+    }
+
+    /* ── POPUP (time restriction) ── */
     .popup {
-        position: fixed;
-        top: 70px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: min(90%, 360px);
-        background: #d32f2f;
-        color: white;
-        padding: 14px 20px;
-        border-radius: 12px;
-        text-align: center;
-        font-size: 15px;
-        display: none;
-        z-index: 200;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      width: min(88%, 340px);
+      background: rgba(24, 8, 5, 0.92);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem;
+      text-align: center;
+      display: none;
+      z-index: 200;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
-    /* FOOTER */
-    .footer {
-        background: #222;
-        color: #aaa;
-        text-align: center;
-        padding: 14px 16px;
-        font-size: 13px;
+    /* ── UPDATE MODAL ── */
+    #updatePopup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(6px);
     }
 
-    /* Tablet+ adjustments */
-    @media (min-width: 480px) {
-        .header {
-            font-size: 22px;
-            padding: 16px 28px;
-        }
-
-        .emoji-icon {
-            font-size: 72px;
-        }
+    .modal-box {
+      background: #111113;
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 32px 28px;
+      max-width: 340px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      animation: modal-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    @media (min-width: 768px) {
-        .header {
-            font-size: 24px;
-            padding: 18px 36px;
-        }
+    @keyframes modal-pop {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(16px);
+      }
 
-        .container {
-            padding: 60px 40px;
-        }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
-</style>
 
+    .modal-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .modal-box h3 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .modal-box h3 span {
+      color: var(--orange);
+    }
+
+    .modal-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .modal-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: #d4cec8;
+      text-align: left;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 13px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255, 107, 0, 0.3);
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .modal-btn:hover {
+      background: #ff7f1a;
+      transform: translateY(-1px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: rgba(8, 8, 9, 0.7);
+      border-top: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #7a746e;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes riseUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
 
 <body>
-    <div id="updatePopup" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-">
-        <div style="
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        max-width: 350px;
-        width: 90%;
-        text-align: center;
-    ">
-            <h3 style="color:#ff6a00;">🔥 Hostel Bites 2.0</h3>
-            <p style="font-size:14px; color:#444;">
-                🚀 New update is live!<br><br>
-                📦 Track orders:Track your orders<br>
-                ⏳ Live status<br>
-                ⚡ Review/ Request Page: Send review or Request for any product
-            </p>
-            <button onclick="closeUpdatePopup()" style="
-            margin-top: 10px;
-            padding: 10px 20px;
-            border: none;
-            background: #ff6a00;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        ">Got it</button>
-        </div>
+
+  <!-- Background layers -->
+  <div class="bg-wrap"></div>
+  <div class="orb"></div>
+
+  <!-- UPDATE MODAL -->
+  <div id="updatePopup" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-icon">🔥</div>
+      <h3>Hostel <span>Bites</span> 2.0</h3>
+      <div class="modal-features">
+        <div class="modal-feature"><span></span>New item with a free biscuit</div>
+        <div class="modal-feature"><span></span> Get free gift on order above ₹10</div>
+        <div class="modal-feature"><span>📦</span> Track your orders in real-time</div>
+
+      </div>
+      <button class="modal-btn" onclick="closeUpdatePopup()">Got it — let's go!</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-logo">
+      <img src="hostelbites_wbg.png" alt="logo">
+      Hostel <span>&nbsp;Bites</span>&nbsp;2.0
+    </div>
+    <div class="header-actions">
+      <button class="dev-btn" onclick="Contact()">Help</button>
+      <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
     </div>
 
-    <div class="header">
-        <span><img src="hostelbites_wbg.png" alt="logo"> Hostel Bites 2.0</span>
-        <button class="dev-btn" onclick="Contact()">Help</button>
-        <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
+  </header>
+
+  <!-- DEV CODE BOX -->
+  <div class="dev-box" id="devBox">
+    <input type="password" id="devCode" placeholder="Enter Dev Code">
+    <button onclick="checkDevCode()">Unlock</button>
+  </div>
+  <!-- 🔥 OFFER STRIP -->
+  <div class="offer-strip">
+    <div class="offer-track">
+
+      <span>🎁 Free gift on orders above ₹10</span>
+      <span>🍫 Munch Choco Fills + FREE biscuit</span>
+      <span>⚡ Delivery under 7 minutes</span>
+      <span>🔥 Limited time offers — order now!</span>
+
+      <!-- duplicate MANY TIMES -->
+      <span>🎁 Free gift on orders above ₹10</span>
+      <span>🍫 Munch Choco Fills + FREE biscuit</span>
+      <span>⚡ Delivery under 7 minutes</span>
+      <span>🔥 Limited time offers — order now!</span>
+
+      <span>🎁 Free gift on orders above ₹10</span>
+      <span>🍫 Munch Choco Fills + FREE biscuit</span>
+      <span>⚡ Delivery under 7 minutes</span>
+      <span>🔥 Limited time offers — order now!</span>
+
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="container">
+
+    <div class="logo-ring">
+      <img src="hostelbites_wbg.png" alt="logo">
     </div>
 
-    <div class="dev-box" id="devBox">
-        <input type="password" id="devCode" placeholder="Enter Dev Code">
-        <button onclick="checkDevCode()">Unlock</button>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Open 8 PM – 12 AM
     </div>
 
-    <div class="container">
-        <div class="emoji-icon"><img src="hostelbites_wbg.png" alt="logo"></div>
-        <h1>Welcome to Hostel Bites 2.0</h1>
-        <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
-        <p class="timing">Open only from <b>8 PM to 12 AM</b></p>
-        <p><i><b>“Real ones don’t just consume — they belong.”</b></i></p>
-        <button id="adminPageBtn" class="btn" style="display:none;" onclick="openAdminPage()">
-            🛠️ Admin Panel
-        </button>
-        <button id="adminPayBtn" class="btn" style="display:none;" onclick="openQRPage()">
-            💰 Generate Payment QR
-        </button>
-        <button class="btn" onclick="enterStore()">Enter Store</button>
-        <button class="btn" onclick="requestPage()">Request/Review</button>
-        <button class="btn" onclick="downloadApp()">Download App</button>
+    <h1>Welcome to<br><em>Hostel Bites</em></h1>
+    <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
+    <p class="timing">Delivery in <b>under 7 minutes</b></p>
+    <p class="tagline">"Real ones don't just consume — they belong."</p>
+
+    <div class="btn-card">
+      <!-- Hidden admin buttons -->
+      <button id="adminPageBtn" class="btn-secondary" onclick="openAdminPage()">🛠️ Admin Panel</button>
+      <button id="adminPayBtn" class="btn-secondary" onclick="openQRPage()">💰 Generate Payment QR</button>
+      <button id="reqpage" class="btn-secondary" onclick="requestpg()"> Request/ Review</button>
+
+      <button class="btn-primary" onclick="enterStore()">
+        🏪 Enter Store
+      </button>
+      <button class="btn-secondary" onclick="downloadApp()">
+        📲 Download App
+      </button>
     </div>
 
-    <div id="popup" class="popup">
-        ⏰ Store is open only from 8 PM to 12 AM
-    </div>
+  </main>
 
-    <div class="footer">
-        © 2026 Hostel Bites | All rights reserved |
-        Last Updated: 01-05-2026.
-    </div>
+  <!-- TIME RESTRICTION POPUP -->
+  <div id="popup" class="popup">
+    ⏰ Store is open only from <strong>8 PM to 12 AM</strong>
+  </div>
 
-    <script>
-        function downloadApp() {
-            window.location.href = "Hostel_bites.apk";
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Hostel Bites &nbsp;|&nbsp; All rights reserved &nbsp;|&nbsp; Last Updated: 01-05-2026
+  </footer>
+
+  <script>
+    function downloadApp() {
+      window.location.href = "Hostel_bites.apk";
+    }
+
+    function openQRPage() {
+      window.location.href = "payment.html";
+    }
+
+    function openAdminPage() {
+      window.location.href = "admin.html";
+    }
+    function requestpg() {
+      window.location.href = "admin.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateDevButton();
+      setTimeout(() => {
+        if (!localStorage.getItem("updateShown")) {
+          document.getElementById("updatePopup").style.display = "flex";
         }
-        function openQRPage() {
-            window.location.href = "payment.html";
-        }
-        function requestPage() {
-            window.location.href = "request.html";
-        }
-        function openAdminPage() {
-            window.location.href = "admin.html";
-        }
-        document.addEventListener("DOMContentLoaded", () => {
+      }, 4000);
+    });
 
+    function showUpdatePopup() {
+      if (!localStorage.getItem("updateShown")) {
+        document.getElementById("updatePopup").style.display = "flex";
+      }
+    }
+
+    function closeUpdatePopup() {
+      document.getElementById("updatePopup").style.display = "none";
+      localStorage.setItem("updateShown", "true");
+    }
+
+    function Contact() {
+      alert("For any help, contact us at:\n📧 8218325600, 9149020075\n");
+    }
+
+    function showDevInput() {
+      let box = document.getElementById("devBox");
+      box.classList.toggle("visible");
+    }
+
+    function checkDevCode() {
+      let input = document.getElementById("devCode").value;
+      fetch("https://backendhb.onrender.com/api/auth/dev-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        include: "credentials",
+        body: JSON.stringify({ password: input })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            localStorage.setItem("dev", "true");
+            alert("Dev Mode Activated 🔓");
             updateDevButton();
-
-            // ⏳ Wait for OneSignal first, then show popup
-            setTimeout(() => {
-
-                if (!localStorage.getItem("updateShown")) {
-                    document.getElementById("updatePopup").style.display = "flex";
-                }
-
-            }, 2000); // delay increased
-
+          } else {
+            alert("Wrong Code ❌");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Server error ❌");
         });
-        function showUpdatePopup() {
-            if (!localStorage.getItem("updateShown")) {
-                document.getElementById("updatePopup").style.display = "flex";
-            }
-        }
+    }
 
-        function closeUpdatePopup() {
-            document.getElementById("updatePopup").style.display = "none";
-            localStorage.setItem("updateShown", "true");
-        }
+    function updateDevButton() {
+      let btn = document.getElementById("devButton");
+      let qrBtn = document.getElementById("adminPayBtn");
+      let adminPageBtn = document.getElementById("adminPageBtn");
 
-        function Contact() {
-            alert("For any help, contact us at:\n📧 8218325600, 9149020075\n");
-        }
+      if (localStorage.getItem("dev") === "true") {
+        btn.innerText = "Logout Dev";
+        btn.onclick = logoutDev;
+        if (qrBtn) qrBtn.style.display = "flex";
+        if (adminPageBtn) adminPageBtn.style.display = "flex";
+      } else {
+        btn.innerText = "Dev Mode";
+        btn.onclick = handleDevClick;
+        if (qrBtn) qrBtn.style.display = "none";
+        if (adminPageBtn) adminPageBtn.style.display = "none";
+      }
+    }
 
+    function logoutDev() {
+      localStorage.removeItem("dev");
+      alert("Dev Mode Disabled 🔒");
+      updateDevButton();
+    }
 
-        function showDevInput() {
-            let box = document.getElementById("devBox");
-            box.classList.toggle("visible");
-        }
+    function handleDevClick() {
+      showDevInput();
+    }
 
-        function checkDevCode() {
-            let input = document.getElementById("devCode").value;
+    function isStoreOpen() {
+      if (localStorage.getItem("dev") === "true") return true;
+      let hour = new Date().getHours();
+      return hour >= 20 && hour < 24;
+    }
 
-            fetch("https://backendhb.onrender.com/api/auth/dev-login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ password: input })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        localStorage.setItem("dev", "true");
-                        alert("Dev Mode Activated 🔓");
-                        updateDevButton();
-                    } else {
-                        alert("Wrong Code ❌");
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Server error ❌");
-                });
-        }
-
-        function updateDevButton() {
-            let btn = document.getElementById("devButton");
-            let qrBtn = document.getElementById("adminPayBtn");
-            let adminPageBtn = document.getElementById("adminPageBtn");
-
-            if (localStorage.getItem("dev") === "true") {
-                btn.innerText = "Logout Dev";
-                btn.onclick = logoutDev;
-
-                // 🔥 SHOW BUTTONS
-                if (qrBtn) qrBtn.style.display = "block";
-                if (adminPageBtn) adminPageBtn.style.display = "block";
-
-            } else {
-                btn.innerText = "Dev Mode";
-                btn.onclick = handleDevClick;
-
-                // 🔥 HIDE BUTTONS
-                if (qrBtn) qrBtn.style.display = "none";
-                if (adminPageBtn) adminPageBtn.style.display = "none";
-            }
-        }
-
-        function logoutDev() {
-            localStorage.removeItem("dev");
-            alert("Dev Mode Disabled 🔒");
-            updateDevButton();
-        }
-
-        function handleDevClick() {
-            showDevInput();
-        }
-
-        function isStoreOpen() {
-            let devAccess = localStorage.getItem("dev") === "true";
-            if (devAccess) return true;
-
-            let hour = new Date().getHours();
-
-            return hour >= 20 && hour < 24;
-        }
-
-        function enterStore() {
-            if (isStoreOpen()) {
-                localStorage.setItem("allowed", "true");
-                window.location.href = "hostel_bites.html";
-            } else {
-                let popup = document.getElementById("popup");
-                popup.style.display = "block";
-                setTimeout(() => { popup.style.display = "none"; }, 3000);
-            }
-        }
-
-
-    </script>
+    function enterStore() {
+      if (isStoreOpen()) {
+        localStorage.setItem("allowed", "true");
+        window.location.href = "hostel_bites.html";
+      } else {
+        let popup = document.getElementById("popup");
+        popup.style.display = "block";
+        setTimeout(() => { popup.style.display = "none"; }, 3000);
+      }
+    }
+  </script>
 
 </body>
 
