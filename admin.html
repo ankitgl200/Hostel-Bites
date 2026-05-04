@@ -9,163 +9,166 @@
 
   <style>
     * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-:root {
-  --orange: #ff6b00;
-  --bg: #0a0a0b;
-  --card: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.1);
-  --text: #f0ece6;
-  --muted: #8a8680;
-}
+    :root {
+      --orange: #ff6b00;
+      --bg: #0a0a0b;
+      --card: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f0ece6;
+      --muted: #8a8680;
+    }
 
-/* BODY */
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    /* BODY */
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-/* MAIN BOX */
-.box {
-  width: 100%;
-  max-width: 420px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 28px;
-  border-radius: 18px;
-  backdrop-filter: blur(12px);
-  display: flex;
-  flex-direction: column;
-  gap: 18px; /* 🔥 FIX: spacing between sections */
-}
+    /* MAIN BOX */
+    .box {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      /* 🔥 FIX: spacing between sections */
+    }
 
-/* HEADINGS */
-h2 {
-  text-align: center;
-  color: var(--orange);
-  margin-bottom: 5px;
-}
+    /* HEADINGS */
+    h2 {
+      text-align: center;
+      color: var(--orange);
+      margin-bottom: 5px;
+    }
 
-/* LOGIN + PANEL SECTIONS */
-#loginBox,
-#adminPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px; /* 🔥 FIX: spacing inside sections */
-}
+    /* LOGIN + PANEL SECTIONS */
+    #loginBox,
+    #adminPanel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      /* 🔥 FIX: spacing inside sections */
+    }
 
-/* INPUT */
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-  color: var(--text);
-  outline: none;
-  transition: 0.2s;
-}
+    /* INPUT */
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      outline: none;
+      transition: 0.2s;
+    }
 
-input::placeholder {
-  color: #777;
-}
+    input::placeholder {
+      color: #777;
+    }
 
-input:focus {
-  border-color: var(--orange);
-  background: rgba(255,107,0,0.05);
-  box-shadow: 0 0 0 2px rgba(255,107,0,0.15);
-}
+    input:focus {
+      border-color: var(--orange);
+      background: rgba(255, 107, 0, 0.05);
+      box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.15);
+    }
 
-/* BUTTON BASE */
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.2s;
-}
+    /* BUTTON BASE */
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-/* LOGIN BUTTON */
-#loginBox button {
-  background: var(--orange);
-  color: white;
-}
+    /* LOGIN BUTTON */
+    #loginBox button {
+      background: var(--orange);
+      color: white;
+    }
 
-#loginBox button:hover {
-  background: #ff7f1a;
-  transform: translateY(-1px);
-}
+    #loginBox button:hover {
+      background: #ff7f1a;
+      transform: translateY(-1px);
+    }
 
-/* ADMIN PANEL BUTTONS */
-#adminPanel button {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--border);
-  color: var(--text);
-}
+    /* ADMIN PANEL BUTTONS */
+    #adminPanel button {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
 
-#adminPanel button:hover {
-  background: rgba(255,255,255,0.12);
-  transform: translateY(-1px);
-}
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
+    #adminPanel button:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #fff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  display: inline-block;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
-  margin-right: 6px;
-}
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
 
-/* MESSAGE */
-#msg {
-  text-align: center;
-  font-size: 14px;
-  color: #ff6b6b;
-  margin-top: 5px;
-}
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-/* MOBILE */
-@media (max-width: 480px) {
-  .box {
-    padding: 20px;
-    gap: 15px;
-  }
+    /* MESSAGE */
+    #msg {
+      text-align: center;
+      font-size: 14px;
+      color: #ff6b6b;
+      margin-top: 5px;
+    }
 
-  h2 {
-    font-size: 18px;
-  }
+    /* MOBILE */
+    @media (max-width: 480px) {
+      .box {
+        padding: 20px;
+        gap: 15px;
+      }
 
-  input,
-  button {
-    font-size: 14px;
-  }
-}
+      h2 {
+        font-size: 18px;
+      }
+
+      input,
+      button {
+        font-size: 14px;
+      }
+    }
   </style>
 
 </head>
@@ -197,9 +200,8 @@ button {
 
       </div>
 
-      <p id="msg"></p>
-
     </div>
+    <p id="msg"></p>
 
   </div>
 
