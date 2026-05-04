@@ -46,21 +46,6 @@ function gotoFeedbacks() {
     window.location.href = "feedbackget.html";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    let loginBox = document.getElementById("loginBox");
-    let adminPanel = document.getElementById("adminPanel");
-
-    if (isLoggedIn === "true") {
-        loginBox.style.display = "none";
-        adminPanel.style.display = "flex"; // 🔥 control here
-    } else {
-        loginBox.style.display = "block";
-        adminPanel.style.display = "none";
-    }
-
-});
-
 function logout() {
     localStorage.removeItem("adminLoggedIn");
 
