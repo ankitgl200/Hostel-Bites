@@ -151,6 +151,7 @@ function update(id, status) {
     fetch("https://backendhb.onrender.com/api/orders/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ id, status })
     })
         .then(res => res.json())
@@ -163,6 +164,7 @@ function del(id) {
     fetch("https://backendhb.onrender.com/api/orders/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ id })
     })
         .then(res => res.json())
@@ -232,7 +234,9 @@ let lastOrderCount = 0;
 
 loadOrders();
 setInterval(() => {
-    fetch("https://backendhb.onrender.com/api/orders")
+    fetch("https://backendhb.onrender.com/api/orders", {
+        credentials: "include"
+    })
         .then(res => res.json())
         .then(data => {
             if (JSON.stringify(data) !== lastOrders) {
