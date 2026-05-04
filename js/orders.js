@@ -21,7 +21,9 @@ function formatDateTime(dateStr) {
 }
 
 function loadOrders() {
-    fetch("https://backendhb.onrender.com/api/orders")
+    fetch("https://backendhb.onrender.com/api/orders", {
+        credentials: "include"
+    })
         .then(res => res.json())
         .then(data => {
 
