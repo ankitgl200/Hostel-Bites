@@ -44,7 +44,10 @@ async function login() {
         if (data.success) {
             msg.style.color = "#22c55e";
             msg.innerText = "✅ Login successful";
-            setTimeout(() => location.reload(), 500);
+
+            // 🔥 DIRECT UI SWITCH (NO RELOAD)
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("adminPanel").style.display = "flex";
         } else {
             msg.style.color = "#ef4444";
             msg.innerText = "❌ Wrong password";
@@ -72,12 +75,14 @@ function gotoFeedbacks() {
     window.location.href = "feedbackget.html";
 }
 
-function logout() {
-    localStorage.removeItem("adminLoggedIn");
+async function logout() {
+    await fetch("https://backendhb.onrender.com/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+    });
 
     document.getElementById("adminPanel").style.display = "none";
     document.getElementById("loginBox").style.display = "block";
 
-    // 🔥 optional hard reset
     location.reload();
 }
