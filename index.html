@@ -719,6 +719,10 @@
       line-height: 1.5;
     }
 
+    .floating-review {
+      cursor: pointer;
+    }
+
     @media (max-width: 500px) {
       .floating-review {
         right: 10px;
@@ -769,7 +773,7 @@
     <!-- HEADER -->
     <header class="header">
       <div class="header-logo">
-        <img src="hostelbites_wbg.png" alt="logo">
+        <img src="files/hostelbites_wbg.png" alt="logo">
         Hostel <span>&nbsp;Bites</span>&nbsp;2.0
       </div>
       <div class="header-actions">
@@ -813,7 +817,7 @@
   <main class="container">
 
     <div class="logo-ring">
-      <img src="hostelbites_wbg.png" alt="logo">
+      <img src="files/hostelbites_wbg.png" alt="logo">
     </div>
 
     <div class="live-badge">
@@ -828,15 +832,18 @@
 
     <div class="btn-card">
       <!-- Hidden admin buttons -->
-      <button id="adminPageBtn" class="btn-secondary" onclick="openAdminPage()">🛠️ Admin Panel</button>
-      <button id="adminPayBtn" class="btn-secondary" onclick="openQRPage()">💰 Generate Payment QR</button>
-      <button id="reqpage" class="btn-secondary" onclick="requestpg()"> Request/ Review</button>
+      <button id="adminPageBtn" class="btn-secondary" onclick="openAdminPage()"> <img src="./asset/admin.svg"
+          alt="Admin.svg"> Admin Panel</button>
+      <button id="adminPayBtn" class="btn-secondary" onclick="openQRPage()"> <img src="./asset/payment.svg"
+          alt="payment.svg"> Generate QR</button>
+      <button id="reqpage" class="btn-secondary" onclick="requestpg()"> <img src="./asset/rivew.svg" alt="download.svg">
+        Request/ Review</button>
 
       <button class="btn-primary" onclick="enterStore()">
-        🏪 Enter Store
+        <img src="./asset/store.svg" alt=""> Enter Store
       </button>
       <button class="btn-secondary" onclick="downloadApp()">
-        📲 Download App
+        <img src="./asset/download.svg" alt="download.svg"> Download App
       </button>
     </div>
 
@@ -866,14 +873,14 @@
     }
 
     function openQRPage() {
-      window.location.href = "payment.html";
+      window.location.href = "files/payment.html";
     }
 
     function openAdminPage() {
-      window.location.href = "admin.html";
+      window.location.href = "files/admin.html";
     }
     function requestpg() {
-      window.location.href = "request.html";
+      window.location.href = "files/request.html";
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -966,7 +973,7 @@
     function enterStore() {
       if (isStoreOpen()) {
         localStorage.setItem("allowed", "true");
-        window.location.href = "hostel_bites.html";
+        window.location.href = "files/hostel_bites.html";
       } else {
         let popup = document.getElementById("popup");
         popup.style.display = "block";
@@ -1013,6 +1020,11 @@
       }
     }
 
+    function shortText(text, limit = 50) {
+      if (!text) return "";
+      return text.length > limit ? text.slice(0, limit) + "..." : text;
+    }
+
     // 🔄 SHOW ONE BY ONE
     function showReview() {
       if (!reviews || reviews.length === 0) return;
@@ -1021,12 +1033,21 @@
 
       if (!r || !r.name) return; // 🔥 prevents crash
 
+      const box = document.getElementById("floatingReview");
+
+      box.onclick = () => openFullReview(r);
+
       document.getElementById("frName").innerText = r.name;
-      document.getElementById("frMsg").innerText = r.message;
+      document.getElementById("frMsg").innerText = shortText(r.message, 65);
       document.getElementById("frAvatar").innerHTML = createAvatar(r.name);
 
       currentIndex = (currentIndex + 1) % reviews.length;
     }
+
+    function openFullReview(review) {
+  localStorage.setItem("selectedReviewId", review._id); // ✅ store ID only
+  window.location.href = "files/request.html";
+}
 
     // 🚀 INIT
     loadFloatingReviews();
