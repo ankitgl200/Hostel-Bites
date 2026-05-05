@@ -1038,7 +1038,7 @@
       box.onclick = () => openFullReview(r);
 
       document.getElementById("frName").innerText = r.name;
-      document.getElementById("frMsg").innerText = shortText(r.message, 65);
+      document.getElementById("frMsg").innerText = shortText(r.message, 50);
       document.getElementById("frAvatar").innerHTML = createAvatar(r.name);
 
       currentIndex = (currentIndex + 1) % reviews.length;
