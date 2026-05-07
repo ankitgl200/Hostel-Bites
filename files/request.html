@@ -724,6 +724,12 @@
         }
     </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+    (function () {
+        emailjs.init("PfQ_ei-koRwFV29qp"); // 🔥 required
+    })();
+</script>
 
 <body>
 
@@ -778,7 +784,7 @@
                                     <option>X</option>
                                     <option>Y</option>
                                     <option>Z</option>
-                                        
+
                                 </select>
                             </div>
                             <div class="select-wrap">
@@ -872,6 +878,8 @@
     </div>
 
     <script>
+
+
 
         /* ── Input filters ── */
         function onlyLetters(el) {
@@ -972,7 +980,21 @@
             document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
             document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
         }
+        function sendmail() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const type = document.querySelector('input[name="type"]:checked').value;
+            emailjs.send("service_lzkgd0k", "template_qd9qhtj", {
+                type: type,
+                name: name,
+                email: email
 
+            }).then(() => {
+                console.log("Mail sent");
+            }).catch(err => {
+                console.log("Mail error:", err);
+            });
+        }
         /* ── Submit ── */
         async function submitForm() {
             if (!validateAll()) {
@@ -1007,12 +1029,15 @@
                 const result = await res.json();
 
                 if (result.success) {
+                    sendmail();
                     showPopup('✅ Submitted successfully — thank you!');
                     resetForm();
+
                 } else {
                     showPopup('❌ Submission failed, please try again', false);
                 }
             } catch {
+                console.log(err);
                 showPopup('⚠️ Server error — please try later', false);
             }
 
