@@ -165,7 +165,9 @@ function submitData() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    if (!localStorage.getItem("adminToken")) window.location.href = "admin.html";
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+        window.location.href = "admin.html";
+    }
 
 });
 
