@@ -11,7 +11,6 @@
 async function checkAuth() {
   try {
     const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` },
       credentials: "include"
     });
 
