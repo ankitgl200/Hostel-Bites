@@ -1,6 +1,5 @@
 async function checkAuth() {
     const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
-        headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` },
         credentials: "include"
     });
 
@@ -43,7 +42,6 @@ async function login() {
         const data = await res.json();
 
         if (data.success) {
-            localStorage.setItem("adminToken", data.token);
             msg.style.color = "#22c55e";
             msg.innerText = "✅ Login successful";
 
@@ -85,7 +83,6 @@ async function logout() {
         method: "POST",
         credentials: "include"
     });
-    localStorage.removeItem("adminToken");
 
     document.getElementById("adminPanel").style.display = "none";
     document.getElementById("loginBox").style.display = "block";
