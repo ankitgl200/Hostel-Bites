@@ -2,6 +2,7 @@ let audio = new Audio("asset/notify.mp3");
 let lastOrderId = null;
 let lastOrders = "";
 let firstLoad = true; // 🚀 ADD THIS
+const authHeader = () => ({ "Authorization": `Bearer ${localStorage.getItem("adminToken")}` });
 
 function formatDateTime(dateStr) {
     const d = new Date(dateStr);
@@ -22,6 +23,7 @@ function formatDateTime(dateStr) {
 
 function loadOrders() {
     fetch("https://backendhb.onrender.com/api/orders", {
+        headers: authHeader(),
         credentials: "include"
     })
         .then(res => res.json())
@@ -150,7 +152,7 @@ function toggleDetails(id) {
 function update(id, status) {
     fetch("https://backendhb.onrender.com/api/orders/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { ...authHeader(), "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ id, status })
     })
@@ -163,7 +165,7 @@ function update(id, status) {
 function del(id) {
     fetch("https://backendhb.onrender.com/api/orders/delete", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { ...authHeader(), "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ id })
     })
@@ -235,7 +237,8 @@ let lastOrderCount = 0;
 loadOrders();
 setInterval(() => {
     fetch("https://backendhb.onrender.com/api/orders", {
-        credentials: "include"
+        credentials: "include",
+        headers: authHeader()
     })
         .then(res => res.json())
         .then(data => {
