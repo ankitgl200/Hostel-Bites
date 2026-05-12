@@ -1007,7 +1007,8 @@
   <div class="header">
     <div class="header-title">🍟 Hostel <span>Bites</span> 2.0</div>
     <button class="cart-btn" onclick="openCart()">
-      <img style="filter: invert();" src="../asset/cart.svg" alt=""> Cart <span class="cart-count" id="cartCount">0</span>
+      <img style="filter: invert();" src="../asset/cart.svg" alt=""> Cart <span class="cart-count"
+        id="cartCount">0</span>
     </button>
   </div>
 
@@ -1023,8 +1024,9 @@
 
   <div id="ordersPage" class="hidden">
     <div class="orders-panel">
-      <div style="display: flex;"><img  style="filter: invert();  margin-bottom: 14px;" src="../asset/delivery.svg" alt="">
-      <h3 style="font-size:18px;font-weight:900;margin-bottom:14px"> Your Orders</h3>
+      <div style="display: flex;"><img style="filter: invert();  margin-bottom: 14px;" src="../asset/delivery.svg"
+          alt="">
+        <h3 style="font-size:18px;font-weight:900;margin-bottom:14px"> Your Orders</h3>
       </div>
       <div id="ordersList"></div>
     </div>
@@ -1207,7 +1209,7 @@
 
 
 
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate','Drinks'];
+    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
     let cart = {};
     let activeCat = 'All';
     let orderCounter = parseInt(localStorage.getItem('orderCounter') || '100');
@@ -1500,6 +1502,20 @@
         }),
         total: cartTotal()
       };
+      let block = document.getElementById('custRoomAlpha').value;
+      let total = cartTotal();
+
+      // 🚫 Y & Z minimum order check
+      if ((block === "Y" || block === "Z") && total < 50) {
+        // alert("❌ Only orders above ₹50 are accepted for Y & Z block");
+        showToast("⚠️ Minimum order Value for Y & Z block is ₹50");
+
+        btn.disabled = false;
+        btn.innerHTML = "✅ Place Order";
+        isPlacingOrder = false;
+
+        return; // 🚨 STOP order
+      }
 
       if (!order.name || !order.room || !order.phone) {
         alert("Fill all details ❌");
