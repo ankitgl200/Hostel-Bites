@@ -1,4 +1,4 @@
-let audio = new Audio("asset/notify.mp3");
+let audio = new Audio("notify.mp3");
 let lastOrderId = null;
 let lastOrders = "";
 let firstLoad = true; // 🚀 ADD THIS
