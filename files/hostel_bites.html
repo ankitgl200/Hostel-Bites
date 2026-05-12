@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <title>Hostel Bites</title>
@@ -368,6 +368,11 @@
 
     /* 🔥 Smooth animation */
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ and Edge */
+    user-select: none;
   }
 
   .nav-btn.active {
@@ -2036,7 +2041,7 @@
               loadMyOrder();
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       }, 3000);
 
       // Auto-refresh products every 5s — silent, no skeleton flash
@@ -2054,7 +2059,7 @@
                 renderProducts();
               }
             })
-            .catch(() => {});
+            .catch(() => { });
         }
       }, 5000);
     });
@@ -2103,7 +2108,7 @@
           const count = data.filter(o => o.phone === phone).length;
           document.getElementById('profileOrders').textContent = count;
         })
-        .catch(() => {});
+        .catch(() => { });
     }
     function updateProfilePage() {
       const phone = localStorage.getItem('userPhone');
@@ -2122,7 +2127,7 @@
             document.getElementById('profilePageSince').textContent = since.toLocaleDateString();
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
 
     // ================= PRODUCTS & CART =================
@@ -2154,10 +2159,10 @@
               ${p.oprice ? `<span class="old-price">Rs.${p.oprice}</span>` : ''}
             </div>
             ${outOfStock
-              ? `<button class="add-btn" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-times"></i> Unavailable</button>`
-              : qty === 0
-                ? `<button class="add-btn" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i> Add to Cart</button>`
-                : `<div class="qty-controls">
+            ? `<button class="add-btn" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-times"></i> Unavailable</button>`
+            : qty === 0
+              ? `<button class="add-btn" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i> Add to Cart</button>`
+              : `<div class="qty-controls">
                     <button class="qty-btn" onclick="removeFromCart('${p.id}')">-</button>
                     <span class="qty-num">${qty}</span>
                     <button class="qty-btn" onclick="addToCart('${p.id}')">+</button>
