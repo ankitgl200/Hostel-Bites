@@ -1506,9 +1506,9 @@
       let total = cartTotal();
 
       // 🚫 Y & Z minimum order check
-      if ((block === "Y" || block === "Z") && total < 50) {
+      if ((block === "Y" || block === "Z") && total < 40) {
         // alert("❌ Only orders above ₹50 are accepted for Y & Z block");
-        showToast("⚠️ Minimum order Value for Y & Z block is ₹50");
+        showToast("⚠️ Minimum order Value for Y & Z block is ₹40");
 
         btn.disabled = false;
         btn.innerHTML = "✅ Place Order";
