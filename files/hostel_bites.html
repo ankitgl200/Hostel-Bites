@@ -1939,6 +1939,7 @@
         <button class="place-btn" onclick="placeOrder()" id="orderBtn">
           <i class="fas fa-check-circle"></i> Place Order
         </button>
+        <audio id="successSound" src="success.mp3" preload="auto"></audio>
         <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
       </div>
       <div class="success-screen" id="successScreen">
@@ -2365,6 +2366,7 @@
         const data = await res.json();
 
         if (data.success) {
+          document.getElementById("successSound").play().catch(() => { });
           localStorage.setItem('userPhone', phone);
           const orderId = data._id || ('TEMP' + Date.now());
           document.getElementById('successOrderId').innerText = 'Order ID: ' + orderId.toString().slice(-5);
