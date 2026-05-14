@@ -838,7 +838,8 @@
       <button id="reqpage" class="btn-secondary" onclick="requestpg()"> <img src="./asset/rivew.svg" alt="download.svg">
         Request/ Review</button>
 
-      <button class="btn-primary" onclick=alert("Store is under maintanence")>
+      <!-- <button class="btn-primary" onclick="enterStore()"> -->
+      <button class="btn-primary" onclick="givealt()">
         <img src="./asset/store.svg" alt=""> Enter Store
       </button>
       <button class="btn-secondary" onclick="downloadApp()">
@@ -867,6 +868,9 @@
   </footer>
 
   <script>
+    function givealt(){
+      alert("Store is under Maintenance Break \n Thank you for your patience and understanding! 😊");
+    }
     function downloadApp() {
       window.location.href = "Hostel_bites.apk";
     }
