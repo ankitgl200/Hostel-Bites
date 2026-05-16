@@ -3,14 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hostel Bites</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<base target="_blank">
+<base target="_blank">
 </head>
 
 <style>
@@ -368,11 +368,6 @@
 
     /* 🔥 Smooth animation */
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    -webkit-user-select: none;
-    /* Safari */
-    -ms-user-select: none;
-    /* IE 10+ and Edge */
-    user-select: none;
   }
 
   .nav-btn.active {
@@ -1743,6 +1738,115 @@
     border-radius: 16px;
     margin-bottom: 12px;
   }
+  /* ===== REWARDS SYSTEM ===== */
+  .rewards-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .rstat {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 10px;
+    text-align: center;
+  }
+  .rstat-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .rstat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .rewards-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .reward-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.2s;
+  }
+  .reward-card.active-reward {
+    border-color: var(--success);
+    background: rgba(34,197,94,0.06);
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.15);
+  }
+  .reward-card.pending-reward {
+    opacity: 0.7;
+    border-color: var(--warning);
+    background: rgba(245,158,11,0.04);
+  }
+  .reward-card.used-reward {
+    opacity: 0.4;
+  }
+  .reward-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--surface-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .reward-card.active-reward .reward-icon-wrap {
+    background: rgba(34,197,94,0.15);
+  }
+  .reward-info { flex: 1; min-width: 0; }
+  .reward-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .reward-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .reward-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-active { background: var(--success-bg); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-pending { background: rgba(245,158,11,0.1); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-used { background: var(--surface-3); color: var(--text-muted); border: 1px solid var(--border); }
+  /* Applied rewards in summary */
+  .summary-reward-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--success);
+    border-top: 1px dashed rgba(34,197,94,0.2);
+    margin-top: 4px;
+  }
+  .summary-reward-row span:first-child { display: flex; align-items: center; gap: 6px; }
 </style>
 
 <body>
@@ -1802,11 +1906,49 @@
       <div id="rewardsPage" class="page-section hidden">
         <div class="orders-page">
           <h2><i class="fas fa-gift" style="color: var(--accent-light);"></i> Rewards</h2>
-          <div style="text-align:center; padding:80px 20px; color:var(--text-muted);">
-            <div style="font-size:64px; margin-bottom:20px; opacity:0.3;">&#127873;</div>
-            <p style="font-size:18px; font-weight:700; color:var(--text-secondary);">Coming Soon</p>
-            <p style="font-size:14px; margin-top:8px;">Earn exciting rewards on every order!
-            </p>
+
+          <!-- info banner -->
+          <div style="background:rgba(232,93,4,0.08);border:1px solid rgba(232,93,4,0.2);border-radius:14px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);line-height:1.6;">
+            <i class="fas fa-bolt" style="color:var(--accent-light);margin-right:6px;"></i>
+            Active rewards are <b style="color:var(--text)">automatically applied</b> on checkout (up to 2 per order). Each reward expires in <b style="color:var(--text)">7 days</b> if not used — earn more by ordering!
+          </div>
+
+          <!-- Stats bar -->
+          <div class="rewards-stats">
+            <div class="rstat">
+              <div class="rstat-num" id="rewardStatPending">0</div>
+              <div class="rstat-label">Pending</div>
+            </div>
+            <div class="rstat">
+              <div class="rstat-num" id="rewardStatActive" style="color:var(--success)">0</div>
+              <div class="rstat-label">Active</div>
+            </div>
+            <div class="rstat">
+              <div class="rstat-num" id="rewardStatUsed" style="color:var(--text-muted)">0</div>
+              <div class="rstat-label">Used</div>
+            </div>
+          </div>
+
+          <!-- Active rewards section -->
+          <div class="rewards-section-title"><i class="fas fa-check-circle" style="color:var(--success);margin-right:6px;"></i>Active Rewards (1-time use)</div>
+          <div id="expiryBanner" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--warning);font-weight:600;">
+            <i class="fas fa-clock" style="margin-right:6px;"></i>Some rewards expire soon! Use them before they vanish.
+          </div>
+          <div id="activeRewardsList"></div>
+
+          <!-- Pending (locked) rewards -->
+          <div class="rewards-section-title" style="margin-top:24px;"><i class="fas fa-lock" style="color:var(--warning);margin-right:6px;"></i>Pending (waiting for delivery)</div>
+          <div id="pendingRewardsList"></div>
+
+          <!-- Dismissed rewards -->
+          <div class="rewards-section-title" style="margin-top:24px;"><i class="fas fa-times-circle" style="color:var(--text-muted);margin-right:6px;"></i>Used / Expired</div>
+          <div id="usedRewardsList"></div>
+
+          <!-- empty state -->
+          <div id="rewardsEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted);">
+            <div style="font-size:56px;margin-bottom:16px;opacity:0.3;">🎁</div>
+            <p style="font-size:16px;font-weight:700;color:var(--text-secondary);">No Rewards Yet</p>
+            <p style="font-size:13px;margin-top:6px;">Place an order to earn your first scratch card!</p>
           </div>
         </div>
       </div>
@@ -1818,8 +1960,8 @@
           <div class="profile-header" style="margin-bottom:32px;">
             <div class="profile-avatar" id="profilePageAvatar" style="width:100px; height:100px; font-size:40px;">
               &#128100;</div>
-            <div class="profile-name" id="profilePageName" style="font-size:24px;">hbuser</div>
-            <div class="profile-phone" id="profilePagePhone" style="font-size:14px;">+91 XXXXX</div>
+            <div class="profile-name" id="profilePageName" style="font-size:24px;">User</div>
+            <div class="profile-phone" id="profilePagePhone" style="font-size:14px;">+91 ...</div>
           </div>
           <div
             style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:16px;">
@@ -1938,6 +2080,7 @@
         <div class="summary-box">
           <div class="summary-title">Order Summary</div>
           <div id="summaryItems"></div>
+          <div id="summaryRewardRows"></div>
           <div class="summary-row total">
             <span>Total</span>
             <span id="summaryTotal">Rs.0</span>
@@ -1970,8 +2113,8 @@
       </div>
       <div class="profile-header">
         <div class="profile-avatar" id="profileAvatar">&#128100;</div>
-        <div class="profile-name" id="profileName">hbuser</div>
-        <div class="profile-phone" id="profilePhone">+91 XXXXX</div>
+        <div class="profile-name" id="profileName">User</div>
+        <div class="profile-phone" id="profilePhone">+91 ...</div>
       </div>
       <div class="profile-info-row">
         <span>Room</span>
@@ -2006,6 +2149,34 @@
     </div>
   </div>
 
+  <!-- ================= SCRATCH CARD MODAL ================= -->
+  <div class="modal-overlay" id="scratchModal" style="z-index:500;">
+    <div class="modal-box" style="text-align:center;padding:36px 28px;max-width:340px;">
+      <div id="scratchPhase1">
+        <div style="font-size:48px;margin-bottom:8px;">🎰</div>
+        <h3 style="margin-bottom:6px;">You earned a Scratch Card!</h3>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:24px;">Your order was delivered. Scratch to reveal your reward!</p>
+        <div id="scratchCardWrap" style="position:relative;width:220px;height:100px;margin:0 auto 24px;border-radius:16px;overflow:hidden;cursor:pointer;" onclick="revealScratch()">
+          <canvas id="scratchCanvas" width="220" height="100" style="position:absolute;top:0;left:0;border-radius:16px;touch-action:none;"></canvas>
+          <div id="scratchReward" style="width:100%;height:100%;background:linear-gradient(135deg,var(--gradient-1),var(--gradient-2));border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;">
+            <div id="scratchRewardIcon" style="font-size:28px;">🎁</div>
+            <div id="scratchRewardText" style="font-weight:800;font-size:13px;color:#fff;padding:0 12px;text-align:center;line-height:1.3;"></div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);">Scratch the card above to reveal</p>
+      </div>
+      <div id="scratchPhase2" style="display:none;">
+        <div id="scratchRevealIcon" style="font-size:56px;margin-bottom:12px;"></div>
+        <h3 id="scratchRevealTitle" style="margin-bottom:6px;"></h3>
+        <p id="scratchRevealDesc" style="color:var(--text-secondary);font-size:13px;margin-bottom:24px;"></p>
+        <div style="background:var(--success-bg);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--success);">
+          <i class="fas fa-ticket-alt"></i> This reward can be used <b>one time only</b> — it will auto-apply on your next eligible order!
+        </div>
+        <button class="auth-btn" onclick="closeScratchModal()" style="margin-top:0;">Got it! 🎉</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast">
     <span class="toast-icon" id="toastIcon">&#10003;</span>
@@ -2013,58 +2184,53 @@
   </div>
 
   <script>
-    // ================= STATE =================
+    async function apiFetch(url, options = {}) {
+      try {
+        const res = await fetch(url, options);
+        return res;
+      } catch (err) {
+        console.error("API Error:", err);
+        showToast("Server error");
+      }
+    }
+
+    // ================= AUTH & PROFILE =================
+
     let isPlacingOrder = false;
-    let PRODUCTS = [];
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
-    let cart = {};
-    let activeCat = 'All';
-    const UPI_ID = "9149020075@fam";
-    const UPI_NAME = "HostelBites";
 
-    // ================= INIT =================
-    window.addEventListener('DOMContentLoaded', () => {
-      loadRoomOptions('custRoom');
-      renderCats();
-      loadProducts();
-      loadMyOrder();
+    function setAuthLoading(btnId, isLoading, text) {
+      const btn = document.getElementById(btnId);
 
-      // Auto-refresh orders every 3s
-      let lastOrders = "";
-      setInterval(() => {
-        fetch("https://backendhb.onrender.com/api/orders")
-          .then(res => res.json())
-          .then(data => {
-            let newData = JSON.stringify(data);
-            if (newData !== lastOrders) {
-              lastOrders = newData;
-              loadMyOrder();
-            }
-          })
-          .catch(() => { });
-      }, 3000);
+      if (isLoading) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="loader"></span> ${text}`;
+      } else {
+        btn.disabled = false;
 
-      // Auto-refresh products every 5s — silent, no skeleton flash
-      let lastProducts = "";
-      setInterval(() => {
-        const shopPage = document.getElementById('shopPage');
-        if (shopPage && !shopPage.classList.contains('hidden')) {
-          fetch("https://backendhb.onrender.com/api/products")
-            .then(res => res.json())
-            .then(data => {
-              const newData = JSON.stringify(data);
-              if (newData !== lastProducts) {
-                lastProducts = newData;
-                PRODUCTS = data.map(p => ({ ...p, id: p._id }));
-                renderProducts();
-              }
-            })
-            .catch(() => { });
+        if (btnId === "signinBtn") {
+          btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Sign In`;
+        } else {
+          btn.innerHTML = `<i class="fas fa-user-plus"></i> Create Account`;
         }
-      }, 5000);
-    });
+      }
+    }
 
-    // ================= ROOM OPTIONS =================
+
+    function showProductSkeleton() {
+      const grid = document.getElementById('productGrid');
+
+      grid.innerHTML = Array(8).fill(0).map(() => `
+    <div class="product-card skeleton-card skeleton"></div>
+  `).join('');
+    }
+    function showOrdersSkeleton() {
+      const list = document.getElementById('ordersList');
+
+      list.innerHTML = Array(5).fill(0).map(() => `
+    <div class="skeleton skeleton-order"></div>
+  `).join('');
+    }
+
     function loadRoomOptions(selectId) {
       const sel = document.getElementById(selectId);
       sel.innerHTML = '';
@@ -2077,60 +2243,102 @@
       }
     }
 
-    // ================= SKELETON LOADERS =================
-    function showProductSkeleton() {
-      document.getElementById('productGrid').innerHTML = Array(8).fill(0).map(() =>
-        `<div class="product-card skeleton-card skeleton"></div>`
-      ).join('');
-    }
-    function showOrdersSkeleton() {
-      document.getElementById('ordersList').innerHTML = Array(5).fill(0).map(() =>
-        `<div class="skeleton skeleton-order"></div>`
-      ).join('');
+
+    function enterApp() {
+      document.getElementById('authScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      updateProfileUI();
+      loadProducts();
+      renderCats();
+      showPage('shop');
     }
 
-    // ================= PROFILE =================
+    function updateProfileUI() {
+      if (!currentUser) return;
+      document.getElementById('profileName').textContent = "hbuser";
+      document.getElementById('profilePhone').textContent = '+91 XXXXXXXX';
+      document.getElementById('profileRoom').textContent = '-';
+      document.getElementById('profileSince').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+      document.getElementById('profileAvatar').textContent = "H";
+
+      document.getElementById('custName').value = "";
+
+      const roomParts = currentUser.room.split('-');
+      if (roomParts.length === 2) {
+        document.getElementById('custRoomAlpha').value = roomParts[0];
+        document.getElementById('custRoom').value = roomParts[1];
+      }
+    }
+
     function openProfile() {
       document.getElementById('profileModal').classList.add('open');
       fetchOrderCount();
     }
+
     function closeProfile(e) {
       if (!e || e.target === document.getElementById('profileModal')) {
         document.getElementById('profileModal').classList.remove('open');
       }
     }
+
     function fetchOrderCount() {
-      const phone = localStorage.getItem('userPhone');
+      const phone = currentUser ? currentUser.phone : null;
       if (!phone) return;
-      fetch("https://backendhb.onrender.com/api/orders")
-        .then(res => res.json())
-        .then(data => {
-          const count = data.filter(o => o.phone === phone).length;
-          document.getElementById('profileOrders').textContent = count;
-        })
-        .catch(() => { });
-    }
-    function updateProfilePage() {
-      const phone = localStorage.getItem('userPhone');
-      document.getElementById('profilePageName').textContent = "hbuser";
-      document.getElementById('profilePagePhone').textContent = phone ? '+91 ' + phone : '+91 ...';
-      document.getElementById('profilePageRoom').textContent = '-';
-      document.getElementById('profilePageAvatar').textContent = "H";
-      if (!phone) return;
-      fetch("https://backendhb.onrender.com/api/orders")
-        .then(res => res.json())
-        .then(data => {
-          const myOrders = data.filter(o => o.phone === phone);
-          document.getElementById('profilePageOrders').textContent = myOrders.length;
-          if (myOrders.length > 0) {
-            const since = new Date(myOrders[myOrders.length - 1].createdAt);
-            document.getElementById('profilePageSince').textContent = since.toLocaleDateString();
+      fetch("https://backendhb.onrender.com/api/orders/my")
+        .then(res => {
+          if (res.status === 401) {
+
+            location.reload();
           }
+          return res.json();
+        })
+        .then(data => {
+          document.getElementById('profileOrders').textContent = data.length;
         })
         .catch(() => { });
     }
 
+    function updateProfilePage() {
+      if (!currentUser) return;
+      document.getElementById('profilePageName').textContent = "hbuser";
+      document.getElementById('profilePagePhone').textContent = '+91 XXXXXXXX';
+      document.getElementById('profilePageRoom').textContent = '-';
+      document.getElementById('profilePageSince').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+      document.getElementById('profilePageAvatar').textContent = "H";
+      // Fetch order count
+      const phone = currentUser.phone;
+      fetch("https://backendhb.onrender.com/api/orders/my").then(res => {
+        if (res.status === 401) {
+
+          location.reload();
+        }
+        return res.json();
+      })
+        .then(data => {
+          const count = data.filter(o => o.phone === phone).length;
+          document.getElementById('profilePageOrders').textContent = count;
+        })
+        .catch(() => { });
+    }
+
+    function handleLogout() {
+
+      localStorage.removeItem('userPhone');
+      currentUser = null;
+      cart = {};
+      updateCartCount();
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('authScreen').classList.remove('hidden');
+      closeProfile();
+      showToast('Logged out successfully');
+    }
+
     // ================= PRODUCTS & CART =================
+    let PRODUCTS = [];
+    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
+    let cart = {};
+    let activeCat = 'All';
+
     function renderCats() {
       document.getElementById('categoryTabs').innerHTML = CATS.map(c =>
         `<button class="cat-pill${c === activeCat ? ' active' : ''}" onclick="filterCat('${c}')">${c}</button>`
@@ -2176,14 +2384,19 @@
 
     function addToCart(id) {
       const product = PRODUCTS.find(p => p.id === id);
-      if (!product || product.stock === 0) { showToast('❌ Item is out of stock'); return; }
+      if (!product || product.stock === 0) {
+        showToast('Item is out of stock');
+        return;
+      }
       let currentQty = cart[id] || 0;
-      if (currentQty >= product.stock) { showToast(`⚠️ Only ${product.stock} left in stock!`); return; }
+      if (currentQty >= product.stock) {
+        showToast('Only ' + product.stock + ' left in stock!');
+        return;
+      }
       cart[id] = currentQty + 1;
       updateCartCount();
       renderProducts();
       renderCartDrawer();
-      generateDynamicQR();
       showToast('Added ' + product.name + ' to cart');
     }
 
@@ -2194,7 +2407,6 @@
       updateCartCount();
       renderProducts();
       renderCartDrawer();
-      generateDynamicQR();
     }
 
     function updateCartCount() {
@@ -2258,8 +2470,7 @@
       closeCart();
       document.getElementById('successScreen').classList.remove('show');
       document.getElementById('checkoutForm').style.display = 'block';
-      renderSummary();
-      toggleUPI();
+      renderSummaryWithRewards();
       document.getElementById('checkoutModal').classList.add('open');
     }
     function closeCheckout() {
@@ -2270,23 +2481,6 @@
       cart = {};
       updateCartCount();
       renderProducts();
-    }
-
-    function toggleUPI() {
-      const v = document.getElementById('payMethod').value;
-      const upiSection = document.getElementById('upiSection');
-      if (upiSection) {
-        upiSection.style.display = v === 'Online' ? 'block' : 'none';
-        if (v === 'Online') generateDynamicQR();
-      }
-    }
-
-    function generateDynamicQR() {
-      const upiQR = document.getElementById('upiQR');
-      if (!upiQR) return;
-      const amount = cartTotal();
-      const upiLink = `upi://pay?pa=${UPI_ID}&pn=${UPI_NAME}&am=${amount}&cu=INR`;
-      upiQR.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
     }
 
     function renderSummary() {
@@ -2360,7 +2554,7 @@
           const p = PRODUCTS.find(x => x.id == id);
           return { id, name: p.name, price: p.price, qty };
         }),
-        total,
+        total: (window._finalTotal !== undefined ? window._finalTotal : cartTotal()),
         payment: document.getElementById('payMethod').value
       };
 
@@ -2373,9 +2567,17 @@
         const data = await res.json();
 
         if (data.success) {
-          document.getElementById("successSound").play().catch(() => { });
+          document.getElementById("successSound").play().catch(() => {});
           localStorage.setItem('userPhone', phone);
           const orderId = data._id || ('TEMP' + Date.now());
+          // Mark applied rewards as used (one-time only)
+          if (window._appliedRewards && window._appliedRewards.length > 0) {
+            markRewardsUsed(window._appliedRewards.map(r => r.id));
+          }
+          // Earn scratch card for this order
+          earnScratchCard(String(orderId));
+          window._appliedRewards = [];
+          window._finalTotal = undefined;
           document.getElementById('successOrderId').innerText = 'Order ID: ' + orderId.toString().slice(-5);
           document.getElementById('checkoutForm').style.display = 'none';
           document.getElementById('successScreen').classList.add('show');
@@ -2486,13 +2688,14 @@
         const startTime = new Date(o.createdAt).getTime();
 
         function updateTimer() {
-          const now = Date.now();
-          const remaining = 7 * 60 * 1000 - (now - startTime);
+          let now = Date.now();
+          let diff = now - startTime;
+          let remaining = 7 * 60 * 1000 - diff;
 
           if (o.status === 'delivered') {
             timerEl.innerHTML = '<i class="fas fa-check-circle"></i> Delivered';
             timerEl.style.color = 'var(--success)';
-            if (msgEl) msgEl.innerHTML = '🎉 Order Completed';
+            if (msgEl) msgEl.innerHTML = 'Order completed';
             return;
           }
           if (o.status === 'rejected') {
@@ -2502,18 +2705,18 @@
             return;
           }
           if (remaining > 0) {
-            const min = Math.floor(remaining / 60000);
-            const sec = Math.floor((remaining % 60000) / 1000);
-            timerEl.innerHTML = `Estimated: ⏱ ${min}:${sec.toString().padStart(2, '0')}`;
+            let min = Math.floor(remaining / 60000);
+            let sec = Math.floor((remaining % 60000) / 1000);
+            timerEl.innerHTML = `Remaining: ${min}:${sec.toString().padStart(2, '0')}`;
             timerEl.classList.remove('late');
             if (remaining < 60000) timerEl.classList.add('late');
           } else {
-            timerEl.innerHTML = '⏰ Slight Delay';
+            timerEl.innerHTML = 'Slight Delay';
             timerEl.classList.add('late');
             if (msgEl) msgEl.innerHTML = 'You will still receive your order at the same price';
           }
         }
-        const interval = setInterval(updateTimer, 1000);
+        let interval = setInterval(updateTimer, 1000);
         window.timerIntervals.push(interval);
         updateTimer();
       });
@@ -2521,25 +2724,41 @@
 
     // ================= NAVIGATION =================
     function showPage(page) {
+      // Hide all pages
       document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+
+      // Show selected page
       document.getElementById(page + 'Page').classList.remove('hidden');
 
+      // 🔥 REMOVE active from all top nav buttons
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      const navBtns = document.querySelectorAll('.nav-btn:not(.cart-btn)');
-      if (page === 'shop' && navBtns[0]) navBtns[0].classList.add('active');
-      if (page === 'rewards' && navBtns[1]) navBtns[1].classList.add('active');
-      if (page === 'orders' && navBtns[2]) navBtns[2].classList.add('active');
 
+      // 🔥 ADD active to clicked button
+      if (page === 'shop') {
+        document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
+      }
+      if (page === 'rewards') {
+        document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
+        renderRewardsPage();
+      }
+      if (page === 'orders') {
+        document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
+      }
+
+      // remove active
       document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.classList.remove('active'));
+
+      // add active
       if (page === 'shop') document.getElementById('navShop').classList.add('active');
       if (page === 'orders') document.getElementById('navOrders').classList.add('active');
       if (page === 'rewards') document.getElementById('navRewards').classList.add('active');
+      if (page === 'rewards') renderRewardsPage();
       if (page === 'profile') {
+        document.getElementById('profilePage').classList.remove('hidden');
         document.getElementById('navProfile').classList.add('active');
-        updateProfilePage();
-      }
 
-      if (page === 'orders') loadMyOrder();
+        updateProfilePage(); // 🔥 THIS LINE FIXES YOUR ISSUE
+      }
     }
 
     // ================= INFO POPUP =================
@@ -2605,14 +2824,14 @@
       const t = document.getElementById('toast');
       const icon = msg.startsWith('Added') ? '&#10003;' :
         msg.includes('failed') || msg.includes('error') || msg.includes('out of stock') ? '&#10007;' :
-          msg.includes('Only') || msg.includes('⚠️') ? '!' : '&#10003;';
+          msg.includes('Only') ? '!' : '&#10003;';
       document.getElementById('toastIcon').innerHTML = icon;
       document.getElementById('toastMsg').textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // ================= PRODUCTS LOADING =================
+    // ================= DATA LOADING =================
     function loadProducts() {
       showProductSkeleton();
       fetch("https://backendhb.onrender.com/api/products")
@@ -2627,6 +2846,433 @@
             `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa">😕 Failed to load products</div>`;
         });
     }
+
+    // ================= REWARD SYSTEM =================
+    /*
+      Storage key: 'hb_rewards_' + phone
+      Each reward object:
+      {
+        id: string (unique),
+        type: 'discount_1'|'discount_2'|'discount_3'|'same_price'|'free_item'|'nothing',
+        orderId: string,
+        status: 'pending'|'active'|'used',
+        earnedAt: timestamp,
+        usedAt: timestamp|null,
+      }
+      Status flow: pending → active → used (one-time use, expires in 7 days if not used)
+    */
+
+    const REWARD_TYPES = [
+      { type: 'discount_1',  weight: 25, icon: '💰', title: 'Rs.1 Off',             desc: 'Get Rs.1 off on orders above Rs.30',    minOrder: 30  },
+      { type: 'discount_2',  weight: 20, icon: '💸', title: 'Rs.2 Off',             desc: 'Get Rs.2 off on orders above Rs.60',    minOrder: 60  },
+      { type: 'discount_3',  weight: 12, icon: '🤑', title: 'Rs.3 Off',             desc: 'Get Rs.3 off on orders above Rs.90',    minOrder: 90  },
+      { type: 'same_price',  weight: 10, icon: '🔁', title: '1 Item at Same Price', desc: 'Get one item at the same price on orders above Rs.50', minOrder: 50 },
+      { type: 'free_item',   weight: 3,  icon: '🎁', title: 'FREE Item!',           desc: 'Get one item free on orders above Rs.200', minOrder: 200 },
+      { type: 'nothing',     weight: 30, icon: '😅', title: 'Better luck next time!', desc: 'No reward this time. Keep ordering!',  minOrder: 0   },
+    ];
+
+    function getRewardsKey() {
+      const phone = localStorage.getItem('userPhone');
+      return phone ? 'hb_rewards_' + phone : null;
+    }
+    function loadRewards() {
+      const key = getRewardsKey();
+      if (!key) return [];
+      try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+      catch { return []; }
+    }
+    function saveRewards(rewards) {
+      const key = getRewardsKey();
+      if (!key) return;
+      localStorage.setItem(key, JSON.stringify(rewards));
+    }
+    function pickRandomReward() {
+      const total = REWARD_TYPES.reduce((s, r) => s + r.weight, 0);
+      let rand = Math.random() * total;
+      for (const rt of REWARD_TYPES) { rand -= rt.weight; if (rand <= 0) return rt; }
+      return REWARD_TYPES[REWARD_TYPES.length - 1];
+    }
+
+    // Called right after successful order placement — adds a PENDING scratch card
+    function earnScratchCard(orderId) {
+      const rewards = loadRewards();
+      const rt = pickRandomReward();
+      rewards.push({
+        id: 'rw_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        type: rt.type,
+        orderId: String(orderId),
+        status: 'pending',
+        earnedAt: Date.now(),
+        usedAt: null,
+      });
+      saveRewards(rewards);
+      renderRewardsPage();
+    }
+
+    // Check and expire rewards older than 7 days
+    function checkRewardExpiration() {
+      const rewards = loadRewards();
+      const now = Date.now();
+      const WEEK = 7 * 24 * 60 * 60 * 1000;
+      let changed = false;
+      rewards.forEach(rw => {
+        if (rw.status === 'active' && rw.activatedAt) {
+          if (now - rw.activatedAt > WEEK) {
+            rw.status = 'used';
+            rw.usedAt = now;
+            rw.expired = true;
+            changed = true;
+          }
+        }
+      });
+      if (changed) {
+        saveRewards(rewards);
+        renderRewardsPage();
+        showToast('⏰ Some rewards expired! Order more to earn new ones.');
+      }
+    }
+
+    // Called by order polling — activates/dismisses pending rewards based on order status
+    function syncRewardsWithOrders(orders) {
+      const key = getRewardsKey();
+      if (!key) return;
+      const rewards = loadRewards();
+      const phone = localStorage.getItem('userPhone');
+      const myOrders = orders.filter(o => o.phone === phone);
+      let changed = false;
+      const toReveal = [];
+
+      rewards.forEach(rw => {
+        if (rw.status !== 'pending') return;
+        const order = myOrders.find(o => String(o._id) === String(rw.orderId));
+        if (!order) return;
+        if (order.status === 'delivered') {
+          rw.status = 'active';
+          rw.activatedAt = Date.now();
+          changed = true;
+          toReveal.push(rw);
+        }
+        // Rejected orders: reward stays pending (can be earned again on next successful order)
+      });
+
+      if (changed) {
+        saveRewards(rewards);
+        renderRewardsPage();
+        if (toReveal.length > 0) showScratchModal(toReveal[0]);
+      }
+    }
+
+    // ---- Scratch card modal ----
+    let _currentScratchReward = null;
+    let _scratchRevealed = false;
+
+    function showScratchModal(reward) {
+      _currentScratchReward = reward;
+      _scratchRevealed = false;
+      const rt = REWARD_TYPES.find(r => r.type === reward.type);
+      document.getElementById('scratchRewardIcon').textContent = rt.icon;
+      document.getElementById('scratchRewardText').textContent = rt.title;
+      document.getElementById('scratchPhase1').style.display = 'block';
+      document.getElementById('scratchPhase2').style.display = 'none';
+
+      const canvas = document.getElementById('scratchCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grd.addColorStop(0, '#2A2A32');
+      grd.addColorStop(1, '#18181B');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#8B8B9A';
+      ctx.font = '600 13px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✦  Scratch to Reveal  ✦', canvas.width / 2, canvas.height / 2 + 5);
+      setupScratchEvents(canvas);
+      document.getElementById('scratchModal').classList.add('open');
+    }
+
+    function setupScratchEvents(canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.globalCompositeOperation = 'destination-out';
+      let scratching = false;
+
+      function scratch(x, y) {
+        ctx.beginPath();
+        ctx.arc(x, y, 24, 0, Math.PI * 2);
+        ctx.fill();
+        checkScratchPercent(canvas);
+      }
+      canvas.onmousedown = e => { scratching = true; scratch(e.offsetX, e.offsetY); };
+      canvas.onmousemove = e => { if (scratching) scratch(e.offsetX, e.offsetY); };
+      canvas.onmouseup = () => { scratching = false; };
+      canvas.onmouseleave = () => { scratching = false; };
+      canvas.ontouchstart = e => { e.preventDefault(); scratching = true; const r = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); };
+      canvas.ontouchmove = e => { e.preventDefault(); if (!scratching) return; const r = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); };
+      canvas.ontouchend = () => { scratching = false; };
+    }
+
+    function checkScratchPercent(canvas) {
+      if (_scratchRevealed) return;
+      const ctx = canvas.getContext('2d');
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let cleared = 0;
+      for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) cleared++; }
+      if (cleared / (canvas.width * canvas.height) > 0.5) revealScratch();
+    }
+
+    function revealScratch() {
+      if (_scratchRevealed || !_currentScratchReward) return;
+      _scratchRevealed = true;
+      const canvas = document.getElementById('scratchCanvas');
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      const rt = REWARD_TYPES.find(r => r.type === _currentScratchReward.type);
+      const isNothing = rt.type === 'nothing';
+
+      setTimeout(() => {
+        document.getElementById('scratchPhase1').style.display = 'none';
+        document.getElementById('scratchPhase2').style.display = 'block';
+        document.getElementById('scratchRevealIcon').textContent = rt.icon;
+        document.getElementById('scratchRevealTitle').textContent = rt.title;
+        document.getElementById('scratchRevealDesc').textContent = isNothing
+          ? 'No reward this time. Keep ordering for better luck!'
+          : rt.desc + ' — Automatically applied on every eligible order!';
+        const btn = document.querySelector('#scratchPhase2 .auth-btn');
+        if (btn) btn.textContent = isNothing ? 'Ok 😔' : 'Got it! 🎉';
+
+        if (isNothing) {
+          // "Nothing" rewards are auto-marked as used since they have no value
+          const rewards = loadRewards();
+          const rw = rewards.find(r => r.id === _currentScratchReward.id);
+          if (rw) { rw.status = 'used'; rw.usedAt = Date.now(); }
+          saveRewards(rewards);
+          renderRewardsPage();
+        }
+      }, 200);
+    }
+
+    function closeScratchModal() {
+      document.getElementById('scratchModal').classList.remove('open');
+      _currentScratchReward = null;
+      renderRewardsPage();
+    }
+
+    // ---- Reward application to checkout ----
+    function getCheapestCartItem() {
+      let cheapest = null;
+      for (const [id] of Object.entries(cart)) {
+        const p = PRODUCTS.find(x => x.id == id);
+        if (p && (!cheapest || p.price < cheapest.price)) cheapest = p;
+      }
+      return cheapest;
+    }
+
+    function getApplicableRewards(cartAmt) {
+      const rewards = loadRewards().filter(r => r.status === 'active');  // only active (unused) rewards
+      const cheapest = getCheapestCartItem();
+
+      // Score each reward by how much it saves, for ranking
+      function rewardValue(rw) {
+        if (rw.type === 'discount_1') return 1;
+        if (rw.type === 'discount_2') return 2;
+        if (rw.type === 'discount_3') return 3;
+        if (rw.type === 'same_price') return cheapest ? cheapest.price : 0;
+        if (rw.type === 'free_item')  return cheapest ? cheapest.price : 0;
+        return 0;
+      }
+
+      // Filter eligible rewards
+      const eligible = rewards.filter(rw => {
+        const rt = REWARD_TYPES.find(r => r.type === rw.type);
+        if (!rt || rt.type === 'nothing') return false;
+        if (cartAmt < rt.minOrder) return false;
+        if ((rt.type === 'same_price' || rt.type === 'free_item') && !cheapest) return false;
+        return true;
+      });
+
+      // Sort by value descending — best rewards first
+      eligible.sort((a, b) => rewardValue(b) - rewardValue(a));
+
+      // Pick up to 2, but only 1 item-type reward (both would discount same item)
+      const applicable = [];
+      let hasItemReward = false;
+      for (const rw of eligible) {
+        if (applicable.length >= 2) break;
+        const isItemType = rw.type === 'same_price' || rw.type === 'free_item';
+        if (isItemType && hasItemReward) continue; // skip 2nd item reward
+        if (isItemType) hasItemReward = true;
+        applicable.push(rw);
+      }
+      return applicable;
+    }
+
+    function calcRewardDiscount(appliedRewards) {
+      let discount = 0;
+      for (const rw of appliedRewards) {
+        if (rw.type === 'discount_1') discount += 1;
+        else if (rw.type === 'discount_2') discount += 2;
+        else if (rw.type === 'discount_3') discount += 3;
+        else if (rw.type === 'same_price') { const c = getCheapestCartItem(); if (c) discount += c.price; }
+        else if (rw.type === 'free_item')  { const c = getCheapestCartItem(); if (c) discount += c.price; }
+      }
+      return discount;
+    }
+
+    function renderSummaryWithRewards() {
+      const rawTotal = cartTotal();
+      const applicable = getApplicableRewards(rawTotal);
+      const discount = Math.min(calcRewardDiscount(applicable), rawTotal);
+      const finalTotal = rawTotal - discount;
+
+      document.getElementById('summaryItems').innerHTML = Object.entries(cart).map(([id, qty]) => {
+        const p = PRODUCTS.find(x => x.id == id);
+        return `<div class="summary-row"><span>${p.name} x ${qty}</span><span>Rs.${p.price * qty}</span></div>`;
+      }).join('');
+
+      let rewardHtml = '';
+      if (applicable.length > 0) {
+        rewardHtml += `<div style="border-top:1px solid var(--border);margin-top:6px;padding-top:2px;">`;
+        for (const rw of applicable) {
+          const rt = REWARD_TYPES.find(r => r.type === rw.type);
+          let discAmt = 0;
+          if (rw.type === 'discount_1') discAmt = 1;
+          else if (rw.type === 'discount_2') discAmt = 2;
+          else if (rw.type === 'discount_3') discAmt = 3;
+          else if (rw.type === 'same_price' || rw.type === 'free_item') { const c = getCheapestCartItem(); if (c) discAmt = c.price; }
+          rewardHtml += `<div class="summary-reward-row"><span><i class="fas fa-tag"></i> ${rt.icon} ${rt.title}</span><span>- Rs.${discAmt}</span></div>`;
+        }
+        rewardHtml += `</div>`;
+      }
+      document.getElementById('summaryRewardRows').innerHTML = rewardHtml;
+      document.getElementById('summaryTotal').textContent = 'Rs.' + finalTotal;
+
+      window._appliedRewards = applicable;
+      window._finalTotal = finalTotal;
+    }
+
+    function markRewardsUsed(rewardIds) {
+      const rewards = loadRewards();
+      rewards.forEach(rw => {
+        if (rewardIds.includes(rw.id)) {
+          rw.status = 'used';
+          rw.usedAt = Date.now();
+        }
+      });
+      saveRewards(rewards);
+      renderRewardsPage();
+    }
+
+    function renderRewardsPage() {
+      checkRewardExpiration(); // auto-expire old rewards before rendering
+      const rewards = loadRewards();
+      const active    = rewards.filter(r => r.status === 'active');
+      const pending   = rewards.filter(r => r.status === 'pending');
+      const used      = rewards.filter(r => r.status === 'used');
+
+      document.getElementById('rewardStatActive').textContent  = active.length;
+      document.getElementById('rewardStatPending').textContent = pending.length;
+      document.getElementById('rewardStatUsed').textContent    = used.length;
+
+      const hasAny = (active.length + pending.length + used.length) > 0;
+      document.getElementById('rewardsEmpty').style.display = hasAny ? 'none' : 'block';
+
+      function cardHtml(rw, cls, badgeCls, badgeTxt) {
+        const rt = REWARD_TYPES.find(r => r.type === rw.type);
+        const date = new Date(rw.earnedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+        let expiryLine = '';
+        if (rw.status === 'active' && rw.activatedAt) {
+          const daysLeft = Math.max(0, Math.ceil((7 * 24 * 60 * 60 * 1000 - (Date.now() - rw.activatedAt)) / (24 * 60 * 60 * 1000)));
+          const color = daysLeft <= 2 ? 'var(--danger)' : daysLeft <= 4 ? 'var(--warning)' : 'var(--text-muted)';
+          expiryLine = `<div style="font-size:11px;color:${color};margin-top:3px;font-weight:700;"><i class="fas fa-hourglass-half" style="margin-right:3px;"></i>Expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}</div>`;
+        } else if (rw.status === 'used' && rw.expired) {
+          expiryLine = `<div style="font-size:11px;color:var(--danger);margin-top:3px;"><i class="fas fa-times" style="margin-right:3px;"></i>Expired</div>`;
+        } else if (rw.status === 'used') {
+          const usedDate = rw.usedAt ? new Date(rw.usedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : 'Recently';
+          expiryLine = `<div style="font-size:11px;color:var(--text-muted);margin-top:3px;"><i class="fas fa-check" style="margin-right:3px;"></i>Used on ${usedDate}</div>`;
+        }
+        return `<div class="reward-card ${cls}">
+          <div class="reward-icon-wrap">${rt.icon}</div>
+          <div class="reward-info">
+            <div class="reward-title">${rt.title}</div>
+            <div class="reward-desc">${rt.desc}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Earned ${date}</div>
+            ${expiryLine}
+          </div>
+          <span class="reward-badge ${badgeCls}">${badgeTxt}</span>
+        </div>`;
+      }
+
+      // Show expiry banner if any active reward expires in <= 3 days
+      const hasExpiringSoon = active.some(rw => {
+        if (!rw.activatedAt) return false;
+        const daysLeft = Math.ceil((7 * 24 * 60 * 60 * 1000 - (Date.now() - rw.activatedAt)) / (24 * 60 * 60 * 1000));
+        return daysLeft <= 3;
+      });
+      document.getElementById('expiryBanner').style.display = hasExpiringSoon ? 'block' : 'none';
+
+      document.getElementById('activeRewardsList').innerHTML = active.length
+        ? active.map(rw => cardHtml(rw, 'active-reward', 'badge-active', '1 Use')).join('')
+        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No active rewards yet.</div>`;
+
+      document.getElementById('pendingRewardsList').innerHTML = pending.length
+        ? pending.map(rw => cardHtml(rw, 'pending-reward', 'badge-pending', '⏳ Locked')).join('')
+        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">None pending.</div>`;
+
+      document.getElementById('usedRewardsList').innerHTML = used.length
+        ? used.map(rw => cardHtml(rw, 'used-reward', 'badge-used', 'Used')).join('')
+        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">None.</div>`;
+    }
+
+    // ================= INIT =================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadRoomOptions('custRoom');
+      renderCats();
+      loadProducts();
+      loadMyOrder();
+      checkRewardExpiration(); // check on page load
+
+      // Auto-refresh orders every 3s
+      let lastOrders = "";
+      setInterval(() => {
+        const phone = localStorage.getItem('userPhone');
+        if (!phone) return;
+        fetch("https://backendhb.onrender.com/api/orders")
+          .then(res => res.json())
+          .then(data => {
+            let newData = JSON.stringify(data.filter(o => o.phone === phone));
+            if (newData !== lastOrders) {
+              lastOrders = newData;
+              loadMyOrder();
+              syncRewardsWithOrders(data);
+            }
+          })
+          .catch(() => {});
+      }, 3000);
+
+      // Check reward expiration every 60 seconds
+      setInterval(() => { checkRewardExpiration(); }, 60000);
+
+      // Auto-refresh products every 5s — silent, no skeleton flash
+      let lastProducts = "";
+      setInterval(() => {
+        const shopPage = document.getElementById('shopPage');
+        if (shopPage && !shopPage.classList.contains('hidden')) {
+          fetch("https://backendhb.onrender.com/api/products")
+            .then(res => res.json())
+            .then(data => {
+              const newData = JSON.stringify(data);
+              if (newData !== lastProducts) {
+                lastProducts = newData;
+                PRODUCTS = data.map(p => ({ ...p, id: p._id }));
+                renderProducts();
+              }
+            })
+            .catch(() => {});
+        }
+      }, 5000);
+    });
+
+    // Auto-refresh
   </script>
 </body>
 
