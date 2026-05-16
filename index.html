@@ -801,7 +801,7 @@
         <span>New Item Lotte choco Pie</span>
         <span>⚡ Delivery under 7 minutes</span>
         <span>New Item Nut Cracker</span>
-        
+
         <span>New Item Pepsi</span>
         <span>New Item Lotte choco Pie</span>
         <span>⚡ Delivery under 7 minutes</span>
@@ -838,8 +838,7 @@
       <button id="reqpage" class="btn-secondary" onclick="requestpg()"> <img src="./asset/rivew.svg" alt="download.svg">
         Request/ Review</button>
 
-      <!-- <button class="btn-primary" onclick="enterStore()"> -->
-      <button class="btn-primary" onclick="givealt()">
+      <button class="btn-primary" onclick="enterStore()">
         <img src="./asset/store.svg" alt=""> Enter Store
       </button>
       <button class="btn-secondary" onclick="downloadApp()">
@@ -868,9 +867,6 @@
   </footer>
 
   <script>
-    function givealt(){
-      alert("Store is under Maintenance Break \n Thank you for your patience and understanding! 😊");
-    }
     function downloadApp() {
       window.location.href = "Hostel_bites.apk";
     }
@@ -920,10 +916,18 @@
       fetch("https://backendhb.onrender.com/api/auth/dev-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        include: "credentials",
+        credentials: "include",
         body: JSON.stringify({ password: input })
+      }).then(async res => {
+        const text = await res.text();
+        console.log("RAW RESPONSE:", text);
+
+        try {
+          return JSON.parse(text);
+        } catch {
+          throw new Error("Invalid JSON from server");
+        }
       })
-        .then(res => res.json())
         .then(data => {
           if (data.success) {
             localStorage.setItem("dev", "true");
@@ -1048,9 +1052,9 @@
     }
 
     function openFullReview(review) {
-  localStorage.setItem("selectedReviewId", review._id); // ✅ store ID only
-  window.location.href = "files/request.html";
-}
+      localStorage.setItem("selectedReviewId", review._id); // ✅ store ID only
+      window.location.href = "files/request.html";
+    }
 
     // 🚀 INIT
     loadFloatingReviews();
