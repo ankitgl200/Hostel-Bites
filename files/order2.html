@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Overview – Hostel Bites</title>
+
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0b;
+            --surface: #111114;
+            --border: rgba(255, 255, 255, 0.07);
+            --text: #f0ece6;
+            --muted: #6b6866;
+            --orange: #ff6b00;
+            --green: #00e676;
+            --red: #ff3d3d;
+            --blue: #38bdf8;
+            --yellow: #fbbf24;
+            --purple: #a855f7;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 28px 24px 60px;
+        }
+
+        /* ── AUTH GUARD ───────────────────────── */
+        #auth-wall {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            font-family: 'Syne', sans-serif;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        /* ── TOPBAR ───────────────────────────── */
+        .topbar {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .topbar-left h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .topbar-left p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .refresh-badge {
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .refresh-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ── DATE FILTER ───────────────────────── */
+        .date-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .date-filter-bar label {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .date-dropdown {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            min-width: 180px;
+            transition: border-color 0.2s;
+        }
+
+        .date-dropdown:hover,
+        .date-dropdown:focus {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .date-dropdown option {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        /* ── STAT CARDS ──────────────────────── */
+        .overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px 18px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .card.green::before {
+            background: var(--green);
+        }
+
+        .card.red::before {
+            background: var(--red);
+        }
+
+        .card.blue::before {
+            background: var(--blue);
+        }
+
+        .card.orange::before {
+            background: var(--orange);
+        }
+
+        .card.yellow::before {
+            background: var(--yellow);
+        }
+
+        .card.purple::before {
+            background: var(--purple);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .card-icon {
+            font-size: 22px;
+        }
+
+        .card-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            transition: all 0.4s;
+        }
+
+        .card.green .card-value {
+            color: var(--green);
+        }
+
+        .card.red .card-value {
+            color: var(--red);
+        }
+
+        .card.blue .card-value {
+            color: var(--blue);
+        }
+
+        .card.orange .card-value {
+            color: var(--orange);
+        }
+
+        .card.yellow .card-value {
+            color: var(--yellow);
+        }
+
+        .card.purple .card-value {
+            color: var(--purple);
+        }
+
+        /* ── SECTION TITLE ───────────────────── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .order-count-badge {
+            font-size: 12px;
+            background: rgba(0, 230, 118, 0.12);
+            color: var(--green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ── ORDERS BOX ──────────────────────── */
+        .orders-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .order-row {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: background 0.15s;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .order-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .order-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .order-phone {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .order-room {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .order-items {
+            font-size: 13px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .order-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .order-price {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .order-time {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.25);
+        }
+
+        .status-badge.accepted {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+
+        .status-badge.rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .status-badge.delivered {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(0, 230, 118, 0.25);
+        }
+
+        /* ── ORDER ACTIONS ───────────────────── */
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            font-size: 12px;
+            transition: 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-btn.accept {
+            background: #22c55e;
+        }
+
+        .action-btn.reject {
+            background: #ef4444;
+        }
+
+        .action-btn.deliver {
+            background: #3b82f6;
+        }
+
+        .action-btn.delete {
+            background: #555;
+        }
+
+        /* ── ARCHIVE SECTION ─────────────────── */
+        .archive-section {
+            margin-top: 40px;
+        }
+
+        .archive-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--muted);
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .archive-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .archive-content {
+            display: none;
+        }
+
+        .archive-content.open {
+            display: block;
+        }
+
+        .archive-row {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .archive-row:last-child {
+            border-bottom: none;
+        }
+
+        .archive-date {
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .archive-stats {
+            display: flex;
+            gap: 16px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .archive-stats span {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* ── STATES ──────────────────────────── */
+        .state-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .state-msg span {
+            font-size: 32px;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.08);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── RESPONSIVE ──────────────────────── */
+        @media (max-width: 480px) {
+            body {
+                padding: 18px 14px 50px;
+            }
+
+            .card-value {
+                font-size: 28px;
+            }
+
+            .overview {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .order-meta {
+                align-items: flex-start;
+            }
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+
+            .date-filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+
+<body>
+
+    <!-- AUTH WALL (shown if not logged in) -->
+    <div id="auth-wall">
+        <span>🔒</span>
+        Checking session...
+    </div>
+
+    <!-- HEADER -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>📊 Admin Overview</h1>
+            <p>Hostel Bites · Food Ordering Dashboard</p>
+        </div>
+        <div class="refresh-badge">
+            <div class="refresh-dot"></div>
+            Live · refreshes every 1 min
+        </div>
+    </div>
+
+    <!-- DATE FILTER -->
+    <div class="date-filter-bar">
+        <label for="dateFilter">📅 Filter by Date</label>
+        <select id="dateFilter" class="date-dropdown" onchange="onDateChange()">
+            <option value="all">All Time</option>
+        </select>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="overview">
+
+        <div class="card blue">
+            <div class="card-top">
+                <div class="card-title">Total Orders</div>
+                <div class="card-icon">🛒</div>
+            </div>
+            <div class="card-value" id="totalOrders">—</div>
+        </div>
+
+        <div class="card green">
+            <div class="card-top">
+                <div class="card-title">Delivered</div>
+                <div class="card-icon">📦</div>
+            </div>
+            <div class="card-value" id="deliveredOrders">—</div>
+        </div>
+
+        <div class="card red">
+            <div class="card-top">
+                <div class="card-title">Rejected</div>
+                <div class="card-icon">❌</div>
+            </div>
+            <div class="card-value" id="rejectedOrders">—</div>
+        </div>
+
+        <div class="card orange">
+            <div class="card-top">
+                <div class="card-title">Total Revenue</div>
+                <div class="card-icon">💰</div>
+            </div>
+            <div class="card-value" id="totalRevenue">—</div>
+        </div>
+
+        <div class="card yellow">
+            <div class="card-top">
+                <div class="card-title">Total Profit</div>
+                <div class="card-icon">📈</div>
+            </div>
+            <div class="card-value" id="totalProfit">—</div>
+        </div>
+
+        <div class="card purple">
+            <div class="card-top">
+                <div class="card-title">Pending</div>
+                <div class="card-icon">⏳</div>
+            </div>
+            <div class="card-value" id="pendingOrders">—</div>
+        </div>
+
+    </div>
+
+    <!-- ALL ORDERS -->
+    <div class="section-header">
+        <h2 class="section-title">All Orders</h2>
+        <span class="order-count-badge" id="allOrdersCount">0 orders</span>
+    </div>
+
+    <div class="orders-box" id="allOrders">
+        <div class="state-msg">
+            <div class="spinner"></div>
+            Loading orders…
+        </div>
+    </div>
+
+    <!-- ARCHIVED DAILY SUMMARIES -->
+    <div class="archive-section">
+        <button class="archive-toggle" onclick="toggleArchive()">
+            📁 Archived Daily Summaries
+            <span id="archiveArrow">▼</span>
+        </button>
+        <div class="orders-box archive-content" id="archiveBox">
+            <div class="state-msg">
+                <span>📭</span>
+                No archived summaries yet.
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        const API = "https://backendhb.onrender.com";
+        const PROFIT_MARGIN = 0.30; // 30% profit margin — adjust as needed
+
+        let allOrdersData = [];
+        let currentFilter = "all";
+
+        // ═══════════════════════════════════════════════════════════
+        //  AUTH CHECK
+        // ═══════════════════════════════════════════════════════════
+        async function checkAuth() {
+            try {
+                const res = await fetch(`${API}/api/auth/check`, {
+                    credentials: "include"
+                });
+
+                if (!res.ok) {
+                    showAuthWall();
+                }
+            } catch {
+                showAuthWall();
+            }
+        }
+
+        function showAuthWall() {
+            const wall = document.getElementById("auth-wall");
+            wall.style.display = "flex";
+            wall.innerHTML = `
+        <span>🔒</span>
+        <p>Not authorised. Redirecting to login…</p>
+    `;
+            setTimeout(() => {
+                window.location.href = "admin.html";
+            }, 1500);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  FORMAT HELPERS
+        // ═══════════════════════════════════════════════════════════
+        function formatCurrency(amount) {
+            return "₹" + Number(amount).toLocaleString("en-IN");
+        }
+
+        function formatTime(iso) {
+            if (!iso) return "";
+            const d = new Date(iso);
+            return d.toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        function getDateKey(iso) {
+            if (!iso) return "";
+            const d = new Date(iso);
+            return d.toISOString().split("T")[0]; // YYYY-MM-DD
+        }
+
+        function formatDateKey(dateKey) {
+            if (!dateKey) return "All Time";
+            const d = new Date(dateKey);
+            return d.toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  COUNTER ANIMATION
+        // ═══════════════════════════════════════════════════════════
+        function animateCount(el, target, prefix = "", suffix = "") {
+            const start = 0;
+            const duration = 600;
+            const step = target / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                el.innerText = prefix + Math.round(current).toLocaleString("en-IN") + suffix;
+            }, 16);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  DAILY RESET & ARCHIVE LOGIC
+        // ═══════════════════════════════════════════════════════════
+        function checkDailyReset() {
+            const today = new Date().toISOString().split("T")[0];
+            const storedDate = localStorage.getItem("hb_lastDate");
+
+            if (storedDate && storedDate !== today) {
+                // It's a new day — archive yesterday's data
+                archiveYesterday(storedDate);
+            }
+
+            localStorage.setItem("hb_lastDate", today);
+        }
+
+        function archiveYesterday(dateKey) {
+            const yesterdayStats = JSON.parse(localStorage.getItem("hb_dailyStats") || "{}");
+            if (!yesterdayStats[dateKey]) return;
+
+            const archive = JSON.parse(localStorage.getItem("hb_archive") || "[]");
+            archive.push({
+                date: dateKey,
+                ...yesterdayStats[dateKey],
+                archivedAt: new Date().toISOString()
+            });
+
+            // Keep only last 30 days
+            if (archive.length > 30) archive.shift();
+
+            localStorage.setItem("hb_archive", JSON.stringify(archive));
+
+            // Reset daily stats for new day (keep order history)
+            const newStats = {};
+            const today = new Date().toISOString().split("T")[0];
+            newStats[today] = {
+                totalOrders: 0,
+                deliveredOrders: 0,
+                rejectedOrders: 0,
+                pendingOrders: 0,
+                totalRevenue: 0,
+                totalProfit: 0
+            };
+            localStorage.setItem("hb_dailyStats", JSON.stringify(newStats));
+        }
+
+        function saveDailyStats(stats) {
+            const today = new Date().toISOString().split("T")[0];
+            const allStats = JSON.parse(localStorage.getItem("hb_dailyStats") || "{}");
+            allStats[today] = stats;
+            localStorage.setItem("hb_dailyStats", JSON.stringify(allStats));
+        }
+
+        function loadArchive() {
+            const archive = JSON.parse(localStorage.getItem("hb_archive") || "[]");
+            const box = document.getElementById("archiveBox");
+
+            if (archive.length === 0) {
+                box.innerHTML = `
+            <div class="state-msg">
+                <span>📭</span>
+                No archived summaries yet.
+            </div>
+        `;
+                return;
+            }
+
+            box.innerHTML = archive.slice().reverse().map(day => `
+        <div class="archive-row">
+            <div class="archive-date">${formatDateKey(day.date)}</div>
+            <div class="archive-stats">
+                <div>Orders: <span>${day.totalOrders || 0}</span></div>
+                <div>Delivered: <span>${day.deliveredOrders || 0}</span></div>
+                <div>Revenue: <span>${formatCurrency(day.totalRevenue || 0)}</span></div>
+                <div>Profit: <span>${formatCurrency(day.totalProfit || 0)}</span></div>
+            </div>
+        </div>
+    `).join("");
+        }
+
+        function toggleArchive() {
+            const content = document.querySelector(".archive-content");
+            const arrow = document.getElementById("archiveArrow");
+            content.classList.toggle("open");
+            arrow.innerText = content.classList.contains("open") ? "▲" : "▼";
+            if (content.classList.contains("open")) loadArchive();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  DATE FILTER
+        // ═══════════════════════════════════════════════════════════
+        function populateDateDropdown() {
+            const select = document.getElementById("dateFilter");
+            // Keep "All Time" option
+            select.innerHTML = '<option value="all">All Time</option>';
+
+            const dates = [...new Set(allOrdersData.map(o => getDateKey(o.createdAt)).filter(Boolean))].sort().reverse();
+
+            dates.forEach(dateKey => {
+                const option = document.createElement("option");
+                option.value = dateKey;
+                option.innerText = formatDateKey(dateKey);
+                select.appendChild(option);
+            });
+        }
+
+        function onDateChange() {
+            currentFilter = document.getElementById("dateFilter").value;
+            renderDashboard();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  ORDER ACTIONS (from order.html)
+        // ═══════════════════════════════════════════════════════════
+        async function updateStatus(id, status) {
+            try {
+                const res = await fetch(`${API}/api/orders/update`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        id: id,
+                        status: status
+                    })
+                });
+
+                if (!res.ok) throw new Error("Failed to update");
+
+                // Refresh data
+                await loadOverview();
+            } catch (err) {
+                console.error("Status update error:", err);
+                alert("Failed to update status. Please try again.");
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm("Are you sure you want to delete this order?")) return;
+
+            try {
+                const res = await fetch(`${API}/api/orders/delete`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ id })
+                });
+                if (!res.ok) throw new Error("Failed to delete");
+
+                // Remove from local data
+                allOrdersData = allOrdersData.filter(o => o._id !== id);
+                renderDashboard();
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("Failed to delete order. Please try again.");
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  RENDER DASHBOARD
+        // ═══════════════════════════════════════════════════════════
+        function renderDashboard() {
+            let filteredOrders = allOrdersData;
+
+            if (currentFilter !== "all") {
+                filteredOrders = allOrdersData.filter(o => getDateKey(o.createdAt) === currentFilter);
+            }
+
+            // Stats calculation
+            const delivered = filteredOrders.filter(o => (o.status || "").toLowerCase() === "delivered");
+            const rejected = filteredOrders.filter(o => (o.status || "").toLowerCase() === "rejected");
+            const pending = filteredOrders.filter(o => {
+                const s = (o.status || "").toLowerCase();
+                return s === "pending" || s === "" || s === "accepted";
+            });
+
+            const totalRevenue = delivered.reduce((sum, o) => sum + Number(o.total || 0), 0);
+            const totalProfit = delivered.reduce((sum, o) => {
+
+                const actualAmount = Number(o.total || 0) + Number(o.discount || 0);
+
+                const profit = Math.floor(actualAmount / 10); // your logic
+
+                return sum + profit;
+
+            }, 0);
+
+            // Save daily stats for reset logic
+            if (currentFilter === "all") {
+                saveDailyStats({
+                    totalOrders: filteredOrders.length,
+                    deliveredOrders: delivered.length,
+                    rejectedOrders: rejected.length,
+                    pendingOrders: pending.length,
+                    totalRevenue,
+                    totalProfit
+                });
+            }
+
+            // Animate stat cards
+            animateCount(document.getElementById("totalOrders"), filteredOrders.length);
+            animateCount(document.getElementById("deliveredOrders"), delivered.length);
+            animateCount(document.getElementById("rejectedOrders"), rejected.length);
+            animateCount(document.getElementById("totalRevenue"), totalRevenue, "₹");
+            animateCount(document.getElementById("totalProfit"), totalProfit, "₹");
+            animateCount(document.getElementById("pendingOrders"), pending.length);
+
+            // Update order count badge
+            document.getElementById("allOrdersCount").innerText =
+                filteredOrders.length + " order" + (filteredOrders.length !== 1 ? "s" : "");
+
+            // Render orders list
+            const box = document.getElementById("allOrders");
+
+            if (filteredOrders.length === 0) {
+                box.innerHTML = `
+            <div class="state-msg">
+                <span>📭</span>
+                No orders found.
+            </div>
+        `;
+                return;
+            }
+
+            box.innerHTML = filteredOrders.map(order => {
+                const items = (order.items || [])
+                    .map(i => `${escHtml(i.name)} ×${i.qty}`)
+                    .join(", ") || "—";
+
+                const statusClass = (order.status || "pending").toLowerCase();
+                const statusText = order.status || "Pending";
+
+                // Determine which buttons to show based on status
+                const isPending = statusClass === "pending" || statusClass === "" || statusClass === "accepted";
+                const isDelivered = statusClass === "delivered";
+                const isRejected = statusClass === "rejected";
+
+                let actionButtons = "";
+                if (!isDelivered && !isRejected) {
+                    actionButtons = `
+                <button class="action-btn accept" onclick="updateStatus('${order._id}', 'accepted')" ${statusClass === "accepted" ? "disabled" : ""}>
+                    ${statusClass === "accepted" ? "✓ Accepted" : "Accept"}
+                </button>
+                <button class="action-btn reject" onclick="updateStatus('${order._id}', 'rejected')">
+                    Reject
+                </button>
+                <button class="action-btn deliver" onclick="updateStatus('${order._id}', 'delivered')">
+                    Deliver
+                </button>
+            `;
+                }
+                actionButtons += `
+            <button class="action-btn delete" onclick="deleteOrder('${order._id}')">
+                Delete
+            </button>
+        `;
+
+                return `
+        <div class="order-row">
+            <div class="order-left">
+                <div class="order-name">${escHtml(order.name || "—")}</div>
+                <div class="order-phone">${escHtml(order.phone || "")}</div>
+                <div class="order-room">Room: ${escHtml(order.room || "—")}</div>
+                <div class="order-items">${escHtml(items)}</div>
+            </div>
+
+            <div class="order-meta">
+                <div class="order-price">${formatCurrency(order.total || 0)}</div>
+                <div class="order-time">${formatTime(order.createdAt)}</div>
+                <div class="status-badge ${statusClass}">${escHtml(statusText)}</div>
+            </div>
+
+            <div class="order-actions">
+                ${actionButtons}
+            </div>
+        </div>`;
+            }).join("");
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  LOAD OVERVIEW
+        // ═══════════════════════════════════════════════════════════
+        async function loadOverview() {
+            try {
+                const res = await fetch(`${API}/api/orders`, {
+                    credentials: "include"
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    showAuthWall();
+                    return;
+                }
+
+                if (!res.ok) throw new Error("Server error");
+
+                allOrdersData = await res.json();
+
+                // Sort by createdAt desc
+                allOrdersData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                // Populate date dropdown
+                populateDateDropdown();
+
+                // Restore previous filter if valid
+                const select = document.getElementById("dateFilter");
+                if (currentFilter !== "all") {
+                    const exists = [...select.options].some(o => o.value === currentFilter);
+                    if (exists) select.value = currentFilter;
+                    else currentFilter = "all";
+                }
+
+                renderDashboard();
+
+            } catch (err) {
+                console.error("Overview fetch error:", err);
+
+                const box = document.getElementById("allOrders");
+                box.innerHTML = `
+            <div class="state-msg">
+                <span>⚠️</span>
+                Failed to load data. Retrying…
+            </div>
+        `;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  XSS GUARD
+        // ═══════════════════════════════════════════════════════════
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  INIT
+        // ═══════════════════════════════════════════════════════════
+        checkDailyReset();
+
+        checkAuth().then(() => {
+            loadOverview();
+            setInterval(() => {
+                checkDailyReset();
+                loadOverview();
+            }, 59000); // auto-refresh every 59s + daily reset check
+        });
+
+    </script>
+</body>
+
+</html>
