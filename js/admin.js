@@ -66,6 +66,9 @@ async function login() {
 function goto() {
     window.location.href = "order.html";
 }
+function gotoadmin2() {
+    window.location.href = "order2.html";
+}
 
 function gotoProducts() {
     window.location.href = "mproduct.html";
