@@ -2107,10 +2107,14 @@
             <button onclick="window.open('payment.html','_blank')"
               style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
                 class="fas fa-credit-card"></i> Payments</button>
-                <button id="shopToggleBtn" onclick="toggleShop()"
-            style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
-            <i class="fas fa-power-off"></i> Loading...
-          </button>
+                <button onclick="window.open('mproduct.html','_blank')"
+style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
+<i class="fas fa-boxes"></i> Manage Products
+</button>
+            <button id="shopToggleBtn" onclick="toggleShop()"
+              style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
+              <i class="fas fa-power-off"></i> Loading...
+            </button>
           </div>
         </div>
       </div>
@@ -2277,12 +2281,12 @@
         <button onclick="window.open('payment.html','_blank')"
           style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
             class="fas fa-credit-card"></i> Payments</button>
-        <button id="shopToggleBtnModal" onclick="toggleShop()" 
-    style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
-    <i class="fas fa-power-off"></i> Loading...
-  </button>
-          </div>
-      
+        <button id="shopToggleBtnModal" onclick="toggleShop()"
+          style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
+          <i class="fas fa-power-off"></i> Loading...
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -2375,22 +2379,22 @@
     loadProducts() // your existing function
   }
   function updateShopToggleBtn() {
-  const btns = [
-    document.getElementById("shopToggleBtn"),
-    document.getElementById("shopToggleBtnModal")
-  ];
-  
-  btns.forEach(btn => {
-    if (!btn) return;
-    if (isShopOpen) {
-      btn.innerHTML = `<i class="fas fa-lock"></i> Close Shop`;
-      btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
-    } else {
-      btn.innerHTML = `<i class="fas fa-unlock"></i> Open Shop`;
-      btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
-    }
-  });
-}
+    const btns = [
+      document.getElementById("shopToggleBtn"),
+      document.getElementById("shopToggleBtnModal")
+    ];
+
+    btns.forEach(btn => {
+      if (!btn) return;
+      if (isShopOpen) {
+        btn.innerHTML = `<i class="fas fa-lock"></i> Close Shop`;
+        btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+      } else {
+        btn.innerHTML = `<i class="fas fa-unlock"></i> Open Shop`;
+        btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
+      }
+    });
+  }
   async function toggleShop() {
     try {
       const btn = document.getElementById("shopToggleBtn");
