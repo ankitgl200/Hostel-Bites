@@ -589,6 +589,23 @@
 
     <script>
         const API_BASE = "https://backendhb.onrender.com/api";
+        async function checkUser() {
+            try {
+                const res = await fetch(API_BASE + "/auths/me", { credentials: "include" });
+                if (res.ok) {
+                    const data = await res.json();
+                    const user = data.user;     // ✅ unwrap the nested user object
+                    if (user && user.phone) {
+                        localStorage.setItem('userPhone', user.phone);
+                        localStorage.setItem('hb_user_name', user.name || '');
+                        localStorage.setItem('hb_user_room', user.room || '');
+                    }
+                    window.location.href = "files/hostel_bites.html";
+                }
+            } catch (err) {
+                console.log("Not logged in, stay on page");
+            }
+        }
 
         // ── AUTO FILL ROOM 1-20 ──
         const roomSelect = document.getElementById("room");
@@ -765,23 +782,7 @@
 
         // ── CHECK AUTO LOGIN ──
         // To:
-        async function checkUser() {
-            try {
-                const res = await fetch(API_BASE + "/auths/me", { credentials: "include" });
-                if (res.ok) {
-                    const data = await res.json();
-                    const user = data.user;     // ✅ unwrap the nested user object
-                    if (user && user.phone) {
-                        localStorage.setItem('userPhone', user.phone);
-                        localStorage.setItem('hb_user_name', user.name || '');
-                        localStorage.setItem('hb_user_room', user.room || '');
-                    }
-                    window.location.href = "hostel_bites.html";
-                }
-            } catch (err) {
-                console.log("Not logged in, stay on page");
-            }
-        }
+
 
         // ── ENTER KEY SUPPORT ──
         document.getElementById('loginPhone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
