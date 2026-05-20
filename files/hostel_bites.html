@@ -13,7 +13,7 @@
 
 
 
-<base target="_blank">
+  <base target="_blank">
 </head>
 <script>
   // Auth guard — redirect to login if not authenticated
@@ -59,7 +59,8 @@
       updateProfilePage();
 
       // Initialize app after auth success
-      initApp();
+      await loadShopStatus();
+initApp();
 
     } catch (err) {
       console.error("Auth error:", err);
@@ -2077,7 +2078,8 @@
               <span id="profilePageOrders">0</span>
             </div>
             <div class="profile-info-row">
-              <span><i class="fas fa-user-tag" style="margin-right:8px; color:var(--accent-light);"></i>Member Role</span>
+              <span><i class="fas fa-user-tag" style="margin-right:8px; color:var(--accent-light);"></i>Member
+                Role</span>
               <span id="profilePageRole" style="text-transform:capitalize;">-</span>
             </div>
           </div>
@@ -2088,12 +2090,27 @@
             <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
             <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
           </div>
-          <div class="profile-actions" id="adminPageActions" style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
-            <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">Admin Panel</div>
-            <button onclick="window.open('order.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-clipboard-list"></i> Orders</button>
-            <button onclick="window.open('order2.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-history"></i> All Orders</button>
-            <button onclick="window.open('feedbackget.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-comments"></i> Feedback</button>
-            <button onclick="window.open('payment.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-credit-card"></i> Payments</button>
+          <div class="profile-actions" id="adminPageActions"
+            style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+            <div
+              style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">
+              Admin Panel</div>
+            <button onclick="window.open('order.html','_blank')"
+              style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+                class="fas fa-clipboard-list"></i> Orders</button>
+            <button onclick="window.open('order2.html','_blank')"
+              style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+                class="fas fa-history"></i> All Orders</button>
+            <button onclick="window.open('feedbackget.html','_blank')"
+              style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+                class="fas fa-comments"></i> Feedback</button>
+            <button onclick="window.open('payment.html','_blank')"
+              style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+                class="fas fa-credit-card"></i> Payments</button>
+            <button id="shopToggleBtn" onclick="toggleShop()"
+              style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
+              <i class="fas fa-power-off"></i> Loading...
+            </button>
           </div>
           <button class="logout-btn" onclick="handleLogout()" style="margin-top:16px;">Logout</button>
         </div>
@@ -2244,12 +2261,23 @@
         <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
         <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
       </div>
-      <div class="profile-actions" id="adminActions" style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
-        <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">Admin Panel</div>
-        <button onclick="window.open('order.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-clipboard-list"></i> Orders</button>
-        <button onclick="window.open('order2.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-history"></i> All Orders</button>
-        <button onclick="window.open('feedbackget.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-comments"></i> Feedback</button>
-        <button onclick="window.open('payment.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-credit-card"></i> Payments</button>
+      <div class="profile-actions" id="adminActions"
+        style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+        <div
+          style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">
+          Admin Panel</div>
+        <button onclick="window.open('order.html','_blank')"
+          style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+            class="fas fa-clipboard-list"></i> Orders</button>
+        <button onclick="window.open('order2.html','_blank')"
+          style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+            class="fas fa-history"></i> All Orders</button>
+        <button onclick="window.open('feedbackget.html','_blank')"
+          style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+            class="fas fa-comments"></i> Feedback</button>
+        <button onclick="window.open('payment.html','_blank')"
+          style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
+            class="fas fa-credit-card"></i> Payments</button>
       </div>
       <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
@@ -2312,6 +2340,7 @@
 </body>
 
 <script>
+  let isShopOpen = true;
   async function apiFetch(url, options = {}) {
     try {
       const res = await fetch(url, options);
@@ -2322,6 +2351,21 @@
     }
   }
 
+
+  async function loadShopStatus() {
+    try {
+      const res = await fetch("https://backendhb.onrender.com/api/shop-status");
+      const data = await res.json();
+
+      isShopOpen = data.open;
+
+      updateShopToggleBtn();
+      handleShopUI();
+
+    } catch (err) {
+      console.error("Shop status error");
+    }
+  }
   // ================= AUTH & PROFILE =================
 
   let isPlacingOrder = false;
@@ -2376,7 +2420,8 @@
     document.getElementById('authScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
     updateProfileUI();
-    loadProducts();
+    handleShopUI();
+    
     renderCats();
     showPage('shop');
   }
@@ -2422,7 +2467,59 @@
       document.getElementById('profileModal').classList.remove('open');
     }
   }
+function updateShopToggleBtn() {
+  const btn = document.getElementById("shopToggleBtn");
+  if (!btn) return;
 
+  if (isShopOpen) {
+    btn.innerHTML = `<i class="fas fa-lock"></i> Close Shop`;
+    btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+  } else {
+    btn.innerHTML = `<i class="fas fa-unlock"></i> Open Shop`;
+    btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
+  }
+}
+async function toggleShop() {
+  try {
+    const btn = document.getElementById("shopToggleBtn");
+    btn.innerHTML = "Processing...";
+    btn.disabled = true;
+
+    const res = await fetch("https://backendhb.onrender.com/api/shop-toggle", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    isShopOpen = data.open;
+
+    updateShopToggleBtn();
+    handleShopUI();
+
+    showToast(isShopOpen ? "Shop Opened ✅" : "Shop Closed 🚫");
+
+  } catch (err) {
+    alert("Error toggling shop");
+  } finally {
+    document.getElementById("shopToggleBtn").disabled = false;
+  }
+}
+function handleShopUI() {
+  const grid = document.getElementById("productGrid");
+
+  if (!isShopOpen) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1; text-align:center; padding:60px;">
+        <h2 style="color:red;">🚫 Shop Closed</h2>
+        <p style="color:gray;">We are not accepting orders right now</p>
+      </div>
+    `;
+    return;
+  }
+
+  handleShopUI();// your existing function
+}
   function fetchOrderCount() {
     const phone = currentUser ? currentUser.phone : null;
     if (!phone) return;
@@ -3403,7 +3500,7 @@
   function initApp() {
     loadRoomOptions('custRoom');
     renderCats();
-    loadProducts();
+    handleShopUI();
     loadMyOrder();
     checkRewardExpiration(); // check on page load
 
