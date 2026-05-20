@@ -58,8 +58,7 @@
       updateProfilePage();
 
       // Initialize app after auth success
-      await loadShopStatus();
-      initApp();
+
 
     } catch (err) {
       console.error("Auth error:", err);
@@ -2106,10 +2105,10 @@
             <button onclick="window.open('payment.html','_blank')"
               style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
                 class="fas fa-credit-card"></i> Payments</button>
-                <button onclick="window.open('mproduct.html','_blank')"
-style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
-<i class="fas fa-boxes"></i> Manage Products
-</button>
+            <button onclick="window.open('mproduct.html','_blank')"
+              style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
+              <i class="fas fa-boxes"></i> Manage Products
+            </button>
             <button id="shopToggleBtn" onclick="toggleShop()"
               style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
               <i class="fas fa-power-off"></i> Loading...
@@ -2280,13 +2279,13 @@ style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:
         <button onclick="window.open('payment.html','_blank')"
           style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
             class="fas fa-credit-card"></i> Payments</button>
-            <button onclick="window.open('mproduct.html','_blank')"
-style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
-<i class="fas fa-boxes"></i> Manage Products
-        <button id="shopToggleBtnModal" onclick="toggleShop()"
-          style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
-          <i class="fas fa-power-off"></i> Loading...
-        </button>
+        <button onclick="window.open('mproduct.html','_blank')"
+          style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
+          <i class="fas fa-boxes"></i> Manage Products
+          <button id="shopToggleBtnModal" onclick="toggleShop()"
+            style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
+            <i class="fas fa-power-off"></i> Loading...
+          </button>
       </div>
 
     </div>
@@ -2356,13 +2355,18 @@ style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:
       const res = await fetch("https://backendhb.onrender.com/api/shop-status");
       const data = await res.json();
 
-      isShopOpen = data.open;
+      if (!data.open) {
+        document.getElementById("productGrid").innerHTML =
+          "<h2 style='text-align:center;color:red;'>Shop Closed</h2>";
 
-      updateShopToggleBtn();
-      handleShopUI();
+        return; // 🔥 STOP HERE
+      }
+
+      // ✅ ONLY load products if open
+      initApp();
 
     } catch (err) {
-      console.error("Shop status error");
+      console.error("Shop status error", err);
     }
   }
   function handleShopUI() {
@@ -3513,6 +3517,11 @@ style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:
 
   // ================= INIT =================
   function initApp() {
+
+    if (!isShopOpen) return; // ❌ block rendering
+
+    loadProducts();
+
     loadRoomOptions('custRoom');
     renderCats();
     handleShopUI();
