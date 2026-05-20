@@ -15,9 +15,17 @@
 
 </head>
 <script>
+
   // Auth guard — redirect to login if not authenticated
   let currentUser = null;
   let authChecked = false;
+  function isShopOpenNow() {
+    const now = new Date();
+    const hours = now.getHours();
+
+    // open from 20:00 to 24:00
+    return hours >= 20 && hours < 24;
+  }
 
   async function checkAuth() {
     try {
@@ -58,6 +66,17 @@
       updateProfilePage();
 
       // Initialize app after auth success
+
+      if (!isShopOpenNow()) {
+        document.getElementById("productGrid").innerHTML = `
+    <div style="grid-column:1/-1; text-align:center; padding:60px;">
+      <h2 style="color:red;">🚫 Shop Closed</h2>
+      <p>Open from 8:00 PM to 12:00 AM</p>
+    </div>
+  `;
+      } else {
+        loadProducts(); // ✅ only load if open
+      }
 
 
     } catch (err) {
@@ -2350,9 +2369,9 @@
 <script>
   let isShopOpen = true;
 
- 
 
-  
+
+
   async function apiFetch(url, options = {}) {
     try {
       const res = await fetch(url, options);
@@ -3065,7 +3084,7 @@
       });
   }
 
-  
+
 
   const REWARD_TYPES = [
     { type: 'discount_1', weight: 25, icon: '💰', title: 'Rs.1 Off', desc: 'Get Rs.1 off on orders above Rs.30', minOrder: 30 },
@@ -3430,7 +3449,7 @@
   // ================= INIT =================
   function initApp() {
 
-     // ❌ block rendering
+    // ❌ block rendering
 
     loadProducts();
 
