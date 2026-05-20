@@ -32,7 +32,7 @@
 
       if (!res.ok) {
         console.error("Auth check failed:", res.status);
-        window.location.replace("auth.html");
+        window.location.replace("../index.html");
         return;
       }
 
@@ -62,7 +62,7 @@
 
     } catch (err) {
       console.error("Auth error:", err);
-      window.location.replace("auth.html");
+      window.location.replace("../index.html");
     }
   }
 
