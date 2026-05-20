@@ -1,1065 +1,797 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostel Bites</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap"
-    rel="stylesheet">
-
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function (OneSignal) {
-      await OneSignal.init({
-        appId: "0b256047-4540-4b4f-8c86-7198f65c8a62",
-        notifyButton: { enable: true }
-      });
-      setTimeout(() => { OneSignal.Slidedown.promptPush(); }, 1500);
-    });
-  </script>
-
-  <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --orange: #ff6b00;
-      --orange-dim: rgba(255, 107, 0, 0.14);
-      --orange-glow: rgba(255, 107, 0, 0.35);
-      --bg: #080809;
-      --glass: rgba(255, 255, 255, 0.04);
-      --glass-border: rgba(255, 255, 255, 0.09);
-      --glass-hover: rgba(255, 255, 255, 0.07);
-      --text: #f4f0eb;
-      /* main text — near white warm */
-      --text-secondary: #c8c2bb;
-      /* subtitles — clearly readable */
-      --text-muted: #9e9890;
-      /* timing/tagline — still legible */
-      --muted: #9e9890;
-    }
-
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    /* ── LAYERED BACKGROUND ── */
-    .bg-wrap {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Deep amber radial glow — top centre */
-    .bg-wrap::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 90% 55% at 50% -5%, rgba(255, 107, 0, 0.13) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at 92% 88%, rgba(255, 80, 0, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 35% 35% at 4% 70%, rgba(255, 140, 0, 0.05) 0%, transparent 55%);
-    }
-
-    /* Grain texture */
-    .bg-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
-      background-size: 160px 160px;
-      opacity: 0.5;
-    }
-
-    /* Floating orb — decorative */
-    .orb {
-      position: fixed;
-      width: 340px;
-      height: 340px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 107, 0, 0.07) 0%, transparent 70%);
-      top: 30%;
-      left: 50%;
-      transform: translateX(-50%);
-      pointer-events: none;
-      z-index: 0;
-      animation: orb-drift 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes orb-drift {
-      from {
-        transform: translateX(-50%) translateY(0);
-      }
-
-      to {
-        transform: translateX(-50%) translateY(30px);
-      }
-    }
-
-    /* ── HEADER ── */
-    .site-top {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      background: rgba(8, 8, 9, 0.65);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
-
-    .header {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--glass-border);
-      animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      color: var(--text);
-    }
-
-    .header-logo img {
-      height: 28px;
-      width: 28px;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .header-logo span {
-      color: var(--orange);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* 🔥 OFFER STRIP */
-    .offer-strip {
-      width: 100%;
-      overflow: hidden;
-      background: rgba(255, 107, 0, 0.08);
-      border-bottom: 1px solid rgba(255, 107, 0, 0.2);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      position: relative;
-      z-index: 1;
-
-      /* 🔥 THIS FIXES VISUAL OVERLAP */
-    }
-
-    .offer-track {
-      display: flex;
-      gap: 60px;
-      white-space: nowrap;
-      padding: 10px 0;
-      width: max-content;
-      animation: scrollOffer 25s linear infinite;
-    }
-
-    .offer-track span {
-      font-size: 0.85rem;
-      color: var(--orange);
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      flex: 0 0 auto;
-      text-shadow: 0 0 8px rgba(255, 107, 0, 0.4);
-    }
-
-    .offer-strip:hover .offer-track {
-      animation-play-state: paused;
-    }
-
-
-    /* smooth infinite scroll */
-    @keyframes scrollOffer {
-      0% {
-        transform: translateX(0);
-      }
-
-      100% {
-        transform: translateX(-50%);
-      }
-    }
-
-    .dev-btn {
-      padding: 7px 14px;
-      border: 1px solid var(--glass-border);
-      border-radius: 999px;
-      background: var(--glass);
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      backdrop-filter: blur(10px);
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .dev-btn:hover {
-      background: var(--glass-hover);
-      color: var(--text);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    /* ── DEV BOX ── */
-    .dev-box {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 14px 20px;
-      background: rgba(255, 107, 0, 0.05);
-      border-bottom: 1px solid rgba(255, 107, 0, 0.15);
-      position: relative;
-      z-index: 5;
-    }
-
-    .dev-box.visible {
-      display: flex;
-    }
-
-    .dev-box input {
-      flex: 1;
-      min-width: 0;
-      max-width: 260px;
-      padding: 10px 16px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .dev-box input:focus {
-      border-color: rgba(255, 107, 0, 0.4);
-    }
-
-    .dev-box input::placeholder {
-      color: #888;
-    }
-
-    .dev-box button {
-      padding: 10px 20px;
-      background: var(--orange);
-      border: none;
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .dev-box button:hover {
-      background: #ff7f1a;
-      transform: translateY(-1px);
-    }
-
-    /* ── MAIN CONTENT ── */
-    .container {
-      flex: 1;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 52px 24px 40px;
-      gap: 0;
-    }
-
-    /* Logo ring */
-    .logo-ring {
-      position: relative;
-      width: 110px;
-      height: 110px;
-      margin-bottom: 28px;
-      animation: riseUp 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .logo-ring::before {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(255, 107, 0, 0.25);
-      animation: spin-ring 10s linear infinite;
-    }
-
-    .logo-ring::after {
-      content: '';
-      position: absolute;
-      inset: -14px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 107, 0, 0.1);
-      animation: spin-ring 16s linear infinite reverse;
-    }
-
-    @keyframes spin-ring {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .logo-ring img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 50%;
-      background: var(--orange-dim);
-      border: 1px solid rgba(255, 107, 0, 0.2);
-      box-shadow: 0 0 40px rgba(255, 107, 0, 0.2), 0 0 80px rgba(255, 107, 0, 0.07);
-      padding: 12px;
-    }
-
-    /* Live badge */
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 5px 13px;
-      border-radius: 999px;
-      background: var(--orange-dim);
-      border: 1px solid rgba(255, 107, 0, 0.25);
-      color: var(--orange);
-      margin-bottom: 18px;
-      animation: riseUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .live-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--orange);
-      animation: pulse-dot 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-dot {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.4;
-        transform: scale(0.7);
-      }
-    }
-
-    h1 {
-      font-family: 'Nunito', sans-serif;
-      font-size: clamp(2rem, 8vw, 3.2rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.01em;
-      color: var(--text);
-      margin-bottom: 14px;
-      animation: riseUp 0.7s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    h1 em {
-      font-style: normal;
-      color: var(--orange);
-    }
-
-    .subtitle {
-      font-size: clamp(0.9rem, 3.5vw, 1.05rem);
-      color: var(--text-secondary);
-      font-weight: 400;
-      line-height: 1.6;
-      margin-bottom: 8px;
-      animation: riseUp 0.7s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .timing {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      animation: riseUp 0.7s 0.33s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .timing b {
-      color: var(--orange);
-    }
-
-    .tagline {
-      font-size: 0.84rem;
-      font-style: italic;
-      color: var(--text-muted);
-      margin-bottom: 36px;
-      animation: riseUp 0.7s 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    /* ── GLASS CARD wrapping buttons ── */
-    .btn-card {
-      width: min(92%, 320px);
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 22px;
-      padding: 22px 20px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      animation: riseUp 0.7s 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    /* Primary CTA */
-    .btn-primary {
-      width: 100%;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 14px;
-      background: var(--orange);
-      color: #fff;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #ff7f1a;
-      box-shadow: 0 6px 28px rgba(255, 107, 0, 0.5);
-      transform: translateY(-1px);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-      box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
-    }
-
-    /* Secondary ghost */
-    .btn-secondary {
-      width: 100%;
-      padding: 13px 20px;
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-secondary:hover {
-      background: var(--glass-hover);
-      color: var(--text);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Hidden admin buttons — same styling */
-    #adminPageBtn,
-    #adminPayBtn {
-      display: none;
-    }
-
-    /* ── POPUP (time restriction) ── */
-    .popup {
-      position: fixed;
-      top: 76px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-8px);
-      width: min(88%, 340px);
-      background: rgba(24, 8, 5, 0.92);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #f87171;
-      padding: 14px 20px;
-      border-radius: 14px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.875rem;
-      text-align: center;
-      display: none;
-      z-index: 200;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    /* ── UPDATE MODAL ── */
-    #updatePopup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      backdrop-filter: blur(6px);
-    }
-
-    .modal-box {
-      background: #111113;
-      border: 1px solid var(--glass-border);
-      border-radius: 22px;
-      padding: 32px 28px;
-      max-width: 340px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      animation: modal-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    @keyframes modal-pop {
-      from {
-        opacity: 0;
-        transform: scale(0.92) translateY(16px);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .modal-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
-    }
-
-    .modal-box h3 {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 14px;
-    }
-
-    .modal-box h3 span {
-      color: var(--orange);
-    }
-
-    .modal-features {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-
-    .modal-feature {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.85rem;
-      color: #d4cec8;
-      text-align: left;
-    }
-
-    .modal-btn {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      border-radius: 13px;
-      background: var(--orange);
-      color: #fff;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255, 107, 0, 0.3);
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .modal-btn:hover {
-      background: #ff7f1a;
-      transform: translateY(-1px);
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      position: relative;
-      z-index: 1;
-      background: rgba(8, 8, 9, 0.7);
-      border-top: 1px solid var(--glass-border);
-      backdrop-filter: blur(12px);
-      padding: 14px 20px;
-      text-align: center;
-      font-size: 0.72rem;
-      color: #7a746e;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-14px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes riseUp {
-      from {
-        opacity: 0;
-        transform: translateY(22px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* 🔥 FLOATING REVIEW */
-    .floating-review {
-      position: fixed;
-      right: 20px;
-      bottom: 80px;
-      width: 280px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 14px;
-
-      backdrop-filter: blur(14px);
-      z-index: 50;
-
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-
-      animation: fadeSlide 0.5s ease;
-    }
-
-    .fr-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .fr-content {
-      flex: 1;
-    }
-
-    .fr-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .fr-msg {
-      font-size: 0.8rem;
-      color: #c8c2bb;
-      line-height: 1.5;
-    }
-
-    .floating-review {
-      cursor: pointer;
-    }
-
-    @media (max-width: 500px) {
-      .floating-review {
-        right: 10px;
-        left: 10px;
-        width: auto;
-
-        bottom: 40px;
-        /* 🔥 push above buttons */
-      }
-    }
-
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+    <title>Hostel Bites - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ... keep all your existing CSS exactly the same ... */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --orange: #FF6B00;
+            --orange-glow: #FF8C00;
+            --orange-dim: rgba(255, 107, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-bright: rgba(255, 107, 0, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --input-focus: rgba(255, 107, 0, 0.4);
+            --text-dim: rgba(255, 255, 255, 0.45);
+            --danger: #EF4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --success: #22C55E;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #060608;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.18) 0%, transparent 70%);
+            top: -120px;
+            left: -120px;
+            animation: drift1 12s ease-in-out infinite alternate;
+        }
+
+        .bg-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 60, 0, 0.12) 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+            animation: drift2 15s ease-in-out infinite alternate;
+        }
+
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(120, 40, 255, 0.08) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: drift3 10s ease-in-out infinite alternate;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes drift1 {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(60px, 40px) scale(1.15);
+            }
+        }
+
+        @keyframes drift2 {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(-40px, -60px) scale(1.1);
+            }
+        }
+
+        @keyframes drift3 {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        .error-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .error-box.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .success-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: var(--success);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .success-box.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .card-wrap {
+            position: relative;
+            z-index: 10;
+            width: 92%;
+            max-width: 420px;
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 21px;
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.4) 0%, transparent 50%, rgba(255, 107, 0, 0.15) 100%);
+            z-index: -1;
+        }
+
+        .box {
+            background: rgba(12, 12, 15, 0.75);
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 36px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.5), rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(180deg, rgba(255, 107, 0, 0.3), transparent 60%);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            font-size: 32px;
+            margin-bottom: 6px;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 22px rgba(255, 140, 0, 0.9));
+            }
+        }
+
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            background: linear-gradient(135deg, #FF6B00, #FFB347, #FF6B00);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+        }
+
+        .field {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .field-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-dim);
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 14px 11px 38px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: rgba(255, 107, 0, 0.5);
+            background: rgba(255, 107, 0, 0.07);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        input.error,
+        select.error {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        input:focus+.field-icon,
+        select:focus+.field-icon {
+            color: var(--orange);
+        }
+
+        input.error+.field-icon,
+        select.error+.field-icon {
+            color: var(--danger);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,107,0,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        select option {
+            background: #111;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 50%, #FF6B00 100%);
+            background-size: 200% auto;
+            color: white;
+            transition: background-position 0.4s, transform 0.15s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        button:hover:not(:disabled) {
+            background-position: right center;
+            box-shadow: 0 6px 30px rgba(255, 107, 0, 0.5);
+            transform: translateY(-1px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .toggle {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-dim);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle span {
+            color: var(--orange);
+            font-weight: 500;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .toggle span::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--orange);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s;
+        }
+
+        .toggle:hover span {
+            color: #FFB347;
+        }
+
+        .toggle:hover span::after {
+            transform: scaleX(1);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0 4px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .divider span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .form-section {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loader {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 107, 0, 0.3);
+            border-radius: 2px;
+        }
+
+        .field-error {
+            color: var(--danger);
+            font-size: 11px;
+            margin-top: 4px;
+            margin-left: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+    </style>
+    <!-- REMOVED: <base target="_blank"> - This was breaking session flow! -->
 </head>
 
 <body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div id="errorBox" class="error-box"></div>
+    <div id="successBox" class="success-box"></div>
 
-  <!-- Background layers -->
-  <div class="bg-wrap"></div>
-  <div class="orb"></div>
+    <div class="card-wrap">
+        <div class="box">
+            <div class="brand">
+                <span class="brand-icon">🍽️</span>
+                <div class="brand-name">Hostel Bites</div>
+            </div>
 
-  <!-- UPDATE MODAL -->
-  <div id="updatePopup" style="display:none;">
-    <div class="modal-box">
-      <div class="modal-icon">🔥</div>
-      <h3>Hostel <span>Bites</span> 2.0</h3>
-      <div class="modal-features">
-        <div class="modal-feature"><span></span>New item with a free biscuit</div>
-        <div class="modal-feature"><span></span> Get free gift on order above ₹10</div>
-        <div class="modal-feature"><span>📦</span> Track your orders in real-time</div>
+            <!-- LOGIN -->
+            <div id="loginBox" class="form-section">
+                <h2>Welcome back</h2>
+                <div class="field">
+                    <input id="loginPhone" placeholder="Phone Number" type="tel" maxlength="10">
+                    <span class="field-icon">📞</span>
+                    <div class="field-error" id="loginPhoneError">Enter a valid 10-digit phone number</div>
+                </div>
+                <div class="field">
+                    <input id="loginPass" type="password" placeholder="Password" minlength="4">
+                    <span class="field-icon">🔒</span>
+                    <div class="field-error" id="loginPassError">Password must be at least 4 characters</div>
+                </div>
+                <button onclick="login()" id="loginBtn"><span id="loginBtnText">Sign In</span></button>
+                <div class="toggle" onclick="toggleForm()">New here? <span>Create an account</span></div>
+            </div>
 
-      </div>
-      <button class="modal-btn" onclick="closeUpdatePopup()">Got it — let's go!</button>
-    </div>
-  </div>
-
-  <div class="site-top">
-    <!-- HEADER -->
-    <header class="header">
-      <div class="header-logo">
-        <img src="files/hostelbites_wbg.png" alt="logo">
-        Hostel <span>&nbsp;Bites</span>&nbsp;2.0
-      </div>
-      <div class="header-actions">
-        <button class="dev-btn" onclick="Contact()">Help</button>
-        <button id="devButton" class="dev-btn" onclick="handleDevClick()">Dev Mode</button>
-      </div>
-
-    </header>
-
-    <!-- DEV CODE BOX -->
-    <div class="dev-box" id="devBox">
-      <input type="password" id="devCode" placeholder="Enter Dev Code">
-      <button onclick="checkDevCode()">Unlock</button>
-    </div>
-    <!-- 🔥 OFFER STRIP -->
-    <div class="offer-strip">
-      <div class="offer-track">
-
-        <span>New Item Pepsi</span>
-        <span>New Item Lotte choco Pie</span>
-        <span>⚡ Delivery under 7 minutes</span>
-        <span>New Item Nut Cracker</span>
-
-        <span>New Item Pepsi</span>
-        <span>New Item Lotte choco Pie</span>
-        <span>⚡ Delivery under 7 minutes</span>
-        <span>New Item Nut Cracker</span>
-
-        <span>New Item Pepsi</span>
-        <span>New Item Lotte choco Pie</span>
-        <span>⚡ Delivery under 7 minutes</span>
-        <span>New Item Nut Cracker</span>
-
-      </div>
-    </div>
-
-  </div>
-
-  <!-- MAIN -->
-  <main class="container">
-
-    <div class="logo-ring">
-      <img src="files/hostelbites_wbg.png" alt="logo">
-    </div>
-
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      Open 8 PM – 12 AM
-    </div>
-
-    <h1>Welcome to<br><em>Hostel Bites</em></h1>
-    <p class="subtitle">Snacks, Drinks &amp; Midnight Cravings 😋</p>
-    <p class="timing">Delivery in <b>under 7 minutes</b></p>
-    <p class="tagline">"Real ones don't just consume — they belong."</p>
-
-    <div class="btn-card">
-      <!-- Hidden admin buttons -->
-      <button id="adminPageBtn" class="btn-secondary" onclick="openAdminPage()"> <img src="./asset/admin.svg"
-          alt="Admin.svg"> Admin Panel</button>
-      <button id="adminPayBtn" class="btn-secondary" onclick="openQRPage()"> <img src="./asset/payment.svg"
-          alt="payment.svg"> Generate QR</button>
-      <button id="reqpage" class="btn-secondary" onclick="requestpg()"> <img src="./asset/rivew.svg" alt="download.svg">
-        Request/ Review</button>
-
-      <button class="btn-primary" onclick="enterStore()">
-        <img src="./asset/store.svg" alt=""> Enter Store
-      </button>
-      <button class="btn-secondary" onclick="downloadApp()">
-        <img src="./asset/download.svg" alt="download.svg"> Download App
-      </button>
+            <!-- REGISTER -->
+            <div id="registerBox" class="form-section hidden">
+                <h2>Create account</h2>
+                <div class="field">
+                    <input id="name" placeholder="Full Name" minlength="2" maxlength="50">
+                    <span class="field-icon">👤</span>
+                    <div class="field-error" id="nameError">Name must be at least 2 characters</div>
+                </div>
+                <div class="field">
+                    <input id="phone" placeholder="Phone Number" type="tel" maxlength="10">
+                    <span class="field-icon">📞</span>
+                    <div class="field-error" id="phoneError">Enter a valid 10-digit phone number</div>
+                </div>
+                <div class="field">
+                    <input id="pass" type="password" placeholder="Password" minlength="4" maxlength="50">
+                    <span class="field-icon">🔒</span>
+                    <div class="field-error" id="passError">Password must be at least 4 characters</div>
+                </div>
+                <div class="divider"><span>hostel info</span></div>
+                <div class="field">
+                    <select id="block">
+                        <option value="X">Block X</option>
+                        <option value="Y">Block Y</option>
+                        <option value="Z">Block Z</option>
+                    </select>
+                    <span class="field-icon">🏢</span>
+                </div>
+                <div class="field">
+                    <select id="room"></select>
+                    <span class="field-icon">🚪</span>
+                </div>
+                <div class="field">
+                    <select id="role">
+                        <option value="customer">Customer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <span class="field-icon">🎖️</span>
+                </div>
+                <button onclick="register()" id="registerBtn"><span id="registerBtnText">Register</span></button>
+                <div class="toggle" onclick="toggleForm()">Already registered? <span>Sign in</span></div>
+            </div>
+        </div>
     </div>
 
-  </main>
+    <script>
+        const API_BASE = "https://backendhb.onrender.com/api";
 
-  <!-- TIME RESTRICTION POPUP -->
-  <div id="popup" class="popup">
-    ⏰ Store is open only from <strong>8 PM to 12 AM</strong>
-  </div>
-  <!-- 🔥 FLOATING REVIEW WIDGET -->
-  <div class="floating-review" id="floatingReview">
-    <div class="fr-avatar" id="frAvatar"></div>
-    <div class="fr-content">
-      <div class="fr-name" id="frName">Loading...</div>
-      <div class="fr-msg" id="frMsg">Fetching reviews...</div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    © 2026 Hostel Bites &nbsp;|&nbsp; All rights reserved &nbsp;|&nbsp; Last Updated: 01-05-2026
-  </footer>
-
-  <script>
-    function downloadApp() {
-      window.location.href = "Hostel_bites.apk";
-    }
-
-    function openQRPage() {
-      window.location.href = "files/payment.html";
-    }
-
-    function openAdminPage() {
-      window.location.href = "files/admin.html";
-    }
-    function requestpg() {
-      window.location.href = "files/request.html";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      updateDevButton();
-      setTimeout(() => {
-        if (!localStorage.getItem("updateShown")) {
-          document.getElementById("updatePopup").style.display = "flex";
+        // ── AUTO FILL ROOM 1-20 ──
+        const roomSelect = document.getElementById("room");
+        for (let i = 1; i <= 20; i++) {
+            let opt = document.createElement("option");
+            opt.value = i.toString().padStart(2, '0');
+            opt.text = "Room " + i;
+            roomSelect.appendChild(opt);
         }
-      }, 4000);
-    });
+        // FIX: Ensure first room is selected
+        roomSelect.value = "01";
 
-    function showUpdatePopup() {
-      if (!localStorage.getItem("updateShown")) {
-        document.getElementById("updatePopup").style.display = "flex";
-      }
-    }
+        // ── UTILITIES ──
+        function validatePhone(phone) { return /^[0-9]{10}$/.test(phone); }
+        function validateName(name) { return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim()); }
+        function validatePassword(pass) { return pass.length >= 4; }
 
-    function closeUpdatePopup() {
-      document.getElementById("updatePopup").style.display = "none";
-      localStorage.setItem("updateShown", "true");
-    }
-
-    function Contact() {
-      alert("For any help, contact us at:\n📧 8218325600, 9149020075\n");
-    }
-
-    function showDevInput() {
-      let box = document.getElementById("devBox");
-      box.classList.toggle("visible");
-    }
-
-    function checkDevCode() {
-      let input = document.getElementById("devCode").value;
-      fetch("https://backendhb.onrender.com/api/auth/dev-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ password: input })
-      }).then(async res => {
-        const text = await res.text();
-        console.log("RAW RESPONSE:", text);
-
-        try {
-          return JSON.parse(text);
-        } catch {
-          throw new Error("Invalid JSON from server");
-        }
-      })
-        .then(data => {
-          if (data.success) {
-            localStorage.setItem("dev", "true");
-            alert("Dev Mode Activated 🔓");
-            updateDevButton();
-          } else {
-            alert("Wrong Code ❌");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Server error ❌");
-        });
-    }
-
-    function updateDevButton() {
-      let btn = document.getElementById("devButton");
-      let qrBtn = document.getElementById("adminPayBtn");
-      let adminPageBtn = document.getElementById("adminPageBtn");
-
-      if (localStorage.getItem("dev") === "true") {
-        btn.innerText = "Logout Dev";
-        btn.onclick = logoutDev;
-        if (qrBtn) qrBtn.style.display = "flex";
-        if (adminPageBtn) adminPageBtn.style.display = "flex";
-      } else {
-        btn.innerText = "Dev Mode";
-        btn.onclick = handleDevClick;
-        if (qrBtn) qrBtn.style.display = "none";
-        if (adminPageBtn) adminPageBtn.style.display = "none";
-      }
-    }
-
-    function logoutDev() {
-      localStorage.removeItem("dev");
-      alert("Dev Mode Disabled 🔒");
-      updateDevButton();
-    }
-
-    function handleDevClick() {
-      showDevInput();
-    }
-
-    function isStoreOpen() {
-      if (localStorage.getItem("dev") === "true") return true;
-      let hour = new Date().getHours();
-      return hour >= 20 && hour < 24;
-    }
-
-    function enterStore() {
-      if (isStoreOpen()) {
-        localStorage.setItem("allowed", "true");
-        window.location.href = "files/hostel_bites.html";
-      } else {
-        let popup = document.getElementById("popup");
-        popup.style.display = "block";
-        setTimeout(() => { popup.style.display = "none"; }, 3000);
-      }
-    }
-
-
-    let reviews = [];
-    let currentIndex = 0;
-
-    // 🎨 avatar generator (same style as your review page)
-    function createAvatar(name) {
-      const colors = ['#ff6b00', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
-      const c = colors[name.charCodeAt(0) % colors.length];
-
-      return `
-    <svg viewBox="0 0 40 40">
-      <circle cx="20" cy="20" r="20" fill="${c}22"/>
-      <circle cx="20" cy="16" r="7" fill="${c}aa"/>
-      <ellipse cx="20" cy="34" rx="11" ry="7" fill="${c}66"/>
-    </svg>
-  `;
-    }
-
-    // 🔥 LOAD REVIEWS
-    async function loadFloatingReviews() {
-      try {
-        const res = await fetch("https://backendhb.onrender.com/api/feedback/display",);
-        const result = await res.json();
-
-        if (!result.success || !result.data) {
-          console.log("No reviews");
-          return;
+        function showError(msg) {
+            const err = document.getElementById("errorBox");
+            err.innerText = msg;
+            err.classList.add("show");
+            setTimeout(() => err.classList.remove("show"), 4000);
         }
 
-        if (!result.data || result.data.length === 0) return console.log("No reviews to display");
+        function showSuccess(msg) {
+            const box = document.getElementById("successBox");
+            box.innerText = msg;
+            box.classList.add("show");
+            setTimeout(() => box.classList.remove("show"), 3000);
+        }
 
-        reviews = result.data;
-        showReview();
-        setInterval(showReview, 4000); // change every 4 sec
-      } catch (err) {
-        console.error("Review load error", err);
-      }
-    }
+        function clearFieldErrors() {
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
+        }
 
-    function shortText(text, limit = 50) {
-      if (!text) return "";
-      return text.length > limit ? text.slice(0, limit) + "..." : text;
-    }
+        function showFieldError(fieldId, errorId) {
+            document.getElementById(fieldId).classList.add('error');
+            document.getElementById(errorId).classList.add('show');
+        }
 
-    // 🔄 SHOW ONE BY ONE
-    function showReview() {
-      if (!reviews || reviews.length === 0) return;
+        function setLoading(btnId, textId, isLoading, defaultText) {
+            const btn = document.getElementById(btnId);
+            const txt = document.getElementById(textId);
+            if (isLoading) {
+                btn.disabled = true;
+                txt.innerHTML = '<span class="loader"></span> ' + defaultText + '...';
+            } else {
+                btn.disabled = false;
+                txt.textContent = defaultText;
+            }
+        }
 
-      const r = reviews[currentIndex];
+        // ── SWITCH LOGIN/REGISTER ──
+        function toggleForm() {
+            document.getElementById("loginBox").classList.toggle("hidden");
+            document.getElementById("registerBox").classList.toggle("hidden");
+            clearFieldErrors();
+            document.getElementById("errorBox").classList.remove("show");
+        }
 
-      if (!r || !r.name) return; // 🔥 prevents crash
+        // ── LOGIN ──
+        async function login() {
+            clearFieldErrors();
+            const phone = document.getElementById("loginPhone").value.trim();
+            const password = document.getElementById("loginPass").value;
+            let hasError = false;
 
-      const box = document.getElementById("floatingReview");
+            if (!validatePhone(phone)) { showFieldError('loginPhone', 'loginPhoneError'); hasError = true; }
+            if (!validatePassword(password)) { showFieldError('loginPass', 'loginPassError'); hasError = true; }
+            if (hasError) return;
 
-      box.onclick = () => openFullReview(r);
+            setLoading('loginBtn', 'loginBtnText', true, 'Signing In');
 
-      document.getElementById("frName").innerText = r.name;
-      document.getElementById("frMsg").innerText = shortText(r.message, 50);
-      document.getElementById("frAvatar").innerHTML = createAvatar(r.name);
+            try {
+                const res = await fetch(API_BASE + "/auths/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ phone, password })
+                });
 
-      currentIndex = (currentIndex + 1) % reviews.length;
-    }
+                // FIX: Handle non-JSON responses
+                let data;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    data = await res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error("Server error: " + text.substring(0, 100));
+                }
 
-    function openFullReview(review) {
-      localStorage.setItem("selectedReviewId", review._id); // ✅ store ID only
-      window.location.href = "files/request.html";
-    }
+                console.log("Login response:", data);
 
-    // 🚀 INIT
-    loadFloatingReviews();
-  </script>
+                if (data.success) {
+                    localStorage.setItem('userPhone', phone);
+                    if (data.user) {
+                        localStorage.setItem('hb_user_name', data.user.name || '');
+                        localStorage.setItem('hb_user_room', data.user.room || '');
+                    }
+                    showSuccess("Login successful! Redirecting...");
+                    setTimeout(() => { window.location.href = "hostel_bites.html"; }, 800);
+                } else {
+                    showError(data.message || "Invalid phone or password");
+                }
+            } catch (err) {
+                console.error("Login error:", err);
+                showError(err.message || "Server error. Please try again.");
+            }
 
+            setLoading('loginBtn', 'loginBtnText', false, 'Sign In');
+        }
+
+        // ── REGISTER ──
+        async function register() {
+            clearFieldErrors();
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("pass").value;
+            const block = document.getElementById("block").value;
+            const room = document.getElementById("room").value;
+            const role = document.getElementById("role").value;
+            let hasError = false;
+
+            if (!validateName(name)) { showFieldError('name', 'nameError'); hasError = true; }
+            if (!validatePhone(phone)) { showFieldError('phone', 'phoneError'); hasError = true; }
+            if (!validatePassword(password)) { showFieldError('pass', 'passError'); hasError = true; }
+            // FIX: Validate room is selected
+            if (!room) { showError("Please select a room"); hasError = true; }
+            if (hasError) return;
+
+            const fullRoom = block + "-" + room;
+
+            setLoading('registerBtn', 'registerBtnText', true, 'Registering');
+
+            try {
+                const res = await fetch(API_BASE + "/auths/register", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, phone, room: fullRoom, password, role })
+                });
+
+                // FIX: Handle non-JSON responses
+                let data;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    data = await res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error("Server error: " + text.substring(0, 100));
+                }
+
+                if (data.success) {
+                    document.getElementById("name").value = "";
+                    document.getElementById("phone").value = "";
+                    document.getElementById("pass").value = "";
+                    document.getElementById("block").value = "X";
+                    document.getElementById("room").value = "01";
+                    document.getElementById("role").value = "customer";
+
+                    showSuccess(data.message || "Registered successfully!");
+                    setTimeout(() => toggleForm(), 1500);
+                } else {
+                    showError(data.message || "Registration failed");
+                }
+            } catch (err) {
+                console.error("Register error:", err);
+                showError(err.message || "Server error. Please try again.");
+            }
+
+            setLoading('registerBtn', 'registerBtnText', false, 'Register');
+        }
+
+        // ── CHECK AUTO LOGIN ──
+        // To:
+        async function checkUser() {
+            try {
+                const res = await fetch(API_BASE + "/auths/me", { credentials: "include" });
+                if (res.ok) {
+                    const data = await res.json();
+                    const user = data.user;     // ✅ unwrap the nested user object
+                    if (user && user.phone) {
+                        localStorage.setItem('userPhone', user.phone);
+                        localStorage.setItem('hb_user_name', user.name || '');
+                        localStorage.setItem('hb_user_room', user.room || '');
+                    }
+                    window.location.href = "hostel_bites.html";
+                }
+            } catch (err) {
+                console.log("Not logged in, stay on page");
+            }
+        }
+
+        // ── ENTER KEY SUPPORT ──
+        document.getElementById('loginPhone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+        document.getElementById('loginPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+        document.getElementById('name').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('phone').focus(); });
+        document.getElementById('phone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('pass').focus(); });
+        document.getElementById('pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
+
+        checkUser();
+    </script>
 </body>
 
 </html>
