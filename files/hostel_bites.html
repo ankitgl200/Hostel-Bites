@@ -2277,8 +2277,12 @@
         <button onclick="window.open('payment.html','_blank')"
           style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
             class="fas fa-credit-card"></i> Payments</button>
-      </div>
-      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        <button id="shopToggleBtnModal" onclick="toggleShop()" 
+    style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
+    <i class="fas fa-power-off"></i> Loading...
+  </button>
+          </div>
+      
     </div>
   </div>
 
@@ -2371,9 +2375,13 @@
     loadProducts() // your existing function
   }
   function updateShopToggleBtn() {
-    const btn = document.getElementById("shopToggleBtn");
+  const btns = [
+    document.getElementById("shopToggleBtn"),
+    document.getElementById("shopToggleBtnModal")
+  ];
+  
+  btns.forEach(btn => {
     if (!btn) return;
-
     if (isShopOpen) {
       btn.innerHTML = `<i class="fas fa-lock"></i> Close Shop`;
       btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
@@ -2381,7 +2389,8 @@
       btn.innerHTML = `<i class="fas fa-unlock"></i> Open Shop`;
       btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
     }
-  }
+  });
+}
   async function toggleShop() {
     try {
       const btn = document.getElementById("shopToggleBtn");
