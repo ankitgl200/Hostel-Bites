@@ -2107,11 +2107,11 @@
             <button onclick="window.open('payment.html','_blank')"
               style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i
                 class="fas fa-credit-card"></i> Payments</button>
-          </div>
-          <button id="shopToggleBtn" onclick="toggleShop()"
+                <button id="shopToggleBtn" onclick="toggleShop()"
             style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
             <i class="fas fa-power-off"></i> Loading...
           </button>
+          </div>
         </div>
       </div>
     </main>
@@ -2368,7 +2368,7 @@
       return;
     }
 
-    handleShopUI(); // your existing function
+    loadProducts() // your existing function
   }
   function updateShopToggleBtn() {
     const btn = document.getElementById("shopToggleBtn");
