@@ -71,7 +71,7 @@
       // loadOrders();  // ✅ IMPORTANT FIX
 
       // 🔥 PRODUCTS ONLY TIME BASED
-      if (!isShopOpenNow()) {
+      if (currentUser.role !== "admin" && !isShopOpenNow()) {
         document.getElementById("productGrid").innerHTML = `
     <div style="grid-column:1/-1; text-align:center; padding:60px;">
       <h2 style="color:red;">🚫 Shop Closed</h2>
@@ -79,7 +79,7 @@
     </div>
   `;
       } else {
-        loadProducts();
+        loadProducts(); // ✅ admin bypass
       }
 
 
@@ -2984,7 +2984,7 @@
     }
     if (page === 'orders') {
       document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
-       loadOrders();
+      loadOrders();
     }
 
     // remove active
