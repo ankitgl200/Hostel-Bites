@@ -2109,10 +2109,10 @@
               style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
               <i class="fas fa-boxes"></i> Manage Products
             </button>
-            <button id="shopToggleBtn" onclick="toggleShop()"
+            <!-- <button id="shopToggleBtn" onclick="toggleShop()"
               style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
               <i class="fas fa-power-off"></i> Loading...
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
@@ -2282,10 +2282,10 @@
         <button onclick="window.open('mproduct.html','_blank')"
           style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
           <i class="fas fa-boxes"></i> Manage Products
-          <button id="shopToggleBtnModal" onclick="toggleShop()"
+          <!-- <button id="shopToggleBtnModal" onclick="toggleShop()"
             style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
             <i class="fas fa-power-off"></i> Loading...
-          </button>
+          </button> -->
       </div>
 
     </div>
@@ -2384,49 +2384,33 @@
 
     loadProducts() // your existing function
   }
-  function updateShopToggleBtn() {
-    const btns = [
-      document.getElementById("shopToggleBtn"),
-      document.getElementById("shopToggleBtnModal")
-    ];
+  
+  // async function toggleShop() {
+  //   try {
+  //     const btn = document.getElementById("shopToggleBtn");
+  //     btn.innerHTML = "Processing...";
+  //     btn.disabled = true;
 
-    btns.forEach(btn => {
-      if (!btn) return;
-      if (isShopOpen) {
-        btn.innerHTML = `<i class="fas fa-lock"></i> Close Shop`;
-        btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
-      } else {
-        btn.innerHTML = `<i class="fas fa-unlock"></i> Open Shop`;
-        btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
-      }
-    });
-  }
-  async function toggleShop() {
-    try {
-      const btn = document.getElementById("shopToggleBtn");
-      btn.innerHTML = "Processing...";
-      btn.disabled = true;
+  //     const res = await fetch("https://backendhb.onrender.com/api/shop-toggle", {
+  //       method: "POST",
+  //       credentials: "include"
+  //     });
 
-      const res = await fetch("https://backendhb.onrender.com/api/shop-toggle", {
-        method: "POST",
-        credentials: "include"
-      });
+  //     const data = await res.json();
 
-      const data = await res.json();
+  //     isShopOpen = data.open;
 
-      isShopOpen = data.open;
+  //     updateShopToggleBtn();
+  //     handleShopUI();
 
-      updateShopToggleBtn();
-      handleShopUI();
+  //     showToast(isShopOpen ? "Shop Opened ✅" : "Shop Closed 🚫");
 
-      showToast(isShopOpen ? "Shop Opened ✅" : "Shop Closed 🚫");
-
-    } catch (err) {
-      alert("Error toggling shop");
-    } finally {
-      document.getElementById("shopToggleBtn").disabled = false;
-    }
-  }
+  //   } catch (err) {
+  //     alert("Error toggling shop");
+  //   } finally {
+  //     document.getElementById("shopToggleBtn").disabled = false;
+  //   }
+  // }
 
   async function apiFetch(url, options = {}) {
     try {
@@ -3140,20 +3124,7 @@
       });
   }
 
-  // ================= REWARD SYSTEM =================
-  /*
-    Storage key: 'hb_rewards_' + phone
-    Each reward object:
-    {
-      id: string (unique),
-      type: 'discount_1'|'discount_2'|'discount_3'|'same_price'|'free_item'|'nothing',
-      orderId: string,
-      status: 'pending'|'active'|'used',
-      earnedAt: timestamp,
-      usedAt: timestamp|null,
-    }
-    Status flow: pending → active → used (one-time use, expires in 7 days if not used)
-  */
+  
 
   const REWARD_TYPES = [
     { type: 'discount_1', weight: 25, icon: '💰', title: 'Rs.1 Off', desc: 'Get Rs.1 off on orders above Rs.30', minOrder: 30 },
@@ -3518,7 +3489,7 @@
   // ================= INIT =================
   function initApp() {
 
-    if (!isShopOpen) return; // ❌ block rendering
+     // ❌ block rendering
 
     loadProducts();
 
