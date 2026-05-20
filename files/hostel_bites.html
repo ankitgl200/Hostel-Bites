@@ -13,6 +13,7 @@
 
 
 
+<base target="_blank">
 </head>
 <script>
   // Auth guard — redirect to login if not authenticated
@@ -35,13 +36,10 @@
         window.location.replace("../index.html");
         return;
       }
-      if (currentUser.role === "admin") {
-  document.getElementById("adminPanelBtns").style.display = "block";
-}
 
       const data = await res.json();
       currentUser = data.user || data;
-      console.log("Logged in:", currentUser);
+      ;
       authChecked = true;
 
       // Store user data for profile
@@ -53,7 +51,7 @@
 
       // Show admin UI if applicable
       if (currentUser.role === "admin") {
-        console.log("Admin logged in");
+        ;
       }
 
       // Update all profile UIs with real DB data
@@ -2079,24 +2077,25 @@
               <span id="profilePageOrders">0</span>
             </div>
             <div class="profile-info-row">
-              <span><i class="fas fa-calendar-alt" style="margin-right:8px; color:var(--accent-light);"></i>Member
-                Role</span>
-              <span id="profilePageSince">-</span>
+              <span><i class="fas fa-user-tag" style="margin-right:8px; color:var(--accent-light);"></i>Member Role</span>
+              <span id="profilePageRole" style="text-transform:capitalize;">-</span>
             </div>
           </div>
-          <div class="profile-actions">
+          <div class="profile-actions" id="profilePageActions">
             <button onclick="openInfo('terms')"><i class="fas fa-file-alt"></i> Terms</button>
             <button onclick="openInfo('privacy')"><i class="fas fa-shield-alt"></i> Privacy</button>
             <button onclick="openInfo('contact')"><i class="fas fa-headset"></i> Contact</button>
             <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
             <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
           </div>
-          <div id="adminPanelBtns" style="display:none; margin-top:15px;">
-            <button onclick="window.open('order.html','_blank')">Orders</button>
-            <button onclick="window.open('order2.html','_blank')">Orders 2</button>
-            <button onclick="window.open('feedbackget.html','_blank')">Feedback</button>
-            <button onclick="window.open('payment.html','_blank')">Payment</button>
+          <div class="profile-actions" id="adminPageActions" style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+            <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">Admin Panel</div>
+            <button onclick="window.open('order.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-clipboard-list"></i> Orders</button>
+            <button onclick="window.open('order2.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-history"></i> All Orders</button>
+            <button onclick="window.open('feedbackget.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-comments"></i> Feedback</button>
+            <button onclick="window.open('payment.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-credit-card"></i> Payments</button>
           </div>
+          <button class="logout-btn" onclick="handleLogout()" style="margin-top:16px;">Logout</button>
         </div>
       </div>
     </main>
@@ -2236,21 +2235,23 @@
       </div>
       <div class="profile-info-row">
         <span>Member Role</span>
-        <span id="profileRole">-</span>
+        <span id="profileRole" style="text-transform:capitalize;">-</span>
       </div>
-      <div class="profile-actions">
+      <div class="profile-actions" id="profileActions">
         <button onclick="openInfo('terms')"><i class="fas fa-file-alt"></i> Terms</button>
         <button onclick="openInfo('privacy')"><i class="fas fa-shield-alt"></i> Privacy</button>
         <button onclick="openInfo('contact')"><i class="fas fa-headset"></i> Contact</button>
         <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
         <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
       </div>
-      <div id="adminPanelBtns" style="display:none; margin-top:15px;">
-        <button onclick="window.open('order.html','_blank')">Orders</button>
-        <button onclick="window.open('order2.html','_blank')">Orders 2</button>
-        <button onclick="window.open('feedbackget.html','_blank')">Feedback</button>
-        <button onclick="window.open('payment.html','_blank')">Payment</button>
+      <div class="profile-actions" id="adminActions" style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+        <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; text-align:center;">Admin Panel</div>
+        <button onclick="window.open('order.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-clipboard-list"></i> Orders</button>
+        <button onclick="window.open('order2.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-history"></i> All Orders</button>
+        <button onclick="window.open('feedbackget.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-comments"></i> Feedback</button>
+        <button onclick="window.open('payment.html','_blank')" style="background:linear-gradient(135deg, var(--gradient-1), var(--gradient-2)); color:#fff; border:none;"><i class="fas fa-credit-card"></i> Payments</button>
       </div>
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
   </div>
 
@@ -2381,19 +2382,25 @@
   }
 
   function updateProfileUI() {
-
+    if (!currentUser) return;
+    // Use real DB user data
     const displayName = currentUser.name || localStorage.getItem('hb_user_name') || 'User';
     const displayPhone = currentUser.phone || localStorage.getItem('userPhone') || '';
     const displayRoom = currentUser.room || localStorage.getItem('hb_user_room') || '-';
+    const userRole = currentUser.role || 'customer';
 
     document.getElementById('profileName').textContent = displayName;
     document.getElementById('profilePhone').textContent = displayPhone ? '+91 ' + displayPhone : '+91 ...';
     document.getElementById('profileRoom').textContent = displayRoom;
     document.getElementById('profileAvatar').textContent = displayName.charAt(0).toUpperCase();
-    if (!currentUser) return;
-    // Use real DB user data
-    document.getElementById("profileRole").innerText =
-      currentUser.role === "admin" ? "Admin" : "Customer";
+    document.getElementById('profileRole').textContent = userRole;
+
+    // Show/hide admin buttons in modal
+    const adminActions = document.getElementById('adminActions');
+    if (adminActions) {
+      adminActions.style.display = userRole === 'admin' ? 'grid' : 'none';
+    }
+
     // Pre-fill checkout form
     document.getElementById('custName').value = displayName;
     if (displayPhone) document.getElementById('custPhone').value = displayPhone;
@@ -2439,12 +2446,19 @@
     const displayName = currentUser.name || localStorage.getItem('hb_user_name') || 'User';
     const displayPhone = currentUser.phone || localStorage.getItem('userPhone') || '';
     const displayRoom = currentUser.room || localStorage.getItem('hb_user_room') || '-';
+    const userRole = currentUser.role || 'customer';
 
     document.getElementById('profilePageName').textContent = displayName;
     document.getElementById('profilePagePhone').textContent = displayPhone ? '+91 ' + displayPhone : '+91 ...';
     document.getElementById('profilePageRoom').textContent = displayRoom;
-    document.getElementById('profilePageSince').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : '-';
+    document.getElementById('profilePageRole').textContent = userRole;
     document.getElementById('profilePageAvatar').textContent = displayName.charAt(0).toUpperCase();
+
+    // Show/hide admin buttons on mobile profile page
+    const adminPageActions = document.getElementById('adminPageActions');
+    if (adminPageActions) {
+      adminPageActions.style.display = userRole === 'admin' ? 'grid' : 'none';
+    }
 
     // Fetch order count from DB
     const phone = currentUser.phone || localStorage.getItem('userPhone');
@@ -2706,6 +2720,7 @@
       name,
       room,
       phone,
+      userId: currentUser ? currentUser._id || currentUser.id : null,
       items: Object.entries(cart).map(([id, qty]) => {
         const p = PRODUCTS.find(x => x.id == id);
         return { id, name: p.name, price: p.price, qty };
@@ -2769,7 +2784,7 @@
     const phone = localStorage.getItem('userPhone');
     if (!phone) return;
 
-    fetch("https://backendhb.onrender.com/api/orders", { credentials: "include" })
+    fetch("https://backendhb.onrender.com/api/orders/my", { credentials: "include" })
       .then(res => {
         if (res.status === 401) {
           window.location.replace("auth.html");
@@ -2778,7 +2793,7 @@
         return res.json();
       })
       .then(data => {
-        const myOrders = data.filter(o => o.phone === phone);
+        const myOrders = data || [];
         const box = document.getElementById('ordersList');
         if (!myOrders.length) {
           box.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--text-muted);">
@@ -3099,8 +3114,7 @@
     const key = getRewardsKey();
     if (!key) return;
     const rewards = loadRewards();
-    const phone = localStorage.getItem('userPhone');
-    const myOrders = orders.filter(o => o.phone === phone);
+    const myOrders = orders || [];
     let changed = false;
     const toReveal = [];
 
@@ -3398,17 +3412,17 @@
     setInterval(() => {
       const phone = localStorage.getItem('userPhone');
       if (!phone) return;
-      fetch("https://backendhb.onrender.com/api/orders", { credentials: "include" })
+      fetch("https://backendhb.onrender.com/api/orders/my", { credentials: "include" })
         .then(res => {
           if (res.status === 401) return null;
           return res.json();
         })
         .then(data => {
-          let newData = JSON.stringify(data.filter(o => o.phone === phone));
+          let newData = JSON.stringify(data || []);
           if (newData !== lastOrders) {
             lastOrders = newData;
             loadMyOrder();
-            syncRewardsWithOrders(data);
+            syncRewardsWithOrders(data || []);
           }
         })
         .catch(() => { });
