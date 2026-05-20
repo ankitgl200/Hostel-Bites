@@ -8,37 +8,21 @@
 
 
   <script>
-    async function checkAuth() {
-  try {
-    const res = await fetch("https://backendhb.onrender.com/api/auths/me", {
-      credentials: "include"
-    });
+     async function checkAuth() {
+      try {
+        const res = await fetch("https://backendhb.onrender.com/api/auth/check", {
+          credentials: "include"
+        });
 
-    if (res.status === 401) {
-      window.location.replace("/index.html");
-      return;
+        if (!res.ok) {
+          window.location.href = "admin.html";
+        }
+      } catch {
+        window.location.href = "admin.html";
+      }
     }
 
-    const data = await res.json();
-    const user = data.user || data;
-
-    // 🔥 ADMIN CHECK
-    if (user.role !== "admin") {
-      alert("Access denied");
-      window.location.replace("/hostel-bites.html");
-      return;
-    }
-
-    // ✅ allow access
-    console.log("Admin access granted");
-
-  } catch (err) {
-    window.location.replace("/index.html");
-  }
-}
-
-    document.addEventListener("DOMContentLoaded", checkAuth);
-
+    checkAuth();
   </script>
   <style>
     * {
