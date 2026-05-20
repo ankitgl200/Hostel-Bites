@@ -67,6 +67,10 @@
 
       // Initialize app after auth success
 
+      // 🔥 ALWAYS LOAD ORDERS
+      loadOrders();  // ✅ IMPORTANT FIX
+
+      // 🔥 PRODUCTS ONLY TIME BASED
       if (!isShopOpenNow()) {
         document.getElementById("productGrid").innerHTML = `
     <div style="grid-column:1/-1; text-align:center; padding:60px;">
@@ -75,7 +79,7 @@
     </div>
   `;
       } else {
-        loadProducts(); // ✅ only load if open
+        loadProducts();
       }
 
 
@@ -2980,6 +2984,7 @@
     }
     if (page === 'orders') {
       document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
+       loadOrders();
     }
 
     // remove active
