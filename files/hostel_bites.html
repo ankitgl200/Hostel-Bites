@@ -2350,68 +2350,9 @@
 <script>
   let isShopOpen = true;
 
-  async function loadShopStatus() {
-    try {
-      const res = await fetch("https://backendhb.onrender.com/api/shop-status");
-      const data = await res.json();
+ 
 
-      if (!data.open) {
-        document.getElementById("productGrid").innerHTML =
-          "<h2 style='text-align:center;color:red;'>Shop Closed</h2>";
-
-        return; // 🔥 STOP HERE
-      }
-
-      // ✅ ONLY load products if open
-      initApp();
-
-    } catch (err) {
-      console.error("Shop status error", err);
-    }
-  }
-  function handleShopUI() {
-    const grid = document.getElementById("productGrid");
-
-    if (!isShopOpen) {
-      grid.innerHTML = `
-      <div style="grid-column:1/-1; text-align:center; padding:60px;">
-        <h2 style="color:red;">🚫 Shop Closed</h2>
-        <p style="color:gray;">We are not accepting orders right now</p>
-      </div>
-    `;
-      return;
-    }
-
-    loadProducts() // your existing function
-  }
   
-  // async function toggleShop() {
-  //   try {
-  //     const btn = document.getElementById("shopToggleBtn");
-  //     btn.innerHTML = "Processing...";
-  //     btn.disabled = true;
-
-  //     const res = await fetch("https://backendhb.onrender.com/api/shop-toggle", {
-  //       method: "POST",
-  //       credentials: "include"
-  //     });
-
-  //     const data = await res.json();
-
-  //     isShopOpen = data.open;
-
-  //     updateShopToggleBtn();
-  //     handleShopUI();
-
-  //     showToast(isShopOpen ? "Shop Opened ✅" : "Shop Closed 🚫");
-
-  //   } catch (err) {
-  //     alert("Error toggling shop");
-  //   } finally {
-  //     document.getElementById("shopToggleBtn").disabled = false;
-  //   }
-  // }
-
   async function apiFetch(url, options = {}) {
     try {
       const res = await fetch(url, options);
