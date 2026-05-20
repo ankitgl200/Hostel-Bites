@@ -1,3427 +1,798 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostel Bites</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Hostel Bites - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ... keep all your existing CSS exactly the same ... */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        :root {
+            --orange: #FF6B00;
+            --orange-glow: #FF8C00;
+            --orange-dim: rgba(255, 107, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-bright: rgba(255, 107, 0, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --input-focus: rgba(255, 107, 0, 0.4);
+            --text-dim: rgba(255, 255, 255, 0.45);
+            --danger: #EF4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --success: #22C55E;
+        }
 
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #060608;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px;
+        }
 
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
 
+        .bg-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.18) 0%, transparent 70%);
+            top: -120px;
+            left: -120px;
+            animation: drift1 12s ease-in-out infinite alternate;
+        }
+
+        .bg-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 60, 0, 0.12) 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+            animation: drift2 15s ease-in-out infinite alternate;
+        }
+
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(120, 40, 255, 0.08) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: drift3 10s ease-in-out infinite alternate;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes drift1 {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(60px, 40px) scale(1.15);
+            }
+        }
+
+        @keyframes drift2 {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(-40px, -60px) scale(1.1);
+            }
+        }
+
+        @keyframes drift3 {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        .error-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .error-box.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .success-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: var(--success);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .success-box.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .card-wrap {
+            position: relative;
+            z-index: 10;
+            width: 92%;
+            max-width: 420px;
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 21px;
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.4) 0%, transparent 50%, rgba(255, 107, 0, 0.15) 100%);
+            z-index: -1;
+        }
+
+        .box {
+            background: rgba(12, 12, 15, 0.75);
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 36px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.5), rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(180deg, rgba(255, 107, 0, 0.3), transparent 60%);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            font-size: 32px;
+            margin-bottom: 6px;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 22px rgba(255, 140, 0, 0.9));
+            }
+        }
+
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            background: linear-gradient(135deg, #FF6B00, #FFB347, #FF6B00);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            letter-spacing: 0.02em;
+        }
+
+        .field {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .field-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-dim);
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 14px 11px 38px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: rgba(255, 107, 0, 0.5);
+            background: rgba(255, 107, 0, 0.07);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        input.error,
+        select.error {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        input:focus+.field-icon,
+        select:focus+.field-icon {
+            color: var(--orange);
+        }
+
+        input.error+.field-icon,
+        select.error+.field-icon {
+            color: var(--danger);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,107,0,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        select option {
+            background: #111;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 50%, #FF6B00 100%);
+            background-size: 200% auto;
+            color: white;
+            transition: background-position 0.4s, transform 0.15s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        button:hover:not(:disabled) {
+            background-position: right center;
+            box-shadow: 0 6px 30px rgba(255, 107, 0, 0.5);
+            transform: translateY(-1px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .toggle {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-dim);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle span {
+            color: var(--orange);
+            font-weight: 500;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .toggle span::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--orange);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s;
+        }
+
+        .toggle:hover span {
+            color: #FFB347;
+        }
+
+        .toggle:hover span::after {
+            transform: scaleX(1);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0 4px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .divider span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .form-section {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loader {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 107, 0, 0.3);
+            border-radius: 2px;
+        }
+
+        .field-error {
+            color: var(--danger);
+            font-size: 11px;
+            margin-top: 4px;
+            margin-left: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+    </style>
+    <!-- REMOVED: <base target="_blank"> - This was breaking session flow! -->
 </head>
-<script>
-  // Auth guard — redirect to login if not authenticated
-  let currentUser = null;
-  let authChecked = false;
-
-  async function checkAuth() {
-    try {
-      const res = await fetch("https://backendhb.onrender.com/api/auths/me", {
-        credentials: "include"
-      });
-
-      if (res.status === 401) {
-        window.location.replace("../index.html");
-        return;
-      }
-
-      if (!res.ok) {
-        console.error("Auth check failed:", res.status);
-        window.location.replace("../index.html");
-        return;
-      }
-
-      const data = await res.json();
-      currentUser = data.user || data;
-      console.log("Logged in:", currentUser);
-      authChecked = true;
-
-      // Store user data for profile
-      if (currentUser.phone) {
-        localStorage.setItem('userPhone', currentUser.phone);
-        localStorage.setItem('hb_user_name', currentUser.name || '');
-        localStorage.setItem('hb_user_room', currentUser.room || '');
-      }
-
-      // Show admin UI if applicable
-      if (currentUser.role === "admin") {
-        console.log("Admin logged in");
-      }
-
-      // Update all profile UIs with real DB data
-      updateProfileUI();
-      updateProfilePage();
-
-      // Initialize app after auth success
-      initApp();
-
-    } catch (err) {
-      console.error("Auth error:", err);
-      window.location.replace("../index.html");
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', checkAuth);
-</script>
-
-<style>
-  :root {
-    --bg: #0F0F12;
-    --surface: #18181B;
-    --surface-2: #1C1C21;
-    --surface-3: #232329;
-    --border: #2A2A32;
-    --border-light: #33333D;
-    --text: #F0F0F5;
-    --text-secondary: #8B8B9A;
-    --text-muted: #5A5A6A;
-    --accent: #E85D04;
-    --accent-light: #F48C06;
-    --accent-glow: rgba(232, 93, 4, 0.15);
-    --success: #22C55E;
-    --success-bg: rgba(34, 197, 94, 0.1);
-    --warning: #F59E0B;
-    --danger: #EF4444;
-    --danger-bg: rgba(239, 68, 68, 0.1);
-    --gradient-1: #E85D04;
-    --gradient-2: #D00000;
-    --glass: rgba(24, 24, 27, 0.85);
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    scroll-behavior: smooth;
-    transition: background 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .ambient-bg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-  }
-
-  .ambient-bg::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: -10%;
-    width: 50%;
-    height: 50%;
-    background: radial-gradient(circle, rgba(232, 93, 4, 0.08) 0%, transparent 70%);
-    animation: float 8s ease-in-out infinite;
-  }
-
-  .ambient-bg::after {
-    content: '';
-    position: absolute;
-    bottom: -20%;
-    right: -10%;
-    width: 50%;
-    height: 50%;
-    background: radial-gradient(circle, rgba(208, 0, 0, 0.06) 0%, transparent 70%);
-    animation: float 10s ease-in-out infinite reverse;
-  }
-
-  @keyframes float {
-
-    0%,
-    100% {
-      transform: translate(0, 0);
-    }
-
-    50% {
-      transform: translate(30px, -30px);
-    }
-  }
-
-  /* Auth Screens */
-  .auth-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-
-  .auth-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.98);
-  }
-
-  .auth-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 48px 40px;
-    width: min(90%, 420px);
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  }
-
-  .auth-logo {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-
-  .auth-logo .logo-icon {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    border-radius: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 32px rgba(232, 93, 4, 0.3);
-  }
-
-  .auth-logo h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .auth-logo p {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-top: 4px;
-  }
-
-  .form-group {
-    margin-bottom: 18px;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--surface-2);
-    outline: none;
-    transition: all 0.2s;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-    background: var(--surface-3);
-  }
-
-  .form-group input::placeholder {
-    color: var(--text-muted);
-  }
-
-  .auth-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .auth-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(232, 93, 4, 0.3);
-  }
-
-  .auth-btn:active {
-    transform: translateY(0);
-  }
-
-  .auth-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .auth-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 24px 0;
-    color: var(--text-muted);
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .auth-divider::before,
-  .auth-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .auth-toggle {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-
-  .auth-toggle a {
-    color: var(--accent-light);
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .auth-toggle a:hover {
-    color: var(--accent);
-  }
-
-  .auth-error {
-    background: var(--danger-bg);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: var(--danger);
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 16px;
-    display: none;
-  }
-
-  .auth-error.show {
-    display: block;
-  }
-
-  /* Main App */
-  .app-container {
-    position: relative;
-    z-index: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Top Navigation */
-  .top-nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
-
-  .nav-brand .brand-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 4px 16px rgba(232, 93, 4, 0.25);
-  }
-
-  .nav-brand .brand-text {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .nav-brand .brand-text span {
-    background: linear-gradient(135deg, var(--accent-light), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .nav-btn {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Inter', sans-serif;
-
-    /* 🔥 Smooth animation */
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .nav-btn.active {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
-    transform: scale(0.96);
-  }
-
-  .nav-btn:hover {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-  }
-
-  .nav-btn.cart-btn {
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    color: #fff;
-    border: none;
-    position: relative;
-  }
-
-  .nav-btn.cart-btn:hover {
-    box-shadow: 0 4px 16px rgba(232, 93, 4, 0.3);
-  }
-
-  .cart-badge {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: var(--danger);
-    color: #fff;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--bg);
-  }
-
-  .profile-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--surface-3), var(--surface-2));
-    border: 2px solid var(--border);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: var(--text-secondary);
-    transition: all 0.2s;
-    overflow: hidden;
-  }
-
-  .profile-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 16px var(--accent-glow);
-  }
-
-  /* Hero */
-  .hero {
-    padding: 32px 20px 24px;
-    text-align: center;
-  }
-
-  .hero h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(24px, 5vw, 36px);
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-  }
-
-  .hero h2 .highlight {
-    background: linear-gradient(135deg, var(--accent-light), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero p {
-    color: var(--text-secondary);
-    font-size: 15px;
-    margin-top: 8px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  /* Category Tabs */
-  .category-bar {
-    position: sticky;
-    top: 70px;
-    /* 🔥 height of top navbar */
-    z-index: 95;
-
-    display: flex;
-    gap: 8px;
-    padding: 10px 20px;
-    overflow-x: auto;
-
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 10px;
-  }
-
-  .category-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .cat-pill {
-    background: var(--surface-2);
-    border: 1.5px solid var(--border);
-    border-radius: 100px;
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .cat-pill:hover {
-    background: var(--surface-3);
-    border-color: var(--border-light);
-    color: var(--text);
-  }
-
-  .cat-pill.active {
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(232, 93, 4, 0.25);
-  }
-
-  /* Product Grid */
-  .products-grid {
-    padding: 0 20px 24px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-top: 10px;
-  }
-
-  @media(min-width: 640px) {
-    .products-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media(min-width: 900px) {
-    .products-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .product-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s;
-    position: relative;
-  }
-
-  .product-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--border-light);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  }
-
-  .product-card.out-of-stock {
-    opacity: 0.5;
-  }
-
-  .product-card.out-of-stock:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .product-img-wrap {
-    width: 100%;
-    height: 180px;
-    /* fixed height for all cards */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-2);
-    overflow: hidden;
-  }
-
-  .product-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* 🔥 key change */
-  }
-
-  .product-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: transform 0.3s;
-  }
-
-  .product-card:hover .product-img-wrap img {
-    transform: scale(1.05);
-  }
-
-  .stock-badge {
-    position: static;
-    /* ❌ remove absolute */
-    display: inline-block;
-    margin: 10px 10px 0;
-    align-self: flex-start;
-
-    background: var(--success-bg);
-    color: var(--success);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .stock-badge.out {
-    background: var(--danger-bg);
-    color: var(--danger);
-    border-color: rgba(239, 68, 68, 0.2);
-  }
-
-  .product-details {
-    padding: 14px 16px 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .product-name {
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.3;
-    margin-bottom: 4px;
-  }
-
-  .product-brand {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-
-  .product-price-row {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-top: auto;
-  }
-
-  .product-price {
-    font-family: 'Outfit', sans-serif;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--accent-light);
-  }
-
-  .old-price {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-decoration: line-through;
-    font-weight: 500;
-  }
-
-  .add-btn {
-    width: 100%;
-    margin-top: 12px;
-    background: var(--surface-3);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 10px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .add-btn:hover {
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(232, 93, 4, 0.25);
-  }
-
-  .qty-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 12px;
-  }
-
-  .qty-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .qty-btn:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
-  .qty-num {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 16px;
-    min-width: 24px;
-    text-align: center;
-    color: var(--text);
-  }
-
-  /* Cart Drawer */
-  .drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .drawer-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .cart-drawer {
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: min(100%, 400px);
-    background: var(--surface);
-    border-left: 1px solid var(--border);
-    z-index: 201;
-    display: flex;
-    flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .cart-drawer.open {
-    transform: translateX(0);
-  }
-
-  .drawer-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .drawer-header h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-  }
-
-  .drawer-close {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .drawer-close:hover {
-    background: var(--danger-bg);
-    color: var(--danger);
-    border-color: rgba(239, 68, 68, 0.2);
-  }
-
-  .drawer-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 20px;
-  }
-
-  .drawer-empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-  }
-
-  .drawer-empty .empty-icon {
-    font-size: 56px;
-    margin-bottom: 16px;
-    opacity: 0.5;
-  }
-
-  .drawer-empty p {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .cart-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .cart-item-img {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .cart-item-img img {
-    width: 80%;
-    height: 80%;
-    object-fit: contain;
-  }
-
-  .cart-item-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .cart-item-name {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .cart-item-price {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 2px;
-  }
-
-  .cart-item-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .cart-item-controls .qty-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-
-  .drawer-footer {
-    padding: 20px 24px;
-    border-top: 1px solid var(--border);
-    background: var(--surface-2);
-  }
-
-  .drawer-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .drawer-total span:first-child {
-    font-size: 14px;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-
-  .drawer-total span:last-child {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--accent-light);
-  }
-
-  .checkout-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .checkout-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(232, 93, 4, 0.3);
-  }
-
-  /* Checkout Modal */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    z-index: 300;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 20px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .modal-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .modal-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px;
-    width: min(100%, 460px);
-    margin: auto;
-    transform: translateY(20px);
-    transition: transform 0.3s;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-  }
-
-  .modal-overlay.open .modal-box {
-    transform: translateY(0);
-  }
-
-  .modal-box h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 20px;
-  }
-
-  .room-select-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .room-select-row select:first-child {
-    width: 80px;
-    flex-shrink: 0;
-  }
-
-  .summary-box {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
-    margin: 16px 0;
-  }
-
-  .summary-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-  }
-
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    padding: 5px 0;
-    color: var(--text-secondary);
-  }
-
-  .summary-row.total {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--text);
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-    padding-top: 12px;
-  }
-
-  .place-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--success);
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-  }
-
-  .place-btn:hover {
-    background: #16A34A;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.25);
-  }
-
-  .place-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .cancel-btn {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    color: var(--text-secondary);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 10px;
-  }
-
-  .cancel-btn:hover {
-    background: var(--surface-2);
-    color: var(--text);
-    border-color: var(--border-light);
-  }
-
-  /* Success Screen */
-  .success-screen {
-    text-align: center;
-    padding: 20px 10px;
-    display: none;
-  }
-
-  .success-screen.show {
-    display: block;
-  }
-
-  .success-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--success-bg);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    margin: 0 auto 20px;
-    border: 2px solid rgba(34, 197, 94, 0.2);
-    animation: scaleIn 0.5s ease;
-  }
-
-  @keyframes scaleIn {
-    from {
-      transform: scale(0);
-      opacity: 0;
-    }
-
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  .success-screen h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--success);
-    margin-bottom: 8px;
-  }
-
-  .success-screen p {
-    color: var(--text-secondary);
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .order-id-display {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    margin: 16px 0;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--accent-light);
-    letter-spacing: 1px;
-  }
-
-  /* Orders Page */
-  .orders-page {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .orders-page h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .order-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    transition: all 0.3s;
-  }
-
-  .order-card:hover {
-    border-color: var(--border-light);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-
-  .order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .order-id {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 15px;
-    color: var(--accent-light);
-    background: var(--accent-glow);
-    padding: 4px 12px;
-    border-radius: 8px;
-  }
-
-  .order-status {
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 100px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .status-pending {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--warning);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-  }
-
-  .status-accepted {
-    background: var(--success-bg);
-    color: var(--success);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-  }
-
-  .status-delivered {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3B82F6;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-  }
-
-  .status-rejected {
-    background: var(--danger-bg);
-    color: var(--danger);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-  }
-
-  .order-items {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin-bottom: 12px;
-  }
-
-  .order-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .order-total {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--text);
-  }
-
-  .order-timer {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent-light);
-  }
-
-  .order-timer.late {
-    color: var(--danger);
-  }
-
-  .order-msg {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
-
-  /* Timeline */
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .tl-step {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    opacity: 0.4;
-    transition: opacity 0.3s;
-  }
-
-  .tl-step.active {
-    opacity: 1;
-  }
-
-  .tl-step.rejected.active {
-    opacity: 1;
-  }
-
-  .tl-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--border-light);
-    flex-shrink: 0;
-    position: relative;
-  }
-
-  .tl-step.active .tl-dot {
-    background: var(--success);
-    box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
-  }
-
-  .tl-step.rejected.active .tl-dot {
-    background: var(--danger);
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
-  }
-
-  .tl-line {
-    width: 2px;
-    height: 20px;
-    background: var(--border);
-    margin-left: 5px;
-  }
-
-  .tl-line.active {
-    background: linear-gradient(to bottom, var(--success), var(--success));
-  }
-
-  .tl-text {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
-
-  .tl-step.active .tl-text {
-    color: var(--text);
-  }
-
-  /* Profile Modal */
-  .profile-modal .modal-box {
-    width: min(100%, 380px);
-  }
-
-  .profile-header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-
-  .profile-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    margin: 0 auto 12px;
-    border: 3px solid var(--border);
-    box-shadow: 0 8px 24px rgba(232, 93, 4, 0.2);
-  }
-
-  .profile-name {
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-  }
-
-  .profile-phone {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 2px;
-  }
-
-  .profile-info-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-
-  .profile-info-row span:first-child {
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-
-  .profile-info-row span:last-child {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .logout-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--danger-bg);
-    border: 1.5px solid rgba(239, 68, 68, 0.2);
-    border-radius: 12px;
-    color: var(--danger);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 16px;
-  }
-
-  .logout-btn:hover {
-    background: var(--danger);
-    color: #fff;
-  }
-
-  /* Footer */
-  .app-footer {
-    margin-top: auto;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 24px 20px;
-    text-align: center;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .footer-links button {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    padding: 8px 16px;
-    border-radius: 100px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.2s;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .footer-links button:hover {
-    background: var(--surface-3);
-    color: var(--text);
-    border-color: var(--border-light);
-  }
-
-  .footer-copy {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(120px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 14px;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 500;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: 'Inter', sans-serif;
-    white-space: nowrap;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .toast-icon {
-    font-size: 18px;
-  }
-
-  /* Info Popup */
-  .info-popup .modal-box {
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .info-popup h4 {
-    color: var(--accent-light);
-    font-size: 14px;
-    font-weight: 700;
-    margin: 20px 0 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .info-popup p,
-  .info-popup li {
-    color: var(--text-secondary);
-    font-size: 13px;
-    line-height: 1.7;
-    margin-bottom: 8px;
-  }
-
-  .info-popup ul {
-    padding-left: 18px;
-    margin-bottom: 12px;
-  }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .contact-action {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 700;
-    font-size: 14px;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .contact-action:hover {
-    background: var(--surface-3);
-    border-color: var(--border-light);
-    transform: translateY(-2px);
-  }
-
-  .contact-action i {
-    font-size: 20px;
-    color: var(--accent-light);
-  }
-
-  /* Loader */
-  .loader {
-    width: 18px;
-    height: 18px;
-    border: 2.5px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .hidden {
-    display: none !important;
-  }
-
-  .page-section {
-    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px) scale(0.98);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Bottom Nav for Mobile */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 0;
-    z-index: 90;
-  }
-
-  .bottom-nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 6px;
-    color: #fff;
-    opacity: 0.7;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: 'Inter', sans-serif;
-
-    transition: all 0.25s ease;
-  }
-
-  .bottom-nav-item i {
-
-    opacity: 0.7;
-    font-size: 20px;
-    color: inherit;
-    /* 🔥 icon follows text color */
-  }
-
-  .bottom-nav-item.active {
-    color: #ffe600;
-    opacity: 1;
-    transform: translateY(-2px) scale(1.05);
-  }
-
-  @media(min-width: 768px) {
-    .bottom-nav {
-      display: none;
-    }
-
-    .app-main {
-      padding-bottom: 0;
-    }
-  }
-
-  @media(max-width: 767px) {
-    .app-main {
-      padding-bottom: 70px;
-    }
-
-    .app-footer {
-      display: none;
-    }
-
-    .nav-actions .nav-btn:not(.cart-btn) {
-      display: none;
-    }
-  }
-
-
-
-  /* Profile page mobile styles */
-  #profilePage .profile-header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-
-  #profilePage .profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    margin: 0 auto 16px;
-    border: 3px solid var(--border);
-    box-shadow: 0 8px 24px rgba(232, 93, 4, 0.2);
-  }
-
-  #profilePage .profile-name {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-  }
-
-  #profilePage .profile-phone {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-
-  .profile-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .profile-actions button {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .profile-actions button:hover {
-    background: var(--surface-3);
-  }
-
-  /* 🔥 Skeleton Loader */
-  .skeleton {
-    position: relative;
-    overflow: hidden;
-    background: var(--surface-2);
-  }
-
-  .skeleton::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(255, 255, 255, 0.08),
-        transparent);
-    animation: shimmer 1.2s infinite;
-  }
-
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
-  /* Product skeleton */
-  .skeleton-card {
-    border-radius: 20px;
-    height: 260px;
-  }
-
-  /* Orders skeleton */
-  .skeleton-order {
-    height: 120px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-  }
-
-  /* ===== REWARDS SYSTEM ===== */
-  .rewards-stats {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-
-  .rstat {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 10px;
-    text-align: center;
-  }
-
-  .rstat-num {
-    font-family: 'Outfit', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--accent-light);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .rstat-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .rewards-section-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-  }
-
-  .reward-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    transition: all 0.2s;
-  }
-
-  .reward-card.active-reward {
-    border-color: var(--success);
-    background: rgba(34, 197, 94, 0.06);
-    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
-  }
-
-  .reward-card.pending-reward {
-    opacity: 0.7;
-    border-color: var(--warning);
-    background: rgba(245, 158, 11, 0.04);
-  }
-
-  .reward-card.used-reward {
-    opacity: 0.4;
-  }
-
-  .reward-icon-wrap {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: var(--surface-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .reward-card.active-reward .reward-icon-wrap {
-    background: rgba(34, 197, 94, 0.15);
-  }
-
-  .reward-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .reward-title {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--text);
-    margin-bottom: 3px;
-  }
-
-  .reward-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-
-  .reward-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-  }
-
-  .badge-active {
-    background: var(--success-bg);
-    color: var(--success);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-  }
-
-  .badge-pending {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--warning);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-  }
-
-  .badge-used {
-    background: var(--surface-3);
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-  }
-
-  /* Applied rewards in summary */
-  .summary-reward-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    font-size: 13px;
-    color: var(--success);
-    border-top: 1px dashed rgba(34, 197, 94, 0.2);
-    margin-top: 4px;
-  }
-
-  .summary-reward-row span:first-child {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-</style>
 
 <body>
-  <div class="ambient-bg"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div id="errorBox" class="error-box"></div>
+    <div id="successBox" class="success-box"></div>
 
-
-
-  <!-- ================= MAIN APP ================= -->
-  <div class="app-container" id="mainApp">
-    <!-- Top Navigation -->
-    <nav class="top-nav">
-      <div class="nav-brand" onclick="showPage('shop')">
-        <div class="brand-icon"><img src="hostelbites_wbg.png" alt="" width="40px"></div>
-        <div class="brand-text">Hostel <span>Bites</span></div>
-      </div>
-      <div class="nav-actions">
-        <button class="nav-btn" onclick="showPage('shop')">
-          <i class="fas fa-store"></i> Shop
-        </button>
-        <button class="nav-btn" onclick="showPage('rewards')">
-          <i class="fas fa-gift"></i> Rewards
-        </button>
-        <button class="nav-btn" onclick="showPage('orders')">
-          <i class="fas fa-box"></i> Orders
-        </button>
-        <button class="nav-btn cart-btn" onclick="openCart()">
-          <i class="fas fa-shopping-bag"></i>
-          <span>Cart</span>
-          <span class="cart-badge" id="cartCount">0</span>
-        </button>
-        <button class="profile-btn" onclick="openProfile()" id="profileBtn">
-          <i class="fas fa-user"></i>
-        </button>
-      </div>
-    </nav>
-
-    <main class="app-main">
-      <!-- Shop Page -->
-      <div id="shopPage" class="page-section">
-        <div class="hero">
-          <h2>Craving something? <span class="highlight">We got you.</span></h2>
-          <p>Snacks delivered to your room in under 7 minutes. No cap.</p>
-        </div>
-        <div class="category-bar" id="categoryTabs"></div>
-        <div class="products-grid" id="productGrid"></div>
-      </div>
-
-      <!-- Orders Page -->
-      <div id="ordersPage" class="page-section hidden">
-        <div class="orders-page">
-          <h2><i class="fas fa-box-open" style="color: var(--accent-light);"></i> Your Orders</h2>
-          <div id="ordersList"></div>
-        </div>
-      </div>
-
-      <!-- Rewards Page -->
-      <div id="rewardsPage" class="page-section hidden">
-        <div class="orders-page">
-          <h2><i class="fas fa-gift" style="color: var(--accent-light);"></i> Rewards</h2>
-
-          <!-- info banner -->
-          <div
-            style="background:rgba(232,93,4,0.08);border:1px solid rgba(232,93,4,0.2);border-radius:14px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);line-height:1.6;">
-            <i class="fas fa-bolt" style="color:var(--accent-light);margin-right:6px;"></i>
-            Active rewards are <b style="color:var(--text)">automatically applied</b> on checkout (up to 2 per order).
-            Each reward expires in <b style="color:var(--text)">7 days</b> if not used — earn more by ordering!
-          </div>
-
-          <!-- Stats bar -->
-          <div class="rewards-stats">
-            <div class="rstat">
-              <div class="rstat-num" id="rewardStatPending">0</div>
-              <div class="rstat-label">Pending</div>
+    <div class="card-wrap">
+        <div class="box">
+            <div class="brand">
+                <span class="brand-icon">🍽️</span>
+                <div class="brand-name">Hostel Bites</div>
             </div>
-            <div class="rstat">
-              <div class="rstat-num" id="rewardStatActive" style="color:var(--success)">0</div>
-              <div class="rstat-label">Active</div>
-            </div>
-            <div class="rstat">
-              <div class="rstat-num" id="rewardStatUsed" style="color:var(--text-muted)">0</div>
-              <div class="rstat-label">Used</div>
-            </div>
-          </div>
 
-          <!-- Active rewards section -->
-          <div class="rewards-section-title"><i class="fas fa-check-circle"
-              style="color:var(--success);margin-right:6px;"></i>Active Rewards (1-time use)</div>
-          <div id="expiryBanner"
-            style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--warning);font-weight:600;">
-            <i class="fas fa-clock" style="margin-right:6px;"></i>Some rewards expire soon! Use them before they vanish.
-          </div>
-          <div id="activeRewardsList"></div>
-
-          <!-- Pending (locked) rewards -->
-          <div class="rewards-section-title" style="margin-top:24px;"><i class="fas fa-lock"
-              style="color:var(--warning);margin-right:6px;"></i>Pending (waiting for delivery)</div>
-          <div id="pendingRewardsList"></div>
-
-          <!-- Dismissed rewards -->
-          <div class="rewards-section-title" style="margin-top:24px;"><i class="fas fa-times-circle"
-              style="color:var(--text-muted);margin-right:6px;"></i>Used / Expired</div>
-          <div id="usedRewardsList"></div>
-
-          <!-- empty state -->
-          <div id="rewardsEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted);">
-            <div style="font-size:56px;margin-bottom:16px;opacity:0.3;">🎁</div>
-            <p style="font-size:16px;font-weight:700;color:var(--text-secondary);">No Rewards Yet</p>
-            <p style="font-size:13px;margin-top:6px;">Place an order to earn your first scratch card!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile Page (Mobile Only) -->
-      <div id="profilePage" class="page-section hidden">
-        <div class="orders-page">
-          <h2><i class="fas fa-user-circle" style="color: var(--accent-light);"></i> Profile</h2>
-          <div class="profile-header" style="margin-bottom:32px;">
-            <div class="profile-avatar" id="profilePageAvatar" style="width:100px; height:100px; font-size:40px;">
-              &#128100;</div>
-            <div class="profile-name" id="profilePageName" style="font-size:24px;">User</div>
-            <div class="profile-phone" id="profilePagePhone" style="font-size:14px;">+91 ...</div>
-          </div>
-          <div
-            style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:16px;">
-            <div class="profile-info-row">
-              <span><i class="fas fa-door-open" style="margin-right:8px; color:var(--accent-light);"></i>Room</span>
-              <span id="profilePageRoom">-</span>
-            </div>
-            <div class="profile-info-row">
-              <span><i class="fas fa-shopping-bag" style="margin-right:8px; color:var(--accent-light);"></i>Total
-                Orders</span>
-              <span id="profilePageOrders">0</span>
-            </div>
-            <div class="profile-info-row">
-              <span><i class="fas fa-calendar-alt" style="margin-right:8px; color:var(--accent-light);"></i>Member
-                Since</span>
-              <span id="profilePageSince">-</span>
-            </div>
-          </div>
-          <div class="profile-actions">
-            <button onclick="openInfo('terms')"><i class="fas fa-file-alt"></i> Terms</button>
-            <button onclick="openInfo('privacy')"><i class="fas fa-shield-alt"></i> Privacy</button>
-            <button onclick="openInfo('contact')"><i class="fas fa-headset"></i> Contact</button>
-            <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
-            <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="app-footer">
-      <div class="footer-links">
-        <button onclick="openInfo('terms')"><i class="fas fa-file-alt" style="margin-right:4px;"></i> Terms</button>
-        <button onclick="openInfo('privacy')"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>
-          Privacy</button>
-        <button onclick="openInfo('contact')"><i class="fas fa-headset" style="margin-right:4px;"></i> Contact</button>
-        <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus" style="margin-right:4px;"></i>
-          Request Product</button>
-        <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"
-            style="margin-right:4px;"></i> About</button>
-      </div>
-      <div class="footer-copy">&copy; 2026 Hostel Bites | Last Updated: 01-05-2026</div>
-    </footer>
-  </div>
-
-  <!-- Bottom Nav (Mobile) -->
-  <div class="bottom-nav" id="bottomNav">
-    <button class="bottom-nav-item active" onclick="showPage('shop')" id="navShop">
-      <i class="fas fa-store"></i>
-      <span>Shop</span>
-    </button>
-    <button class="bottom-nav-item" onclick="showPage('orders')" id="navOrders">
-      <i class="fas fa-box"></i>
-      <span>Orders</span>
-    </button>
-    <button class="bottom-nav-item" onclick="showPage('rewards')" id="navRewards">
-      <i class="fas fa-gift"></i>
-      <span>Rewards</span>
-    </button>
-    <button class="bottom-nav-item" onclick="showPage('profile')" id="navProfile">
-      <i class="fas fa-user"></i>
-      <span>Profile</span>
-    </button>
-  </div>
-
-  <!-- ================= CART DRAWER ================= -->
-  <div class="drawer-overlay" id="cartOverlay" onclick="closeCart()"></div>
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="drawer-header">
-      <h3><i class="fas fa-shopping-bag" style="margin-right:8px;"></i>Your Cart</h3>
-      <button class="drawer-close" onclick="closeCart()">&times;</button>
-    </div>
-    <div class="drawer-body" id="cartItems"></div>
-    <div class="drawer-footer" id="cartFooter" style="display:none">
-      <div class="drawer-total">
-        <span>Total Amount</span>
-        <span id="cartTotal">Rs.0</span>
-      </div>
-      <button class="checkout-btn" onclick="openCheckout()">
-        Proceed to Checkout <i class="fas fa-arrow-right"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- ================= CHECKOUT MODAL ================= -->
-  <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-box">
-      <div id="checkoutForm">
-        <h3><i class="fas fa-receipt" style="margin-right:8px; color: var(--accent-light);"></i>Checkout</h3>
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="custName" placeholder="e.g. Rahul Sharma">
-        </div>
-        <div class="form-group">
-          <label>Phone Number</label>
-          <input type="tel" id="custPhone" placeholder="e.g. 9876543210" maxlength="10">
-        </div>
-        <div class="form-group">
-          <label>Room Number</label>
-          <div class="room-select-row">
-            <select id="custRoomAlpha">
-              <option value="X">X</option>
-              <option value="Y">Y</option>
-              <option value="Z">Z</option>
-            </select>
-            <select id="custRoom"></select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Payment Method</label>
-          <select id="payMethod">
-            <option value="cash">Cash on Delivery</option>
-          </select>
-        </div>
-        <div class="summary-box">
-          <div class="summary-title">Order Summary</div>
-          <div id="summaryItems"></div>
-          <div id="summaryRewardRows"></div>
-          <div class="summary-row total">
-            <span>Total</span>
-            <span id="summaryTotal">Rs.0</span>
-          </div>
-        </div>
-        <button class="place-btn" onclick="placeOrder()" id="orderBtn">
-          <i class="fas fa-check-circle"></i> Place Order
-        </button>
-        <audio id="successSound" src="success.mp3" preload="auto"></audio>
-        <button class="cancel-btn" onclick="closeCheckout()">Cancel</button>
-      </div>
-      <div class="success-screen" id="successScreen">
-        <div class="success-icon">&#127881;</div>
-        <h3>Order Placed!</h3>
-        <div class="order-id-display" id="successOrderId"></div>
-        <p>Your snacks will be delivered to your room shortly.<br>Estimated time: <b>7 minutes</b></p>
-        <button class="place-btn" onclick="goToOrders()" style="margin-top:20px">
-          <i class="fas fa-map-marker-alt"></i> Track Order
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= PROFILE MODAL ================= -->
-  <div class="modal-overlay profile-modal" id="profileModal" onclick="closeProfile(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="drawer-header" style="padding: 0 0 16px 0; border: none;">
-        <h3>Profile</h3>
-        <button class="drawer-close" onclick="closeProfile()">&times;</button>
-      </div>
-      <div class="profile-header">
-        <div class="profile-avatar" id="profileAvatar">&#128100;</div>
-        <div class="profile-name" id="profileName">User</div>
-        <div class="profile-phone" id="profilePhone">+91 ...</div>
-      </div>
-      <div class="profile-info-row">
-        <span>Room</span>
-        <span id="profileRoom">-</span>
-      </div>
-      <div class="profile-info-row">
-        <span>Total Orders</span>
-        <span id="profileOrders">0</span>
-      </div>
-      <div class="profile-info-row">
-        <span>Member Since</span>
-        <span id="profileSince">-</span>
-      </div>
-      <div class="profile-actions">
-        <button onclick="openInfo('terms')"><i class="fas fa-file-alt"></i> Terms</button>
-        <button onclick="openInfo('privacy')"><i class="fas fa-shield-alt"></i> Privacy</button>
-        <button onclick="openInfo('contact')"><i class="fas fa-headset"></i> Contact</button>
-        <button onclick="window.open('request.html','_blank')"><i class="fas fa-plus"></i> Request</button>
-        <button onclick="window.open('about.html','_blank')"><i class="fas fa-info-circle"></i> About</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= INFO MODAL ================= -->
-  <div class="modal-overlay info-popup" id="infoModal" onclick="closeInfo(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="drawer-header" style="padding: 0 0 16px 0; border: none;">
-        <h3 id="infoTitle">Info</h3>
-        <button class="drawer-close" onclick="closeInfo()">&times;</button>
-      </div>
-      <div id="infoContent"></div>
-    </div>
-  </div>
-
-  <!-- ================= SCRATCH CARD MODAL ================= -->
-  <div class="modal-overlay" id="scratchModal" style="z-index:500;">
-    <div class="modal-box" style="text-align:center;padding:36px 28px;max-width:340px;">
-      <div id="scratchPhase1">
-        <div style="font-size:48px;margin-bottom:8px;">🎰</div>
-        <h3 style="margin-bottom:6px;">You earned a Scratch Card!</h3>
-        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:24px;">Your order was delivered. Scratch to
-          reveal your reward!</p>
-        <div id="scratchCardWrap"
-          style="position:relative;width:220px;height:100px;margin:0 auto 24px;border-radius:16px;overflow:hidden;cursor:pointer;"
-          onclick="revealScratch()">
-          <canvas id="scratchCanvas" width="220" height="100"
-            style="position:absolute;top:0;left:0;border-radius:16px;touch-action:none;"></canvas>
-          <div id="scratchReward"
-            style="width:100%;height:100%;background:linear-gradient(135deg,var(--gradient-1),var(--gradient-2));border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;">
-            <div id="scratchRewardIcon" style="font-size:28px;">🎁</div>
-            <div id="scratchRewardText"
-              style="font-weight:800;font-size:13px;color:#fff;padding:0 12px;text-align:center;line-height:1.3;"></div>
-          </div>
-        </div>
-        <p style="font-size:12px;color:var(--text-muted);">Scratch the card above to reveal</p>
-      </div>
-      <div id="scratchPhase2" style="display:none;">
-        <div id="scratchRevealIcon" style="font-size:56px;margin-bottom:12px;"></div>
-        <h3 id="scratchRevealTitle" style="margin-bottom:6px;"></h3>
-        <p id="scratchRevealDesc" style="color:var(--text-secondary);font-size:13px;margin-bottom:24px;"></p>
-        <div
-          style="background:var(--success-bg);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--success);">
-          <i class="fas fa-ticket-alt"></i> This reward can be used <b>one time only</b> — it will auto-apply on your
-          next eligible order!
-        </div>
-        <button class="auth-btn" onclick="closeScratchModal()" style="margin-top:0;">Got it! 🎉</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <span class="toast-icon" id="toastIcon">&#10003;</span>
-    <span id="toastMsg">Message</span>
-  </div>
-
-  
-</body>
-
-<script>
-    async function apiFetch(url, options = {}) {
-      try {
-        const res = await fetch(url, options);
-        return res;
-      } catch (err) {
-        console.error("API Error:", err);
-        showToast("Server error");
-      }
-    }
-
-    // ================= AUTH & PROFILE =================
-
-    let isPlacingOrder = false;
-
-    function setAuthLoading(btnId, isLoading, text) {
-      const btn = document.getElementById(btnId);
-
-      if (isLoading) {
-        btn.disabled = true;
-        btn.innerHTML = `<span class="loader"></span> ${text}`;
-      } else {
-        btn.disabled = false;
-
-        if (btnId === "signinBtn") {
-          btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Sign In`;
-        } else {
-          btn.innerHTML = `<i class="fas fa-user-plus"></i> Create Account`;
-        }
-      }
-    }
-
-
-    function showProductSkeleton() {
-      const grid = document.getElementById('productGrid');
-
-      grid.innerHTML = Array(8).fill(0).map(() => `
-    <div class="product-card skeleton-card skeleton"></div>
-  `).join('');
-    }
-    function showOrdersSkeleton() {
-      const list = document.getElementById('ordersList');
-
-      list.innerHTML = Array(5).fill(0).map(() => `
-    <div class="skeleton skeleton-order"></div>
-  `).join('');
-    }
-
-    function loadRoomOptions(selectId) {
-      const sel = document.getElementById(selectId);
-      sel.innerHTML = '';
-      for (let i = 1; i <= 20; i++) {
-        const num = i.toString().padStart(2, '0');
-        const opt = document.createElement('option');
-        opt.value = num;
-        opt.textContent = num;
-        sel.appendChild(opt);
-      }
-    }
-
-
-    function enterApp() {
-      document.getElementById('authScreen').classList.add('hidden');
-      document.getElementById('mainApp').classList.remove('hidden');
-      updateProfileUI();
-      loadProducts();
-      renderCats();
-      showPage('shop');
-    }
-
-    function updateProfileUI() {
-      if (!currentUser) return;
-      // Use real DB user data
-      const displayName = currentUser.name || localStorage.getItem('hb_user_name') || 'User';
-      const displayPhone = currentUser.phone || localStorage.getItem('userPhone') || '';
-      const displayRoom = currentUser.room || localStorage.getItem('hb_user_room') || '-';
-
-      document.getElementById('profileName').textContent = displayName;
-      document.getElementById('profilePhone').textContent = displayPhone ? '+91 ' + displayPhone : '+91 ...';
-      document.getElementById('profileRoom').textContent = displayRoom;
-      document.getElementById('profileSince').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : '-';
-      document.getElementById('profileAvatar').textContent = displayName.charAt(0).toUpperCase();
-
-      // Pre-fill checkout form
-      document.getElementById('custName').value = displayName;
-      if (displayPhone) document.getElementById('custPhone').value = displayPhone;
-
-      const roomParts = (currentUser.room || '').split('-');
-      if (roomParts.length === 2) {
-        document.getElementById('custRoomAlpha').value = roomParts[0];
-        document.getElementById('custRoom').value = roomParts[1];
-      }
-    }
-
-    function openProfile() {
-      document.getElementById('profileModal').classList.add('open');
-      fetchOrderCount();
-    }
-
-    function closeProfile(e) {
-      if (!e || e.target === document.getElementById('profileModal')) {
-        document.getElementById('profileModal').classList.remove('open');
-      }
-    }
-
-    function fetchOrderCount() {
-      const phone = currentUser ? currentUser.phone : null;
-      if (!phone) return;
-      fetch("https://backendhb.onrender.com/api/orders/my", { credentials: "include" })
-        .then(res => {
-          if (res.status === 401) {
-            window.location.replace("auth.html");
-            return null;
-          }
-          return res.json();
-        })
-        .then(data => {
-          if (data) document.getElementById('profileOrders').textContent = data.length;
-        })
-        .catch(() => { });
-    }
-
-    function updateProfilePage() {
-      if (!currentUser) return;
-      // Use real DB user data
-      const displayName = currentUser.name || localStorage.getItem('hb_user_name') || 'User';
-      const displayPhone = currentUser.phone || localStorage.getItem('userPhone') || '';
-      const displayRoom = currentUser.room || localStorage.getItem('hb_user_room') || '-';
-
-      document.getElementById('profilePageName').textContent = displayName;
-      document.getElementById('profilePagePhone').textContent = displayPhone ? '+91 ' + displayPhone : '+91 ...';
-      document.getElementById('profilePageRoom').textContent = displayRoom;
-      document.getElementById('profilePageSince').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : '-';
-      document.getElementById('profilePageAvatar').textContent = displayName.charAt(0).toUpperCase();
-
-      // Fetch order count from DB
-      const phone = currentUser.phone || localStorage.getItem('userPhone');
-      if (!phone) return;
-
-      fetch("https://backendhb.onrender.com/api/orders/my", { credentials: "include" }).then(res => {
-        if (res.status === 401) {
-          location.replace("auth.html");
-          return;
-        }
-        return res.json();
-      })
-        .then(data => {
-          if (!data) return;
-          const count = data.filter(o => o.phone === phone).length;
-          document.getElementById('profilePageOrders').textContent = count;
-        })
-        .catch(() => { });
-    }
-
-    async function handleLogout() {
-      try {
-        await fetch("https://backendhb.onrender.com/api/auths/logout", {
-          method: "POST",
-          credentials: "include"
-        });
-      } catch (e) { /* ignore */ }
-      localStorage.removeItem('userPhone');
-      localStorage.removeItem('hb_user_name');
-      localStorage.removeItem('hb_user_room');
-      currentUser = null;
-      cart = {};
-      updateCartCount();
-      closeProfile();
-      showToast('Logged out successfully');
-      setTimeout(() => window.location.replace("auth.html"), 800);
-    }
-
-    // ================= PRODUCTS & CART =================
-    let PRODUCTS = [];
-    const CATS = ['All', 'Kurkure', 'Biscuits', 'Chips', 'Namkeen', 'Instant', 'Choclate', 'Drinks'];
-    let cart = {};
-    let activeCat = 'All';
-
-    function renderCats() {
-      document.getElementById('categoryTabs').innerHTML = CATS.map(c =>
-        `<button class="cat-pill${c === activeCat ? ' active' : ''}" onclick="filterCat('${c}')">${c}</button>`
-      ).join('');
-    }
-
-    function renderProducts() {
-      let filtered = activeCat === 'All'
-        ? PRODUCTS.filter(p => p.stock > 0)
-        : PRODUCTS.filter(p => p.cat === activeCat && p.stock > 0);
-      filtered.sort((a, b) => b.stock - a.stock);
-
-      document.getElementById('productGrid').innerHTML = filtered.map(p => {
-        const qty = cart[p.id] || 0;
-        const outOfStock = p.stock === 0;
-        return `<div class="product-card${outOfStock ? ' out-of-stock' : ''}">
-          <span class="stock-badge${outOfStock ? ' out' : ''}"> ${outOfStock ? 'Out of Stock' : 'In Stock: ' + p.stock}</span>
-          <div class="product-img-wrap">
-            <img src="${p.src || p.image || ''}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/200?text=SNACK'">
-          </div>
-          <div class="product-details">
-            <div class="product-name">${p.name}</div>
-            <div class="product-brand">${p.brand || 'Hostel Bites'}</div>
-            <div class="product-price-row">
-              <span class="product-price">Rs.${p.price}</span>
-              ${p.oprice ? `<span class="old-price">Rs.${p.oprice}</span>` : ''}
-            </div>
-            ${outOfStock
-            ? `<button class="add-btn" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-times"></i> Unavailable</button>`
-            : qty === 0
-              ? `<button class="add-btn" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i> Add to Cart</button>`
-              : `<div class="qty-controls">
-                    <button class="qty-btn" onclick="removeFromCart('${p.id}')">-</button>
-                    <span class="qty-num">${qty}</span>
-                    <button class="qty-btn" onclick="addToCart('${p.id}')">+</button>
-                  </div>`}
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    function filterCat(c) { activeCat = c; renderCats(); renderProducts(); }
-
-    function addToCart(id) {
-      const product = PRODUCTS.find(p => p.id === id);
-      if (!product || product.stock === 0) {
-        showToast('Item is out of stock');
-        return;
-      }
-      let currentQty = cart[id] || 0;
-      if (currentQty >= product.stock) {
-        showToast('Only ' + product.stock + ' left in stock!');
-        return;
-      }
-      cart[id] = currentQty + 1;
-      updateCartCount();
-      renderProducts();
-      renderCartDrawer();
-      showToast('Added ' + product.name + ' to cart');
-    }
-
-    function removeFromCart(id) {
-      if (!cart[id]) return;
-      if (cart[id] > 1) cart[id]--;
-      else delete cart[id];
-      updateCartCount();
-      renderProducts();
-      renderCartDrawer();
-    }
-
-    function updateCartCount() {
-      const total = Object.values(cart).reduce((a, b) => a + b, 0);
-      document.getElementById('cartCount').textContent = total;
-    }
-
-    function cartTotal() {
-      return Object.entries(cart).reduce((sum, [id, qty]) => {
-        const p = PRODUCTS.find(x => x.id == id);
-        return sum + (p ? p.price * qty : 0);
-      }, 0);
-    }
-
-    function renderCartDrawer() {
-      const items = Object.entries(cart);
-      const el = document.getElementById('cartItems');
-      if (!items.length) {
-        el.innerHTML = `<div class="drawer-empty">
-          <div class="empty-icon">&#128722;</div>
-          <p>Your cart is empty</p>
-          <p style="font-size:13px; margin-top:4px;">Add some snacks!</p>
-        </div>`;
-        document.getElementById('cartFooter').style.display = 'none';
-        return;
-      }
-      el.innerHTML = items.map(([id, qty]) => {
-        const p = PRODUCTS.find(x => x.id == id);
-        return `<div class="cart-item">
-          <div class="cart-item-img">
-            <img src="${p.src || p.image || ''}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/60?text=SNACK'">
-          </div>
-          <div class="cart-item-info">
-            <div class="cart-item-name">${p.name}</div>
-            <div class="cart-item-price">Rs.${p.price} x ${qty} = Rs.${p.price * qty}</div>
-          </div>
-          <div class="cart-item-controls">
-            <button class="qty-btn" onclick="removeFromCart('${id}')">-</button>
-            <span style="font-weight:700;min-width:18px;text-align:center">${qty}</span>
-            <button class="qty-btn" onclick="addToCart('${id}')">+</button>
-          </div>
-        </div>`;
-      }).join('');
-      document.getElementById('cartTotal').textContent = 'Rs.' + cartTotal();
-      document.getElementById('cartFooter').style.display = 'block';
-    }
-
-    function openCart() {
-      renderCartDrawer();
-      document.getElementById('cartOverlay').classList.add('open');
-      document.getElementById('cartDrawer').classList.add('open');
-    }
-    function closeCart() {
-      document.getElementById('cartOverlay').classList.remove('open');
-      document.getElementById('cartDrawer').classList.remove('open');
-    }
-
-    // ================= CHECKOUT =================
-    function openCheckout() {
-      if (!Object.keys(cart).length) { showToast('Cart is empty!'); return; }
-      closeCart();
-      document.getElementById('successScreen').classList.remove('show');
-      document.getElementById('checkoutForm').style.display = 'block';
-      renderSummaryWithRewards();
-      document.getElementById('checkoutModal').classList.add('open');
-    }
-    function closeCheckout() {
-      document.getElementById('checkoutModal').classList.remove('open');
-    }
-    function closeAll() {
-      closeCheckout();
-      cart = {};
-      updateCartCount();
-      renderProducts();
-    }
-
-    function renderSummary() {
-      document.getElementById('summaryItems').innerHTML = Object.entries(cart).map(([id, qty]) => {
-        const p = PRODUCTS.find(x => x.id == id);
-        return `<div class="summary-row"><span>${p.name} x ${qty}</span><span>Rs.${p.price * qty}</span></div>`;
-      }).join('');
-      document.getElementById('summaryTotal').textContent = 'Rs.' + cartTotal();
-    }
-
-    function canPlaceOrder() {
-      const phone = localStorage.getItem('userPhone');
-      if (!phone) return Promise.resolve(true);
-      return fetch("https://backendhb.onrender.com/api/orders", { credentials: "include" })
-        .then(res => {
-          if (res.status === 401) {
-            window.location.replace("auth.html");
-            return [];
-          }
-          return res.json();
-        })
-        .then(data => {
-          const myOrder = data.find(o => o.phone === phone);
-          if (myOrder && myOrder.status === 'pending') {
-            showToast('⏳ You already have a pending order');
-            return false;
-          }
-          return true;
-        })
-        .catch(() => true);
-    }
-
-    async function placeOrder() {
-      const btn = document.getElementById('orderBtn');
-      if (isPlacingOrder) return;
-      isPlacingOrder = true;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loader"></span> Placing...';
-
-      const can = await canPlaceOrder();
-      if (!can) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-        isPlacingOrder = false;
-        return;
-      }
-
-      const name = document.getElementById('custName').value.trim();
-      const block = document.getElementById('custRoomAlpha').value;
-      const roomNum = document.getElementById('custRoom').value;
-      const phone = document.getElementById('custPhone').value.trim();
-      const room = block + '-' + roomNum;
-      const total = cartTotal();
-
-      if (!name || !phone) {
-        showToast('⚠️ Fill all details');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-        isPlacingOrder = false;
-        return;
-      }
-
-      // Y & Z block minimum order check
-      if ((block === 'Y' || block === 'Z') && total < 40) {
-        showToast('⚠️ Minimum order for Y & Z block is Rs.40');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-        isPlacingOrder = false;
-        return;
-      }
-
-      const order = {
-        name,
-        room,
-        phone,
-        items: Object.entries(cart).map(([id, qty]) => {
-          const p = PRODUCTS.find(x => x.id == id);
-          return { id, name: p.name, price: p.price, qty };
-        }),
-        total: (window._finalTotal !== undefined ? window._finalTotal : cartTotal()),
-        payment: document.getElementById('payMethod').value
-      };
-
-      try {
-        const res = await fetch("https://backendhb.onrender.com/api/orders/place", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(order)
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          document.getElementById("successSound").play().catch(() => { });
-          localStorage.setItem('userPhone', phone);
-          const orderId = data._id || ('TEMP' + Date.now());
-          // Mark applied rewards as used (one-time only)
-          if (window._appliedRewards && window._appliedRewards.length > 0) {
-            markRewardsUsed(window._appliedRewards.map(r => r.id));
-          }
-          // Earn scratch card for this order
-          earnScratchCard(String(orderId));
-          window._appliedRewards = [];
-          window._finalTotal = undefined;
-          document.getElementById('successOrderId').innerText = 'Order ID: ' + orderId.toString().slice(-5);
-          document.getElementById('checkoutForm').style.display = 'none';
-          document.getElementById('successScreen').classList.add('show');
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-          isPlacingOrder = false;
-          cart = {};
-          updateCartCount();
-          renderProducts();
-          renderCartDrawer();
-        } else {
-          showToast('❌ Order failed. Try again.');
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-          isPlacingOrder = false;
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('❌ Network error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
-        isPlacingOrder = false;
-      }
-    }
-
-    function goToOrders() {
-      closeCheckout();
-      showPage('orders');
-    }
-
-    // ================= ORDERS =================
-    function loadMyOrder() {
-      const phone = localStorage.getItem('userPhone');
-      if (!phone) return;
-
-      fetch("https://backendhb.onrender.com/api/orders", { credentials: "include" })
-        .then(res => {
-          if (res.status === 401) {
-            window.location.replace("auth.html");
-            return null;
-          }
-          return res.json();
-        })
-        .then(data => {
-          const myOrders = data.filter(o => o.phone === phone);
-          const box = document.getElementById('ordersList');
-          if (!myOrders.length) {
-            box.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--text-muted);">
-              <div style="font-size:48px; margin-bottom:12px;">&#128230;</div>
-              <p>No orders yet</p>
-              <p style="font-size:13px; margin-top:4px;">Your order history will appear here</p>
-            </div>`;
-            return;
-          }
-          box.innerHTML = myOrders.map(o => {
-            const statusClass = o.status === 'pending' ? 'status-pending' :
-              o.status === 'accepted' ? 'status-accepted' :
-                o.status === 'delivered' ? 'status-delivered' : 'status-rejected';
-            const statusText = o.status === 'pending' ? 'Pending' :
-              o.status === 'accepted' ? 'Accepted' :
-                o.status === 'delivered' ? 'Delivered' : 'Rejected';
-            return `<div class="order-card">
-              <div class="order-header">
-                <div class="order-id">Order #${o._id.slice(-5)}</div>
-                <div class="order-status ${statusClass}">${statusText}</div>
-              </div>
-              <div class="order-items">
-                ${o.items.map(i => `${i.name} x ${i.qty}`).join('<br>')}
-              </div>
-              <div class="order-footer">
-                <div class="order-total">Rs.${o.total}</div>
-                <div class="order-timer" id="timer-${o._id}">Calculating...</div>
-              </div>
-              <div class="order-msg" id="msg-${o._id}"></div>
-              <div class="timeline">
-                <div class="tl-step active">
-                  <div class="tl-dot"></div>
-                  <div class="tl-text">Order Placed</div>
+            <!-- LOGIN -->
+            <div id="loginBox" class="form-section">
+                <h2>Welcome back</h2>
+                <div class="field">
+                    <input id="loginPhone" placeholder="Phone Number" type="tel" maxlength="10">
+                    <span class="field-icon">📞</span>
+                    <div class="field-error" id="loginPhoneError">Enter a valid 10-digit phone number</div>
                 </div>
-                <div class="tl-line ${o.status === 'accepted' || o.status === 'delivered' ? 'active' : ''}"></div>
-                <div class="tl-step ${o.status === 'accepted' || o.status === 'delivered' ? 'active' : ''}">
-                  <div class="tl-dot"></div>
-                  <div class="tl-text">Order Accepted</div>
+                <div class="field">
+                    <input id="loginPass" type="password" placeholder="Password" minlength="4">
+                    <span class="field-icon">🔒</span>
+                    <div class="field-error" id="loginPassError">Password must be at least 4 characters</div>
                 </div>
-                ${o.status === 'rejected' ? `
-                  <div class="tl-line active"></div>
-                  <div class="tl-step rejected active">
-                    <div class="tl-dot"></div>
-                    <div class="tl-text">Order Rejected</div>
-                  </div>
-                ` : `
-                  <div class="tl-line ${o.status === 'delivered' ? 'active' : ''}"></div>
-                  <div class="tl-step ${o.status === 'delivered' ? 'active' : ''}">
-                    <div class="tl-dot"></div>
-                    <div class="tl-text">Delivered</div>
-                  </div>
-                `}
-              </div>
-            </div>`;
-          }).join('');
-          startOrderTimers(myOrders);
-        })
-        .catch(err => console.error('Orders load error:', err));
-    }
+                <button onclick="login()" id="loginBtn"><span id="loginBtnText">Sign In</span></button>
+                <div class="toggle" onclick="toggleForm()">New here? <span>Create an account</span></div>
+            </div>
 
-    function startOrderTimers(orders) {
-      if (window.timerIntervals) window.timerIntervals.forEach(clearInterval);
-      window.timerIntervals = [];
+            <!-- REGISTER -->
+            <div id="registerBox" class="form-section hidden">
+                <h2>Create account</h2>
+                <div class="field">
+                    <input id="name" placeholder="Full Name" minlength="2" maxlength="50">
+                    <span class="field-icon">👤</span>
+                    <div class="field-error" id="nameError">Name must be at least 2 characters</div>
+                </div>
+                <div class="field">
+                    <input id="phone" placeholder="Phone Number" type="tel" maxlength="10">
+                    <span class="field-icon">📞</span>
+                    <div class="field-error" id="phoneError">Enter a valid 10-digit phone number</div>
+                </div>
+                <div class="field">
+                    <input id="pass" type="password" placeholder="Password" minlength="4" maxlength="50">
+                    <span class="field-icon">🔒</span>
+                    <div class="field-error" id="passError">Password must be at least 4 characters</div>
+                </div>
+                <div class="divider"><span>hostel info</span></div>
+                <div class="field">
+                    <select id="block">
+                        <option value="X">Block X</option>
+                        <option value="Y">Block Y</option>
+                        <option value="Z">Block Z</option>
+                    </select>
+                    <span class="field-icon">🏢</span>
+                </div>
+                <div class="field">
+                    <select id="room"></select>
+                    <span class="field-icon">🚪</span>
+                </div>
+                <div class="field">
+                    <select id="role">
+                        <option value="customer">Customer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <span class="field-icon">🎖️</span>
+                </div>
+                <button onclick="register()" id="registerBtn"><span id="registerBtnText">Register</span></button>
+                <div class="toggle" onclick="toggleForm()">Already registered? <span>Sign in</span></div>
+            </div>
+        </div>
+    </div>
 
-      orders.forEach(o => {
-        const timerEl = document.getElementById('timer-' + o._id);
-        const msgEl = document.getElementById('msg-' + o._id);
-        if (!timerEl) return;
-        const startTime = new Date(o.createdAt).getTime();
-
-        function updateTimer() {
-          let now = Date.now();
-          let diff = now - startTime;
-          let remaining = 7 * 60 * 1000 - diff;
-
-          if (o.status === 'delivered') {
-            timerEl.innerHTML = '<i class="fas fa-check-circle"></i> Delivered';
-            timerEl.style.color = 'var(--success)';
-            if (msgEl) msgEl.innerHTML = 'Order completed';
-            return;
-          }
-          if (o.status === 'rejected') {
-            timerEl.innerHTML = '<i class="fas fa-times-circle"></i> Rejected';
-            timerEl.style.color = 'var(--danger)';
-            if (msgEl) msgEl.innerHTML = 'Order was rejected';
-            return;
-          }
-          if (remaining > 0) {
-            let min = Math.floor(remaining / 60000);
-            let sec = Math.floor((remaining % 60000) / 1000);
-            timerEl.innerHTML = `Remaining: ${min}:${sec.toString().padStart(2, '0')}`;
-            timerEl.classList.remove('late');
-            if (remaining < 60000) timerEl.classList.add('late');
-          } else {
-            timerEl.innerHTML = 'Slight Delay';
-            timerEl.classList.add('late');
-            if (msgEl) msgEl.innerHTML = 'You will still receive your order at the same price';
-          }
-        }
-        let interval = setInterval(updateTimer, 1000);
-        window.timerIntervals.push(interval);
-        updateTimer();
-      });
-    }
-
-    // ================= NAVIGATION =================
-    function showPage(page) {
-      // Hide all pages
-      document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
-
-      // Show selected page
-      document.getElementById(page + 'Page').classList.remove('hidden');
-
-      // 🔥 REMOVE active from all top nav buttons
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
-      // 🔥 ADD active to clicked button
-      if (page === 'shop') {
-        document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
-      }
-      if (page === 'rewards') {
-        document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
-        renderRewardsPage();
-      }
-      if (page === 'orders') {
-        document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
-      }
-
-      // remove active
-      document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.classList.remove('active'));
-
-      // add active
-      if (page === 'shop') document.getElementById('navShop').classList.add('active');
-      if (page === 'orders') document.getElementById('navOrders').classList.add('active');
-      if (page === 'rewards') document.getElementById('navRewards').classList.add('active');
-      if (page === 'rewards') renderRewardsPage();
-      if (page === 'profile') {
-        document.getElementById('profilePage').classList.remove('hidden');
-        document.getElementById('navProfile').classList.add('active');
-
-        updateProfilePage(); // 🔥 THIS LINE FIXES YOUR ISSUE
-      }
-    }
-
-    // ================= INFO POPUP =================
-    function openInfo(type) {
-      const modal = document.getElementById('infoModal');
-      const title = document.getElementById('infoTitle');
-      const content = document.getElementById('infoContent');
-      modal.classList.add('open');
-
-      if (type === 'terms') {
-        title.innerText = 'Terms & Conditions';
-        content.innerHTML = `
-          <h4>Order Conditions</h4>
-          <ul>
-            <li>Only one active order allowed at a time</li>
-            <li>Correct details (Name, Room, Phone) are mandatory</li>
-            <li>Fake orders may lead to account restriction</li>
-          </ul>
-          <h4>Delivery & Timing</h4>
-          <ul>
-            <li>Delivery within 7 minutes after confirmation</li>
-            <li>Late delivery = original/base price (no extra charges)</li>
-            <li>Valid only with correct details and availability</li>
-          </ul>
-          <h4>Request Product</h4>
-          <p>Use the "Request Product" button to suggest new items. Our team will review feasibility.</p>
-        `;
-      } else if (type === 'privacy') {
-        title.innerText = 'Privacy Policy';
-        content.innerHTML = `
-          <h4>Data Collection</h4>
-          <p>We only collect Name, Room Number, and Phone Number - temporarily for order processing.</p>
-          <h4>Data Usage</h4>
-          <p>Your info is used solely for delivery. No marketing, no spam, no third-party sharing.</p>
-          <h4>Security</h4>
-          <p>No payment details are stored. No passwords or sensitive data collected.</p>
-        `;
-      } else if (type === 'contact') {
-        title.innerText = 'Contact Us';
-        content.innerHTML = `
-          <p style="text-align:center; margin-bottom:20px; color:var(--text-secondary);">Need help? Reach out anytime.</p>
-          <div class="contact-grid">
-            <a href="tel:8218325600" class="contact-action">
-              <i class="fas fa-phone-alt"></i>
-              <span>Call Us</span>
-            </a>
-            <a href="mailto:biteshostel@gmail.com" class="contact-action">
-              <i class="fas fa-envelope"></i>
-              <span>Email Us</span>
-            </a>
-          </div>
-        `;
-      }
-    }
-    function closeInfo(e) {
-      if (!e || e.target === document.getElementById('infoModal')) {
-        document.getElementById('infoModal').classList.remove('open');
-      }
-    }
-
-    // ================= TOAST =================
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      const icon = msg.startsWith('Added') ? '&#10003;' :
-        msg.includes('failed') || msg.includes('error') || msg.includes('out of stock') ? '&#10007;' :
-          msg.includes('Only') ? '!' : '&#10003;';
-      document.getElementById('toastIcon').innerHTML = icon;
-      document.getElementById('toastMsg').textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    // ================= DATA LOADING =================
-    function loadProducts() {
-      showProductSkeleton();
-      fetch("https://backendhb.onrender.com/api/products")
-        .then(res => res.json())
-        .then(data => {
-          PRODUCTS = data.map(p => ({ ...p, id: p._id }));
-          renderProducts();
-        })
-        .catch(err => {
-          console.error('Product load error:', err);
-          document.getElementById('productGrid').innerHTML =
-            `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa">😕 Failed to load products</div>`;
-        });
-    }
-
-    // ================= REWARD SYSTEM =================
-    /*
-      Storage key: 'hb_rewards_' + phone
-      Each reward object:
-      {
-        id: string (unique),
-        type: 'discount_1'|'discount_2'|'discount_3'|'same_price'|'free_item'|'nothing',
-        orderId: string,
-        status: 'pending'|'active'|'used',
-        earnedAt: timestamp,
-        usedAt: timestamp|null,
-      }
-      Status flow: pending → active → used (one-time use, expires in 7 days if not used)
-    */
-
-    const REWARD_TYPES = [
-      { type: 'discount_1', weight: 25, icon: '💰', title: 'Rs.1 Off', desc: 'Get Rs.1 off on orders above Rs.30', minOrder: 30 },
-      { type: 'discount_2', weight: 20, icon: '💸', title: 'Rs.2 Off', desc: 'Get Rs.2 off on orders above Rs.60', minOrder: 60 },
-      { type: 'discount_3', weight: 12, icon: '🤑', title: 'Rs.3 Off', desc: 'Get Rs.3 off on orders above Rs.90', minOrder: 90 },
-      { type: 'same_price', weight: 10, icon: '🔁', title: '1 Item at Same Price', desc: 'Get one item at the same price on orders above Rs.50', minOrder: 50 },
-      { type: 'free_item', weight: 3, icon: '🎁', title: 'FREE Item!', desc: 'Get one item free on orders above Rs.200', minOrder: 200 },
-      { type: 'nothing', weight: 30, icon: '😅', title: 'Better luck next time!', desc: 'No reward this time. Keep ordering!', minOrder: 0 },
-    ];
-
-    function getRewardsKey() {
-      const phone = localStorage.getItem('userPhone');
-      return phone ? 'hb_rewards_' + phone : null;
-    }
-    function loadRewards() {
-      const key = getRewardsKey();
-      if (!key) return [];
-      try { return JSON.parse(localStorage.getItem(key) || '[]'); }
-      catch { return []; }
-    }
-    function saveRewards(rewards) {
-      const key = getRewardsKey();
-      if (!key) return;
-      localStorage.setItem(key, JSON.stringify(rewards));
-    }
-    function pickRandomReward() {
-      const total = REWARD_TYPES.reduce((s, r) => s + r.weight, 0);
-      let rand = Math.random() * total;
-      for (const rt of REWARD_TYPES) { rand -= rt.weight; if (rand <= 0) return rt; }
-      return REWARD_TYPES[REWARD_TYPES.length - 1];
-    }
-
-    // Called right after successful order placement — adds a PENDING scratch card
-    function earnScratchCard(orderId) {
-      const rewards = loadRewards();
-      const rt = pickRandomReward();
-      rewards.push({
-        id: 'rw_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-        type: rt.type,
-        orderId: String(orderId),
-        status: 'pending',
-        earnedAt: Date.now(),
-        usedAt: null,
-      });
-      saveRewards(rewards);
-      renderRewardsPage();
-    }
-
-    // Check and expire rewards older than 7 days
-    function checkRewardExpiration() {
-      const rewards = loadRewards();
-      const now = Date.now();
-      const WEEK = 7 * 24 * 60 * 60 * 1000;
-      let changed = false;
-      rewards.forEach(rw => {
-        if (rw.status === 'active' && rw.activatedAt) {
-          if (now - rw.activatedAt > WEEK) {
-            rw.status = 'used';
-            rw.usedAt = now;
-            rw.expired = true;
-            changed = true;
-          }
-        }
-      });
-      if (changed) {
-        saveRewards(rewards);
-        renderRewardsPage();
-        showToast('⏰ Some rewards expired! Order more to earn new ones.');
-      }
-    }
-
-    // Called by order polling — activates/dismisses pending rewards based on order status
-    function syncRewardsWithOrders(orders) {
-      const key = getRewardsKey();
-      if (!key) return;
-      const rewards = loadRewards();
-      const phone = localStorage.getItem('userPhone');
-      const myOrders = orders.filter(o => o.phone === phone);
-      let changed = false;
-      const toReveal = [];
-
-      rewards.forEach(rw => {
-        if (rw.status !== 'pending') return;
-        const order = myOrders.find(o => String(o._id) === String(rw.orderId));
-        if (!order) return;
-        if (order.status === 'delivered') {
-          rw.status = 'active';
-          rw.activatedAt = Date.now();
-          changed = true;
-          toReveal.push(rw);
-        }
-        // Rejected orders: reward stays pending (can be earned again on next successful order)
-      });
-
-      if (changed) {
-        saveRewards(rewards);
-        renderRewardsPage();
-        if (toReveal.length > 0) showScratchModal(toReveal[0]);
-      }
-    }
-
-    // ---- Scratch card modal ----
-    let _currentScratchReward = null;
-    let _scratchRevealed = false;
-
-    function showScratchModal(reward) {
-      _currentScratchReward = reward;
-      _scratchRevealed = false;
-      const rt = REWARD_TYPES.find(r => r.type === reward.type);
-      document.getElementById('scratchRewardIcon').textContent = rt.icon;
-      document.getElementById('scratchRewardText').textContent = rt.title;
-      document.getElementById('scratchPhase1').style.display = 'block';
-      document.getElementById('scratchPhase2').style.display = 'none';
-
-      const canvas = document.getElementById('scratchCanvas');
-      const ctx = canvas.getContext('2d');
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grd.addColorStop(0, '#2A2A32');
-      grd.addColorStop(1, '#18181B');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#8B8B9A';
-      ctx.font = '600 13px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('✦  Scratch to Reveal  ✦', canvas.width / 2, canvas.height / 2 + 5);
-      setupScratchEvents(canvas);
-      document.getElementById('scratchModal').classList.add('open');
-    }
-
-    function setupScratchEvents(canvas) {
-      const ctx = canvas.getContext('2d');
-      ctx.globalCompositeOperation = 'destination-out';
-      let scratching = false;
-
-      function scratch(x, y) {
-        ctx.beginPath();
-        ctx.arc(x, y, 24, 0, Math.PI * 2);
-        ctx.fill();
-        checkScratchPercent(canvas);
-      }
-      canvas.onmousedown = e => { scratching = true; scratch(e.offsetX, e.offsetY); };
-      canvas.onmousemove = e => { if (scratching) scratch(e.offsetX, e.offsetY); };
-      canvas.onmouseup = () => { scratching = false; };
-      canvas.onmouseleave = () => { scratching = false; };
-      canvas.ontouchstart = e => { e.preventDefault(); scratching = true; const r = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); };
-      canvas.ontouchmove = e => { e.preventDefault(); if (!scratching) return; const r = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top); };
-      canvas.ontouchend = () => { scratching = false; };
-    }
-
-    function checkScratchPercent(canvas) {
-      if (_scratchRevealed) return;
-      const ctx = canvas.getContext('2d');
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-      let cleared = 0;
-      for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) cleared++; }
-      if (cleared / (canvas.width * canvas.height) > 0.5) revealScratch();
-    }
-
-    function revealScratch() {
-      if (_scratchRevealed || !_currentScratchReward) return;
-      _scratchRevealed = true;
-      const canvas = document.getElementById('scratchCanvas');
-      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-      const rt = REWARD_TYPES.find(r => r.type === _currentScratchReward.type);
-      const isNothing = rt.type === 'nothing';
-
-      setTimeout(() => {
-        document.getElementById('scratchPhase1').style.display = 'none';
-        document.getElementById('scratchPhase2').style.display = 'block';
-        document.getElementById('scratchRevealIcon').textContent = rt.icon;
-        document.getElementById('scratchRevealTitle').textContent = rt.title;
-        document.getElementById('scratchRevealDesc').textContent = isNothing
-          ? 'No reward this time. Keep ordering for better luck!'
-          : rt.desc + ' — Automatically applied on every eligible order!';
-        const btn = document.querySelector('#scratchPhase2 .auth-btn');
-        if (btn) btn.textContent = isNothing ? 'Ok 😔' : 'Got it! 🎉';
-
-        if (isNothing) {
-          // "Nothing" rewards are auto-marked as used since they have no value
-          const rewards = loadRewards();
-          const rw = rewards.find(r => r.id === _currentScratchReward.id);
-          if (rw) { rw.status = 'used'; rw.usedAt = Date.now(); }
-          saveRewards(rewards);
-          renderRewardsPage();
-        }
-      }, 200);
-    }
-
-    function closeScratchModal() {
-      document.getElementById('scratchModal').classList.remove('open');
-      _currentScratchReward = null;
-      renderRewardsPage();
-    }
-
-    // ---- Reward application to checkout ----
-    function getCheapestCartItem() {
-      let cheapest = null;
-      for (const [id] of Object.entries(cart)) {
-        const p = PRODUCTS.find(x => x.id == id);
-        if (p && (!cheapest || p.price < cheapest.price)) cheapest = p;
-      }
-      return cheapest;
-    }
-
-    function getApplicableRewards(cartAmt) {
-      const rewards = loadRewards().filter(r => r.status === 'active');  // only active (unused) rewards
-      const cheapest = getCheapestCartItem();
-
-      // Score each reward by how much it saves, for ranking
-      function rewardValue(rw) {
-        if (rw.type === 'discount_1') return 1;
-        if (rw.type === 'discount_2') return 2;
-        if (rw.type === 'discount_3') return 3;
-        if (rw.type === 'same_price') return cheapest ? cheapest.price : 0;
-        if (rw.type === 'free_item') return cheapest ? cheapest.price : 0;
-        return 0;
-      }
-
-      // Filter eligible rewards
-      const eligible = rewards.filter(rw => {
-        const rt = REWARD_TYPES.find(r => r.type === rw.type);
-        if (!rt || rt.type === 'nothing') return false;
-        if (cartAmt < rt.minOrder) return false;
-        if ((rt.type === 'same_price' || rt.type === 'free_item') && !cheapest) return false;
-        return true;
-      });
-
-      // Sort by value descending — best rewards first
-      eligible.sort((a, b) => rewardValue(b) - rewardValue(a));
-
-      // Pick up to 2, but only 1 item-type reward (both would discount same item)
-      const applicable = [];
-      let hasItemReward = false;
-      for (const rw of eligible) {
-        if (applicable.length >= 2) break;
-        const isItemType = rw.type === 'same_price' || rw.type === 'free_item';
-        if (isItemType && hasItemReward) continue; // skip 2nd item reward
-        if (isItemType) hasItemReward = true;
-        applicable.push(rw);
-      }
-      return applicable;
-    }
-
-    function calcRewardDiscount(appliedRewards) {
-      let discount = 0;
-      for (const rw of appliedRewards) {
-        if (rw.type === 'discount_1') discount += 1;
-        else if (rw.type === 'discount_2') discount += 2;
-        else if (rw.type === 'discount_3') discount += 3;
-        else if (rw.type === 'same_price') { const c = getCheapestCartItem(); if (c) discount += c.price; }
-        else if (rw.type === 'free_item') { const c = getCheapestCartItem(); if (c) discount += c.price; }
-      }
-      return discount;
-    }
-
-    function renderSummaryWithRewards() {
-      const rawTotal = cartTotal();
-      const applicable = getApplicableRewards(rawTotal);
-      const discount = Math.min(calcRewardDiscount(applicable), rawTotal);
-      const finalTotal = rawTotal - discount;
-
-      document.getElementById('summaryItems').innerHTML = Object.entries(cart).map(([id, qty]) => {
-        const p = PRODUCTS.find(x => x.id == id);
-        return `<div class="summary-row"><span>${p.name} x ${qty}</span><span>Rs.${p.price * qty}</span></div>`;
-      }).join('');
-
-      let rewardHtml = '';
-      if (applicable.length > 0) {
-        rewardHtml += `<div style="border-top:1px solid var(--border);margin-top:6px;padding-top:2px;">`;
-        for (const rw of applicable) {
-          const rt = REWARD_TYPES.find(r => r.type === rw.type);
-          let discAmt = 0;
-          if (rw.type === 'discount_1') discAmt = 1;
-          else if (rw.type === 'discount_2') discAmt = 2;
-          else if (rw.type === 'discount_3') discAmt = 3;
-          else if (rw.type === 'same_price' || rw.type === 'free_item') { const c = getCheapestCartItem(); if (c) discAmt = c.price; }
-          rewardHtml += `<div class="summary-reward-row"><span><i class="fas fa-tag"></i> ${rt.icon} ${rt.title}</span><span>- Rs.${discAmt}</span></div>`;
-        }
-        rewardHtml += `</div>`;
-      }
-      document.getElementById('summaryRewardRows').innerHTML = rewardHtml;
-      document.getElementById('summaryTotal').textContent = 'Rs.' + finalTotal;
-
-      window._appliedRewards = applicable;
-      window._finalTotal = finalTotal;
-    }
-
-    function markRewardsUsed(rewardIds) {
-      const rewards = loadRewards();
-      rewards.forEach(rw => {
-        if (rewardIds.includes(rw.id)) {
-          rw.status = 'used';
-          rw.usedAt = Date.now();
-        }
-      });
-      saveRewards(rewards);
-      renderRewardsPage();
-    }
-
-    function renderRewardsPage() {
-      checkRewardExpiration(); // auto-expire old rewards before rendering
-      const rewards = loadRewards();
-      const active = rewards.filter(r => r.status === 'active');
-      const pending = rewards.filter(r => r.status === 'pending');
-      const used = rewards.filter(r => r.status === 'used');
-
-      document.getElementById('rewardStatActive').textContent = active.length;
-      document.getElementById('rewardStatPending').textContent = pending.length;
-      document.getElementById('rewardStatUsed').textContent = used.length;
-
-      const hasAny = (active.length + pending.length + used.length) > 0;
-      document.getElementById('rewardsEmpty').style.display = hasAny ? 'none' : 'block';
-
-      function cardHtml(rw, cls, badgeCls, badgeTxt) {
-        const rt = REWARD_TYPES.find(r => r.type === rw.type);
-        const date = new Date(rw.earnedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-        let expiryLine = '';
-        if (rw.status === 'active' && rw.activatedAt) {
-          const daysLeft = Math.max(0, Math.ceil((7 * 24 * 60 * 60 * 1000 - (Date.now() - rw.activatedAt)) / (24 * 60 * 60 * 1000)));
-          const color = daysLeft <= 2 ? 'var(--danger)' : daysLeft <= 4 ? 'var(--warning)' : 'var(--text-muted)';
-          expiryLine = `<div style="font-size:11px;color:${color};margin-top:3px;font-weight:700;"><i class="fas fa-hourglass-half" style="margin-right:3px;"></i>Expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}</div>`;
-        } else if (rw.status === 'used' && rw.expired) {
-          expiryLine = `<div style="font-size:11px;color:var(--danger);margin-top:3px;"><i class="fas fa-times" style="margin-right:3px;"></i>Expired</div>`;
-        } else if (rw.status === 'used') {
-          const usedDate = rw.usedAt ? new Date(rw.usedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Recently';
-          expiryLine = `<div style="font-size:11px;color:var(--text-muted);margin-top:3px;"><i class="fas fa-check" style="margin-right:3px;"></i>Used on ${usedDate}</div>`;
-        }
-        return `<div class="reward-card ${cls}">
-          <div class="reward-icon-wrap">${rt.icon}</div>
-          <div class="reward-info">
-            <div class="reward-title">${rt.title}</div>
-            <div class="reward-desc">${rt.desc}</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Earned ${date}</div>
-            ${expiryLine}
-          </div>
-          <span class="reward-badge ${badgeCls}">${badgeTxt}</span>
-        </div>`;
-      }
-
-      // Show expiry banner if any active reward expires in <= 3 days
-      const hasExpiringSoon = active.some(rw => {
-        if (!rw.activatedAt) return false;
-        const daysLeft = Math.ceil((7 * 24 * 60 * 60 * 1000 - (Date.now() - rw.activatedAt)) / (24 * 60 * 60 * 1000));
-        return daysLeft <= 3;
-      });
-      document.getElementById('expiryBanner').style.display = hasExpiringSoon ? 'block' : 'none';
-
-      document.getElementById('activeRewardsList').innerHTML = active.length
-        ? active.map(rw => cardHtml(rw, 'active-reward', 'badge-active', '1 Use')).join('')
-        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No active rewards yet.</div>`;
-
-      document.getElementById('pendingRewardsList').innerHTML = pending.length
-        ? pending.map(rw => cardHtml(rw, 'pending-reward', 'badge-pending', '⏳ Locked')).join('')
-        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">None pending.</div>`;
-
-      document.getElementById('usedRewardsList').innerHTML = used.length
-        ? used.map(rw => cardHtml(rw, 'used-reward', 'badge-used', 'Used')).join('')
-        : `<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">None.</div>`;
-    }
-
-    // ================= INIT =================
-    function initApp() {
-      loadRoomOptions('custRoom');
-      renderCats();
-      loadProducts();
-      loadMyOrder();
-      checkRewardExpiration(); // check on page load
-
-      // Auto-refresh orders every 3s
-      let lastOrders = "";
-      setInterval(() => {
-        const phone = localStorage.getItem('userPhone');
-        if (!phone) return;
-        fetch("https://backendhb.onrender.com/api/orders", { credentials: "include" })
-          .then(res => {
-            if (res.status === 401) return null;
-            return res.json();
-          })
-          .then(data => {
-            let newData = JSON.stringify(data.filter(o => o.phone === phone));
-            if (newData !== lastOrders) {
-              lastOrders = newData;
-              loadMyOrder();
-              syncRewardsWithOrders(data);
+    <script>
+        const API_BASE = "https://backendhb.onrender.com/api";
+        async function checkUser() {
+            try {
+                const res = await fetch(API_BASE + "/auths/me", { credentials: "include" });
+                if (res.ok) {
+                    const data = await res.json();
+                    const user = data.user;     // ✅ unwrap the nested user object
+                    if (user && user.phone) {
+                        localStorage.setItem('userPhone', user.phone);
+                        localStorage.setItem('hb_user_name', user.name || '');
+                        localStorage.setItem('hb_user_room', user.room || '');
+                    }
+                    window.location.href = "files/hostel_bites.html";
+                }
+            } catch (err) {
+                console.log("Not logged in, stay on page");
             }
-          })
-          .catch(() => { });
-      }, 3000);
-
-      // Check reward expiration every 60 seconds
-      setInterval(() => { checkRewardExpiration(); }, 60000);
-
-      // Auto-refresh products every 5s — silent, no skeleton flash
-      let lastProducts = "";
-      setInterval(() => {
-        const shopPage = document.getElementById('shopPage');
-        if (shopPage && !shopPage.classList.contains('hidden')) {
-          fetch("https://backendhb.onrender.com/api/products")
-            .then(res => res.json())
-            .then(data => {
-              const newData = JSON.stringify(data);
-              if (newData !== lastProducts) {
-                lastProducts = newData;
-                PRODUCTS = data.map(p => ({ ...p, id: p._id }));
-                renderProducts();
-              }
-            })
-            .catch(() => { });
         }
-      }, 5000);
-    }
 
-    // Auto-refresh
-  </script>
+        // ── AUTO FILL ROOM 1-20 ──
+        const roomSelect = document.getElementById("room");
+        for (let i = 1; i <= 20; i++) {
+            let opt = document.createElement("option");
+            opt.value = i.toString().padStart(2, '0');
+            opt.text = "Room " + i;
+            roomSelect.appendChild(opt);
+        }
+        // FIX: Ensure first room is selected
+        roomSelect.value = "01";
+
+        // ── UTILITIES ──
+        function validatePhone(phone) { return /^[0-9]{10}$/.test(phone); }
+        function validateName(name) { return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim()); }
+        function validatePassword(pass) { return pass.length >= 4; }
+
+        function showError(msg) {
+            const err = document.getElementById("errorBox");
+            err.innerText = msg;
+            err.classList.add("show");
+            setTimeout(() => err.classList.remove("show"), 4000);
+        }
+
+        function showSuccess(msg) {
+            const box = document.getElementById("successBox");
+            box.innerText = msg;
+            box.classList.add("show");
+            setTimeout(() => box.classList.remove("show"), 3000);
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
+        }
+
+        function showFieldError(fieldId, errorId) {
+            document.getElementById(fieldId).classList.add('error');
+            document.getElementById(errorId).classList.add('show');
+        }
+
+        function setLoading(btnId, textId, isLoading, defaultText) {
+            const btn = document.getElementById(btnId);
+            const txt = document.getElementById(textId);
+            if (isLoading) {
+                btn.disabled = true;
+                txt.innerHTML = '<span class="loader"></span> ' + defaultText + '...';
+            } else {
+                btn.disabled = false;
+                txt.textContent = defaultText;
+            }
+        }
+
+        // ── SWITCH LOGIN/REGISTER ──
+        function toggleForm() {
+            document.getElementById("loginBox").classList.toggle("hidden");
+            document.getElementById("registerBox").classList.toggle("hidden");
+            clearFieldErrors();
+            document.getElementById("errorBox").classList.remove("show");
+        }
+
+        // ── LOGIN ──
+        async function login() {
+            clearFieldErrors();
+            const phone = document.getElementById("loginPhone").value.trim();
+            const password = document.getElementById("loginPass").value;
+            let hasError = false;
+
+            if (!validatePhone(phone)) { showFieldError('loginPhone', 'loginPhoneError'); hasError = true; }
+            if (!validatePassword(password)) { showFieldError('loginPass', 'loginPassError'); hasError = true; }
+            if (hasError) return;
+
+            setLoading('loginBtn', 'loginBtnText', true, 'Signing In');
+
+            try {
+                const res = await fetch(API_BASE + "/auths/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ phone, password })
+                });
+
+                // FIX: Handle non-JSON responses
+                let data;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    data = await res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error("Server error: " + text.substring(0, 100));
+                }
+
+                console.log("Login response:", data);
+
+                if (data.success) {
+                    localStorage.setItem('userPhone', phone);
+                    if (data.user) {
+                        localStorage.setItem('hb_user_name', data.user.name || '');
+                        localStorage.setItem('hb_user_room', data.user.room || '');
+                    }
+                    showSuccess("Login successful! Redirecting...");
+                    setTimeout(() => { window.location.href = "files/hostel_bites.html"; }, 800);
+                } else {
+                    showError(data.message || "Invalid phone or password");
+                }
+            } catch (err) {
+                console.error("Login error:", err);
+                showError(err.message || "Server error. Please try again.");
+            }
+
+            setLoading('loginBtn', 'loginBtnText', false, 'Sign In');
+        }
+
+        // ── REGISTER ──
+        async function register() {
+            clearFieldErrors();
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("pass").value;
+            const block = document.getElementById("block").value;
+            const room = document.getElementById("room").value;
+            const role = document.getElementById("role").value;
+            let hasError = false;
+
+            if (!validateName(name)) { showFieldError('name', 'nameError'); hasError = true; }
+            if (!validatePhone(phone)) { showFieldError('phone', 'phoneError'); hasError = true; }
+            if (!validatePassword(password)) { showFieldError('pass', 'passError'); hasError = true; }
+            // FIX: Validate room is selected
+            if (!room) { showError("Please select a room"); hasError = true; }
+            if (hasError) return;
+
+            const fullRoom = block + "-" + room;
+
+            setLoading('registerBtn', 'registerBtnText', true, 'Registering');
+
+            try {
+                const res = await fetch(API_BASE + "/auths/register", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, phone, room: fullRoom, password, role })
+                });
+
+                // FIX: Handle non-JSON responses
+                let data;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    data = await res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error("Server error: " + text.substring(0, 100));
+                }
+
+                if (data.success) {
+                    document.getElementById("name").value = "";
+                    document.getElementById("phone").value = "";
+                    document.getElementById("pass").value = "";
+                    document.getElementById("block").value = "X";
+                    document.getElementById("room").value = "01";
+                    document.getElementById("role").value = "customer";
+
+                    showSuccess(data.message || "Registered successfully!");
+                    setTimeout(() => toggleForm(), 1500);
+                } else {
+                    showError(data.message || "Registration failed");
+                }
+            } catch (err) {
+                console.error("Register error:", err);
+                showError(err.message || "Server error. Please try again.");
+            }
+
+            setLoading('registerBtn', 'registerBtnText', false, 'Register');
+        }
+
+        // ── CHECK AUTO LOGIN ──
+        // To:
+
+
+        // ── ENTER KEY SUPPORT ──
+        document.getElementById('loginPhone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+        document.getElementById('loginPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+        document.getElementById('name').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('phone').focus(); });
+        document.getElementById('phone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('pass').focus(); });
+        document.getElementById('pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
+
+        checkUser();
+    </script>
+</body>
 
 </html>
