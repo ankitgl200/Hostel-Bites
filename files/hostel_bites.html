@@ -2998,8 +2998,78 @@
     });
   }
 
+  async function loadOrders() {
+  const ordersList = document.getElementById("ordersList");
+
+  // 🔄 Loading skeleton
+  ordersList.innerHTML = `
+    <div class="skeleton skeleton-order"></div>
+    <div class="skeleton skeleton-order"></div>
+    <div class="skeleton skeleton-order"></div>
+  `;
+
+  try {
+    const res = await fetch("https://backendhb.onrender.com/api/orders", {
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch orders");
+    }
+
+    const data = await res.json();
+    const orders = data.orders || data;
+
+    // ❌ No orders
+    if (!orders || orders.length === 0) {
+      ordersList.innerHTML = `
+        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+          <div style="font-size:50px;">📦</div>
+          <p>No Orders Yet</p>
+        </div>
+      `;
+      return;
+    }
+
+    // ✅ Render orders
+    ordersList.innerHTML = orders.map(order => {
+      const items = order.items.map(i => `${i.name} x${i.qty}`).join(", ");
+
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-id">#${order._id || order.id}</div>
+            <div class="order-status status-${order.status || "pending"}">
+              ${order.status || "pending"}
+            </div>
+          </div>
+
+          <div class="order-items">${items}</div>
+
+          <div class="order-footer">
+            <div class="order-total">₹${order.total || 0}</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  } catch (err) {
+    console.error("Order fetch error:", err);
+
+    ordersList.innerHTML = `
+      <div style="text-align:center; padding:40px; color:red;">
+        Failed to load orders ❌
+      </div>
+    `;
+  }
+}
+
   // ================= NAVIGATION =================
   function showPage(page) {
+    if (page === "orders") {
+      document.getElementById("ordersPage").classList.remove("hidden");
+      loadOrders(); // ✅ refresh orders
+    }
     // Hide all pages
     document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
 
