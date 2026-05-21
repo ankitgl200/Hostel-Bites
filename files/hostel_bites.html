@@ -72,22 +72,7 @@
       updateProfilePage();
 
       // Initialize app after auth success
-
-      // 🔥 ALWAYS LOAD ORDERS
-      loadOrders();  // ✅ IMPORTANT FIX
-
-      // 🔥 PRODUCTS ONLY TIME BASED
-      if (currentUser.role !== "admin" && !isShopOpenNow()) {
-        document.getElementById("productGrid").innerHTML = `
-    <div style="grid-column:1/-1; text-align:center; padding:60px;">
-      <h2 style="color:red;">🚫 Shop Closed</h2>
-      <p>Open from 8:00 PM to 12:00 AM</p>
-    </div>
-  `;
-      } else {
-        loadProducts(); // ✅ admin bypass
-      }
-
+      initApp();
 
     } catch (err) {
       console.error("Auth error:", err);
@@ -2337,12 +2322,9 @@
         <button onclick="window.open('mproduct.html','_blank')"
           style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border:none;">
           <i class="fas fa-boxes"></i> Manage Products
-          <!-- <button id="shopToggleBtnModal" onclick="toggleShop()"
-            style="background:linear-gradient(135deg, #22c55e, #16a34a); color:#fff; border:none;">
-            <i class="fas fa-power-off"></i> Loading...
-          </button> -->
+        </button>
       </div>
-
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
   </div>
 
@@ -2998,9 +2980,74 @@
     });
   }
 
+  async function loadOrders() {
+  const ordersList = document.getElementById("ordersList");
+
+  // 🔄 Loading skeleton
+  ordersList.innerHTML = `
+    <div class="skeleton skeleton-order"></div>
+    <div class="skeleton skeleton-order"></div>
+    <div class="skeleton skeleton-order"></div>
+  `;
+
+  try {
+    const res = await fetch("https://backendhb.onrender.com/api/orders", {
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch orders");
+    }
+
+    const data = await res.json();
+    const orders = data.orders || data;
+
+    // ❌ No orders
+    if (!orders || orders.length === 0) {
+      ordersList.innerHTML = `
+        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+          <div style="font-size:50px;">📦</div>
+          <p>No Orders Yet</p>
+        </div>
+      `;
+      return;
+    }
+
+    // ✅ Render orders
+    ordersList.innerHTML = orders.map(order => {
+      const items = order.items.map(i => `${i.name} x${i.qty}`).join(", ");
+
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-id">#${order._id || order.id}</div>
+            <div class="order-status status-${order.status || "pending"}">
+              ${order.status || "pending"}
+            </div>
+          </div>
+
+          <div class="order-items">${items}</div>
+
+          <div class="order-footer">
+            <div class="order-total">₹${order.total || 0}</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  } catch (err) {
+    console.error("Order fetch error:", err);
+
+    ordersList.innerHTML = `
+      <div style="text-align:center; padding:40px; color:red;">
+        Failed to load orders ❌
+      </div>
+    `;
+  }
+}
+
   // ================= NAVIGATION =================
   function showPage(page) {
-    
     // Hide all pages
     document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
 
@@ -3020,7 +3067,7 @@
     }
     if (page === 'orders') {
       document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
-      loadOrders();
+      loadMyOrder();
     }
 
     // remove active
@@ -3489,14 +3536,9 @@
 
   // ================= INIT =================
   function initApp() {
-
-    // ❌ block rendering
-
-    loadProducts();
-
     loadRoomOptions('custRoom');
     renderCats();
-    handleShopUI();
+    loadProducts();
     loadMyOrder();
     checkRewardExpiration(); // check on page load
 
