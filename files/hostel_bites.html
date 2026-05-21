@@ -2981,43 +2981,43 @@
   }
 
   async function loadOrders() {
-  const ordersList = document.getElementById("ordersList");
+    const ordersList = document.getElementById("ordersList");
 
-  // 🔄 Loading skeleton
-  ordersList.innerHTML = `
+    // 🔄 Loading skeleton
+    ordersList.innerHTML = `
     <div class="skeleton skeleton-order"></div>
     <div class="skeleton skeleton-order"></div>
     <div class="skeleton skeleton-order"></div>
   `;
 
-  try {
-    const res = await fetch("https://backendhb.onrender.com/api/orders", {
-      credentials: "include"
-    });
+    try {
+      const res = await fetch("https://backendhb.onrender.com/api/orders", {
+        credentials: "include"
+      });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch orders");
-    }
+      if (!res.ok) {
+        throw new Error("Failed to fetch orders");
+      }
 
-    const data = await res.json();
-    const orders = data.orders || data;
+      const data = await res.json();
+      const orders = data.orders || data;
 
-    // ❌ No orders
-    if (!orders || orders.length === 0) {
-      ordersList.innerHTML = `
+      // ❌ No orders
+      if (!orders || orders.length === 0) {
+        ordersList.innerHTML = `
         <div style="text-align:center; padding:40px; color:var(--text-muted);">
           <div style="font-size:50px;">📦</div>
           <p>No Orders Yet</p>
         </div>
       `;
-      return;
-    }
+        return;
+      }
 
-    // ✅ Render orders
-    ordersList.innerHTML = orders.map(order => {
-      const items = order.items.map(i => `${i.name} x${i.qty}`).join(", ");
+      // ✅ Render orders
+      ordersList.innerHTML = orders.map(order => {
+        const items = order.items.map(i => `${i.name} x${i.qty}`).join(", ");
 
-      return `
+        return `
         <div class="order-card">
           <div class="order-header">
             <div class="order-id">#${order._id || order.id}</div>
@@ -3033,18 +3033,18 @@
           </div>
         </div>
       `;
-    }).join("");
+      }).join("");
 
-  } catch (err) {
-    console.error("Order fetch error:", err);
+    } catch (err) {
+      console.error("Order fetch error:", err);
 
-    ordersList.innerHTML = `
+      ordersList.innerHTML = `
       <div style="text-align:center; padding:40px; color:red;">
         Failed to load orders ❌
       </div>
     `;
+    }
   }
-}
 
   // ================= NAVIGATION =================
   function showPage(page) {
@@ -3068,6 +3068,7 @@
     if (page === 'orders') {
       document.querySelector('.nav-btn:nth-child(3)').classList.add('active');
       loadMyOrder();
+      loadOrders();
     }
 
     // remove active
@@ -3415,6 +3416,47 @@
       applicable.push(rw);
     }
     return applicable;
+  }
+  async function loadOrders() {
+    const ordersList = document.getElementById("ordersList");
+
+    ordersList.innerHTML = `
+    <div class="skeleton skeleton-order"></div>
+    <div class="skeleton skeleton-order"></div>
+  `;
+
+    try {
+      const res = await fetch("https://backendhb.onrender.com/api/orders", {
+        credentials: "include"
+      });
+
+      const data = await res.json();
+      const orders = data.orders || data;
+
+      if (!orders || orders.length === 0) {
+        ordersList.innerHTML = `<p>No Orders Found</p>`;
+        return;
+      }
+
+      ordersList.innerHTML = orders.map(o => `
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-id">#${o._id}</div>
+          <div class="order-status status-${o.status}">${o.status}</div>
+        </div>
+        <div class="order-items">
+          ${o.items.map(i => i.name + " x" + i.qty).join(", ")}
+        </div>
+        <div class="order-footer">
+          <div class="order-total">₹${o.total}</div>
+        </div>
+      </div>
+    `).join("");
+
+    } catch (err) {
+      ordersList.innerHTML = `<p style="color:red;">Failed to load orders</p>`;
+      console.error(err);
+    }
   }
 
   function calcRewardDiscount(appliedRewards) {
