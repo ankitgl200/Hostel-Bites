@@ -2776,6 +2776,10 @@
   }
 
   async function placeOrder() {
+    if (!isShopOpenNow()) {
+  showToast("🚫 Shop is closed");
+  return;
+}
     const btn = document.getElementById('orderBtn');
     if (isPlacingOrder) return;
     isPlacingOrder = true;
@@ -3598,6 +3602,8 @@
     loadRoomOptions('custRoom');
     renderCats();
     loadProducts();
+setTimeout(handleShopUI, 500); // after products load
+    
     loadMyOrder();
     checkRewardExpiration(); // check on page load
 
