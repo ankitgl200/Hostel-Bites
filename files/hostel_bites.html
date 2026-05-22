@@ -2594,6 +2594,15 @@
   }
 
   function renderProducts() {
+      if (!isShopOpenNow()) {
+    document.getElementById("productGrid").innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px;">
+        🔴 Shop Closed <br>
+        <span style="color:#888;">Come back later</span>
+      </div>
+    `;
+    return;
+  }
     let filtered = activeCat === 'All'
       ? PRODUCTS.filter(p => p.stock > 0)
       : PRODUCTS.filter(p => p.cat === activeCat && p.stock > 0);
@@ -2762,6 +2771,10 @@
   }
 
   async function placeOrder() {
+    if (!isShopOpenNow()) {
+  showToast("🔴 Shop is closed");
+  return;
+}
     const btn = document.getElementById('orderBtn');
     if (isPlacingOrder) return;
     isPlacingOrder = true;
