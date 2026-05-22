@@ -2402,6 +2402,21 @@
     }
   }
 
+  function handleShopUI() {
+  const open = isShopOpenNow();
+
+  if (!open) {
+    document.getElementById('productGrid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:#aaa;">
+        🕒 Shop is Closed<br>
+        <span style="font-size:13px;">Open Time: 8:00 PM - 12:00 AM</span>
+      </div>
+    `;
+  } else {
+    renderProducts();
+  }
+}
+
   // ================= AUTH & PROFILE =================
 
   let isPlacingOrder = false;
