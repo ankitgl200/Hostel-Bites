@@ -19,13 +19,16 @@
   // Auth guard — redirect to login if not authenticated
   let currentUser = null;
   let authChecked = false;
-  function isShopOpenNow() {
-    const now = new Date();
-    const hours = now.getHours();
 
-    // open from 20:00 to 24:00
-    return hours >= 20 && hours < 20;
-  }
+  let isManualOpen = false;
+  function isShopOpenNow() {
+  const now = new Date();
+  const hours = now.getHours();
+
+  const isTimeOpen = hours >= 20 && hours < 24;
+
+  return isManualOpen && isTimeOpen;
+}
 
   async function checkAuth() {
     try {
