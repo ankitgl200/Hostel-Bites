@@ -19,14 +19,12 @@
   // Auth guard — redirect to login if not authenticated
   let currentUser = null;
   let authChecked = false;
-  
   function isShopOpenNow() {
     const now = new Date();
     const hours = now.getHours();
 
     // open from 20:00 to 24:00
-    return hours < 20 && hours >24 ;
-   
+    return hours >= 20 && hours < 20;
   }
 
   async function checkAuth() {
@@ -2402,21 +2400,6 @@
     }
   }
 
-  function handleShopUI() {
-  const open = isShopOpenNow();
-
-  if (!open) {
-    document.getElementById('productGrid').innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:60px;color:#aaa;">
-        🕒 Shop is Closed<br>
-        <span style="font-size:13px;">Open Time: 8:00 PM - 12:00 AM</span>
-      </div>
-    `;
-  } else {
-    renderProducts();
-  }
-}
-
   // ================= AUTH & PROFILE =================
 
   let isPlacingOrder = false;
@@ -2776,10 +2759,6 @@
   }
 
   async function placeOrder() {
-    if (!isShopOpenNow()) {
-  showToast("🚫 Shop is closed");
-  return;
-}
     const btn = document.getElementById('orderBtn');
     if (isPlacingOrder) return;
     isPlacingOrder = true;
@@ -3001,71 +2980,6 @@
     });
   }
 
-  // async function loadOrders() {
-  //   const ordersList = document.getElementById("ordersList");
-
-  //   // 🔄 Loading skeleton
-  //   ordersList.innerHTML = `
-  //   <div class="skeleton skeleton-order"></div>
-  //   <div class="skeleton skeleton-order"></div>
-  //   <div class="skeleton skeleton-order"></div>
-  // `;
-
-  //   try {
-  //     const res = await fetch("https://backendhb.onrender.com/api/orders", {
-  //       credentials: "include"
-  //     });
-
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch orders");
-  //     }
-
-  //     const data = await res.json();
-  //     const orders = data.orders || data;
-
-  //     // ❌ No orders
-  //     if (!orders || orders.length === 0) {
-  //       ordersList.innerHTML = `
-  //       <div style="text-align:center; padding:40px; color:var(--text-muted);">
-  //         <div style="font-size:50px;">📦</div>
-  //         <p>No Orders Yet</p>
-  //       </div>
-  //     `;
-  //       return;
-  //     }
-
-  //     // ✅ Render orders
-  //     ordersList.innerHTML = orders.map(order => {
-  //       const items = order.items.map(i => `${i.name} x${i.qty}`).join(", ");
-
-  //       return `
-  //       <div class="order-card">
-  //         <div class="order-header">
-  //           <div class="order-id">#${order._id || order.id}</div>
-  //           <div class="order-status status-${order.status || "pending"}">
-  //             ${order.status || "pending"}
-  //           </div>
-  //         </div>
-
-  //         <div class="order-items">${items}</div>
-
-  //         <div class="order-footer">
-  //           <div class="order-total">₹${order.total || 0}</div>
-  //         </div>
-  //       </div>
-  //     `;
-  //     }).join("");
-
-  //   } catch (err) {
-  //     console.error("Order fetch error:", err);
-
-  //     ordersList.innerHTML = `
-  //     <div style="text-align:center; padding:40px; color:red;">
-  //       Failed to load orders ❌
-  //     </div>
-  //   `;
-  //   }
-  // }
 
   // ================= NAVIGATION =================
   function showPage(page) {
@@ -3602,8 +3516,6 @@
     loadRoomOptions('custRoom');
     renderCats();
     loadProducts();
-setTimeout(handleShopUI, 500); // after products load
-    
     loadMyOrder();
     checkRewardExpiration(); // check on page load
 
