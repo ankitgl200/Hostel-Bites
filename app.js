@@ -543,7 +543,7 @@ function renderHome() {
         </div>
         <div class="hero-image-wrapper">
           <div class="hero-image-card">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80" alt="Delicious burger and fries">
+            <img src="hostelbites_wbg.png" alt="Delicious burger and fries">
           </div>
           <div class="hero-badge-points">
             <i class="fa-solid fa-gift"></i>
