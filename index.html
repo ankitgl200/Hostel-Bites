@@ -1,798 +1,145 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Hostel Bites - Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        /* ... keep all your existing CSS exactly the same ... */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --orange: #FF6B00;
-            --orange-glow: #FF8C00;
-            --orange-dim: rgba(255, 107, 0, 0.15);
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-border-bright: rgba(255, 107, 0, 0.3);
-            --input-bg: rgba(255, 255, 255, 0.05);
-            --input-border: rgba(255, 255, 255, 0.1);
-            --input-focus: rgba(255, 107, 0, 0.4);
-            --text-dim: rgba(255, 255, 255, 0.45);
-            --danger: #EF4444;
-            --danger-bg: rgba(239, 68, 68, 0.1);
-            --success: #22C55E;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #060608;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-y: auto;
-            position: relative;
-            padding: 20px;
-        }
-
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-orb-1 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(255, 107, 0, 0.18) 0%, transparent 70%);
-            top: -120px;
-            left: -120px;
-            animation: drift1 12s ease-in-out infinite alternate;
-        }
-
-        .bg-orb-2 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 60, 0, 0.12) 0%, transparent 70%);
-            bottom: -100px;
-            right: -100px;
-            animation: drift2 15s ease-in-out infinite alternate;
-        }
-
-        .bg-orb-3 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(120, 40, 255, 0.08) 0%, transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: drift3 10s ease-in-out infinite alternate;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        @keyframes drift1 {
-            from {
-                transform: translate(0, 0) scale(1);
-            }
-
-            to {
-                transform: translate(60px, 40px) scale(1.15);
-            }
-        }
-
-        @keyframes drift2 {
-            from {
-                transform: translate(0, 0) scale(1);
-            }
-
-            to {
-                transform: translate(-40px, -60px) scale(1.1);
-            }
-        }
-
-        @keyframes drift3 {
-            from {
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            to {
-                transform: translate(-50%, -50%) scale(1.3);
-            }
-        }
-
-        .error-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: var(--danger-bg);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--danger);
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(10px);
-            max-width: 90%;
-            text-align: center;
-        }
-
-        .error-box.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .success-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: var(--success);
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(10px);
-            max-width: 90%;
-            text-align: center;
-        }
-
-        .success-box.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .card-wrap {
-            position: relative;
-            z-index: 10;
-            width: 92%;
-            max-width: 420px;
-            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.97);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .card-wrap::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 21px;
-            background: linear-gradient(135deg, rgba(255, 107, 0, 0.4) 0%, transparent 50%, rgba(255, 107, 0, 0.15) 100%);
-            z-index: -1;
-        }
-
-        .box {
-            background: rgba(12, 12, 15, 0.75);
-            backdrop-filter: blur(30px) saturate(150%);
-            -webkit-backdrop-filter: blur(30px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 20px;
-            padding: 36px 32px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.5), rgba(255, 255, 255, 0.2), transparent);
-        }
-
-        .box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 1px;
-            background: linear-gradient(180deg, rgba(255, 107, 0, 0.3), transparent 60%);
-        }
-
-        .brand {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .brand-icon {
-            font-size: 32px;
-            margin-bottom: 6px;
-            display: block;
-            filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
-            animation: iconPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes iconPulse {
-
-            0%,
-            100% {
-                filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.6));
-            }
-
-            50% {
-                filter: drop-shadow(0 0 22px rgba(255, 140, 0, 0.9));
-            }
-        }
-
-        .brand-name {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            background: linear-gradient(135deg, #FF6B00, #FFB347, #FF6B00);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 4s linear infinite;
-        }
-
-        @keyframes shimmer {
-            to {
-                background-position: 200% center;
-            }
-        }
-
-        h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 20px;
-            letter-spacing: 0.02em;
-        }
-
-        .field {
-            position: relative;
-            margin-top: 12px;
-        }
-
-        .field-icon {
-            position: absolute;
-            left: 13px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            color: var(--text-dim);
-            pointer-events: none;
-            transition: color 0.2s;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 11px 14px 11px 38px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            color: white;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 13px;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: rgba(255, 107, 0, 0.5);
-            background: rgba(255, 107, 0, 0.07);
-            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-        }
-
-        input.error,
-        select.error {
-            border-color: var(--danger);
-            background: var(--danger-bg);
-        }
-
-        input:focus+.field-icon,
-        select:focus+.field-icon {
-            color: var(--orange);
-        }
-
-        input.error+.field-icon,
-        select.error+.field-icon {
-            color: var(--danger);
-        }
-
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,107,0,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-        }
-
-        select option {
-            background: #111;
-            color: white;
-        }
-
-        button {
-            width: 100%;
-            padding: 13px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Syne', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 50%, #FF6B00 100%);
-            background-size: 200% auto;
-            color: white;
-            transition: background-position 0.4s, transform 0.15s, box-shadow 0.3s;
-            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        button:hover:not(:disabled) {
-            background-position: right center;
-            box-shadow: 0 6px 30px rgba(255, 107, 0, 0.5);
-            transform: translateY(-1px);
-        }
-
-        button:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 0 2px 12px rgba(255, 107, 0, 0.3);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .toggle {
-            text-align: center;
-            margin-top: 18px;
-            font-size: 13px;
-            color: var(--text-dim);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .toggle span {
-            color: var(--orange);
-            font-weight: 500;
-            position: relative;
-            transition: color 0.2s;
-        }
-
-        .toggle span::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--orange);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.25s;
-        }
-
-        .toggle:hover span {
-            color: #FFB347;
-        }
-
-        .toggle:hover span::after {
-            transform: scaleX(1);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 18px 0 4px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .divider span {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .form-section {
-            transition: opacity 0.3s, transform 0.3s;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .loader {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 107, 0, 0.3);
-            border-radius: 2px;
-        }
-
-        .field-error {
-            color: var(--danger);
-            font-size: 11px;
-            margin-top: 4px;
-            margin-left: 4px;
-            display: none;
-            font-weight: 500;
-        }
-
-        .field-error.show {
-            display: block;
-        }
-    </style>
-    <!-- REMOVED: <base target="_blank"> - This was breaking session flow! -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hostel Bites | Premium Food Ordering</title>
+  <!-- SEO Tags -->
+  <meta name="description" content="Order delicious food directly to your hostel room with Hostel Bites. Fast delivery, rewards system, and fresh meals.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-    <div id="errorBox" class="error-box"></div>
-    <div id="successBox" class="success-box"></div>
 
-    <div class="card-wrap">
-        <div class="box">
-            <div class="brand">
-                <span class="brand-icon">🍽️</span>
-                <div class="brand-name">Hostel Bites</div>
-            </div>
+  <!-- App Header / Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#/home" class="logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Hostel<span>Bites</span></span>
+      </a>
 
-            <!-- LOGIN -->
-            <div id="loginBox" class="form-section">
-                <h2>Welcome back</h2>
-                <div class="field">
-                    <input id="loginPhone" placeholder="Phone Number" type="tel" maxlength="10">
-                    <span class="field-icon">📞</span>
-                    <div class="field-error" id="loginPhoneError">Enter a valid 10-digit phone number</div>
-                </div>
-                <div class="field">
-                    <input id="loginPass" type="password" placeholder="Password" minlength="4">
-                    <span class="field-icon">🔒</span>
-                    <div class="field-error" id="loginPassError">Password must be at least 4 characters</div>
-                </div>
-                <button onclick="login()" id="loginBtn"><span id="loginBtnText">Sign In</span></button>
-                <div class="toggle" onclick="toggleForm()">New here? <span>Create an account</span></div>
-            </div>
+      <!-- Desktop Navigation Links -->
+      <nav class="main-nav">
+        <a href="#/home" class="nav-link active" id="nav-home"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="#/menu" class="nav-link" id="nav-menu"><i class="fa-solid fa-list"></i> Menu</a>
+        <a href="#/request-product" class="nav-link" id="nav-request-product"><i class="fa-solid fa-clipboard-question"></i> Request Product</a>
+        <a href="#/rewards" class="nav-link" id="nav-rewards"><i class="fa-solid fa-award"></i> Rewards</a>
+        <a href="#/orders" class="nav-link" id="nav-orders"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
+        <a href="#/about" class="nav-link" id="nav-about"><i class="fa-solid fa-circle-info"></i> About Us</a>
+        <a href="#/admin" class="nav-link admin-only hidden" id="nav-admin"><i class="fa-solid fa-gauge"></i> Admin Portal</a>
+      </nav>
 
-            <!-- REGISTER -->
-            <div id="registerBox" class="form-section hidden">
-                <h2>Create account</h2>
-                <div class="field">
-                    <input id="name" placeholder="Full Name" minlength="2" maxlength="50">
-                    <span class="field-icon">👤</span>
-                    <div class="field-error" id="nameError">Name must be at least 2 characters</div>
-                </div>
-                <div class="field">
-                    <input id="phone" placeholder="Phone Number" type="tel" maxlength="10">
-                    <span class="field-icon">📞</span>
-                    <div class="field-error" id="phoneError">Enter a valid 10-digit phone number</div>
-                </div>
-                <div class="field">
-                    <input id="pass" type="password" placeholder="Password" minlength="4" maxlength="50">
-                    <span class="field-icon">🔒</span>
-                    <div class="field-error" id="passError">Password must be at least 4 characters</div>
-                </div>
-                <div class="divider"><span>hostel info</span></div>
-                <div class="field">
-                    <select id="block">
-                        <option value="X">Block X</option>
-                        <option value="Y">Block Y</option>
-                        <option value="Z">Block Z</option>
-                    </select>
-                    <span class="field-icon">🏢</span>
-                </div>
-                <div class="field">
-                    <select id="room"></select>
-                    <span class="field-icon">🚪</span>
-                </div>
-                <div class="field">
-                    <select id="role">
-                        <option value="customer">Customer</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <span class="field-icon">🎖️</span>
-                </div>
-                <button onclick="register()" id="registerBtn"><span id="registerBtnText">Register</span></button>
-                <div class="toggle" onclick="toggleForm()">Already registered? <span>Sign in</span></div>
-            </div>
+      <!-- User Actions & Cart -->
+      <div class="user-actions">
+        <!-- Shop Status Badge -->
+        <div id="shop-badge" class="shop-badge-status loading">
+          <span class="dot"></span>
+          <span class="text">Loading...</span>
         </div>
+
+        <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <a href="#/cart" class="cart-btn" id="cart-nav-btn">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge" id="cart-counter">0</span>
+        </a>
+
+        <!-- Auth Buttons -->
+        <div id="auth-actions">
+          <a href="#/login" class="btn btn-primary btn-sm login-nav-btn"><i class="fa-solid fa-user"></i> Login</a>
+        </div>
+        
+        <!-- User Profile Dropdown (visible when logged in) -->
+        <div id="user-profile-menu" class="profile-dropdown hidden">
+          <button class="profile-trigger" id="profile-dropdown-btn">
+            <span class="avatar-letter" id="avatar-char">U</span>
+            <span class="user-name-span" id="navbar-username">User</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-menu" id="dropdown-menu-list">
+            <div class="dropdown-header">
+              <h4 id="dropdown-name">User Name</h4>
+              <p id="dropdown-phone">Phone</p>
+            </div>
+            <hr>
+            <a href="#/orders"><i class="fa-solid fa-box"></i> Order History</a>
+            <a href="#/rewards"><i class="fa-solid fa-gift"></i> Scratch Cards</a>
+            <a href="#/admin" class="admin-only hidden"><i class="fa-solid fa-user-gear"></i> Admin Dashboard</a>
+            <hr>
+            <button id="logout-btn"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Trigger -->
+        <button class="mobile-toggle" id="mobile-menu-trigger" aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <script>
-        const API_BASE = "https://backendhb.onrender.com/api";
-        async function checkUser() {
-            try {
-                const res = await fetch(API_BASE + "/auths/me", { credentials: "include" });
-                if (res.ok) {
-                    const data = await res.json();
-                    const user = data.user;     // ✅ unwrap the nested user object
-                    if (user && user.phone) {
-                        localStorage.setItem('userPhone', user.phone);
-                        localStorage.setItem('hb_user_name', user.name || '');
-                        localStorage.setItem('hb_user_room', user.room || '');
-                    }
-                    window.location.href = "files/hostel_bites.html";
-                }
-            } catch (err) {
-                console.log("Not logged in, stay on page");
-            }
-        }
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="logo">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Hostel<span>Bites</span></span>
+      </div>
+      <button class="drawer-close" id="mobile-drawer-close">&times;</button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="#/home" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="#/menu" class="drawer-link"><i class="fa-solid fa-list"></i> Menu</a>
+      <a href="#/request-product" class="drawer-link"><i class="fa-solid fa-clipboard-question"></i> Request Product</a>
+      <a href="#/rewards" class="drawer-link"><i class="fa-solid fa-award"></i> Rewards</a>
+      <a href="#/orders" class="drawer-link"><i class="fa-solid fa-clock-rotate-left"></i> My Orders</a>
+      <a href="#/about" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Us</a>
+      <a href="#/admin" class="drawer-link admin-only hidden"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
+    </nav>
+  </div>
+  <div class="drawer-overlay" id="drawer-overlay"></div>
 
-        // ── AUTO FILL ROOM 1-20 ──
-        const roomSelect = document.getElementById("room");
-        for (let i = 1; i <= 20; i++) {
-            let opt = document.createElement("option");
-            opt.value = i.toString().padStart(2, '0');
-            opt.text = "Room " + i;
-            roomSelect.appendChild(opt);
-        }
-        // FIX: Ensure first room is selected
-        roomSelect.value = "01";
+  <!-- Shop Closed Banner Notification -->
+  <div class="shop-closed-banner hidden" id="shop-closed-banner">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span id="shop-banner-text">The kitchen is closed. Only administrators can submit orders now. Operating Hours: 8 AM - 12 PM.</span>
+  </div>
 
-        // ── UTILITIES ──
-        function validatePhone(phone) { return /^[0-9]{10}$/.test(phone); }
-        function validateName(name) { return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim()); }
-        function validatePassword(pass) { return pass.length >= 4; }
+  <!-- Dynamic Application Content Container -->
+  <main class="app-main-content" id="app-content">
+    <!-- Pages will render dynamically here -->
+    <div class="initial-loader">
+      <div class="spinner"></div>
+      <p>Preparing fresh bites...</p>
+    </div>
+  </main>
 
-        function showError(msg) {
-            const err = document.getElementById("errorBox");
-            err.innerText = msg;
-            err.classList.add("show");
-            setTimeout(() => err.classList.remove("show"), 4000);
-        }
+  <!-- Dynamic Notification/Toast System -->
+  <div class="toast-container" id="toast-container"></div>
 
-        function showSuccess(msg) {
-            const box = document.getElementById("successBox");
-            box.innerText = msg;
-            box.classList.add("show");
-            setTimeout(() => box.classList.remove("show"), 3000);
-        }
+  <!-- Modal Overlay Structure (Shared across app for add-item edits, confirm dialogs) -->
+  <div class="modal" id="app-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
 
-        function clearFieldErrors() {
-            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
-        }
-
-        function showFieldError(fieldId, errorId) {
-            document.getElementById(fieldId).classList.add('error');
-            document.getElementById(errorId).classList.add('show');
-        }
-
-        function setLoading(btnId, textId, isLoading, defaultText) {
-            const btn = document.getElementById(btnId);
-            const txt = document.getElementById(textId);
-            if (isLoading) {
-                btn.disabled = true;
-                txt.innerHTML = '<span class="loader"></span> ' + defaultText + '...';
-            } else {
-                btn.disabled = false;
-                txt.textContent = defaultText;
-            }
-        }
-
-        // ── SWITCH LOGIN/REGISTER ──
-        function toggleForm() {
-            document.getElementById("loginBox").classList.toggle("hidden");
-            document.getElementById("registerBox").classList.toggle("hidden");
-            clearFieldErrors();
-            document.getElementById("errorBox").classList.remove("show");
-        }
-
-        // ── LOGIN ──
-        async function login() {
-            clearFieldErrors();
-            const phone = document.getElementById("loginPhone").value.trim();
-            const password = document.getElementById("loginPass").value;
-            let hasError = false;
-
-            if (!validatePhone(phone)) { showFieldError('loginPhone', 'loginPhoneError'); hasError = true; }
-            if (!validatePassword(password)) { showFieldError('loginPass', 'loginPassError'); hasError = true; }
-            if (hasError) return;
-
-            setLoading('loginBtn', 'loginBtnText', true, 'Signing In');
-
-            try {
-                const res = await fetch(API_BASE + "/auths/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ phone, password })
-                });
-
-                // FIX: Handle non-JSON responses
-                let data;
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    data = await res.json();
-                } else {
-                    const text = await res.text();
-                    throw new Error("Server error: " + text.substring(0, 100));
-                }
-
-                console.log("Login response:", data);
-
-                if (data.success) {
-                    localStorage.setItem('userPhone', phone);
-                    if (data.user) {
-                        localStorage.setItem('hb_user_name', data.user.name || '');
-                        localStorage.setItem('hb_user_room', data.user.room || '');
-                    }
-                    showSuccess("Login successful! Redirecting...");
-                    setTimeout(() => { window.location.href = "files/hostel_bites.html"; }, 800);
-                } else {
-                    showError(data.message || "Invalid phone or password");
-                }
-            } catch (err) {
-                console.error("Login error:", err);
-                showError(err.message || "Server error. Please try again.");
-            }
-
-            setLoading('loginBtn', 'loginBtnText', false, 'Sign In');
-        }
-
-        // ── REGISTER ──
-        async function register() {
-            clearFieldErrors();
-            const name = document.getElementById("name").value.trim();
-            const phone = document.getElementById("phone").value.trim();
-            const password = document.getElementById("pass").value;
-            const block = document.getElementById("block").value;
-            const room = document.getElementById("room").value;
-            const role = document.getElementById("role").value;
-            let hasError = false;
-
-            if (!validateName(name)) { showFieldError('name', 'nameError'); hasError = true; }
-            if (!validatePhone(phone)) { showFieldError('phone', 'phoneError'); hasError = true; }
-            if (!validatePassword(password)) { showFieldError('pass', 'passError'); hasError = true; }
-            // FIX: Validate room is selected
-            if (!room) { showError("Please select a room"); hasError = true; }
-            if (hasError) return;
-
-            const fullRoom = block + "-" + room;
-
-            setLoading('registerBtn', 'registerBtnText', true, 'Registering');
-
-            try {
-                const res = await fetch(API_BASE + "/auths/register", {
-                    method: "POST",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, room: fullRoom, password, role })
-                });
-
-                // FIX: Handle non-JSON responses
-                let data;
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    data = await res.json();
-                } else {
-                    const text = await res.text();
-                    throw new Error("Server error: " + text.substring(0, 100));
-                }
-
-                if (data.success) {
-                    document.getElementById("name").value = "";
-                    document.getElementById("phone").value = "";
-                    document.getElementById("pass").value = "";
-                    document.getElementById("block").value = "X";
-                    document.getElementById("room").value = "01";
-                    document.getElementById("role").value = "customer";
-
-                    showSuccess(data.message || "Registered successfully!");
-                    setTimeout(() => toggleForm(), 1500);
-                } else {
-                    showError(data.message || "Registration failed");
-                }
-            } catch (err) {
-                console.error("Register error:", err);
-                showError(err.message || "Server error. Please try again.");
-            }
-
-            setLoading('registerBtn', 'registerBtnText', false, 'Register');
-        }
-
-        // ── CHECK AUTO LOGIN ──
-        // To:
-
-
-        // ── ENTER KEY SUPPORT ──
-        document.getElementById('loginPhone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
-        document.getElementById('loginPass').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
-        document.getElementById('name').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('phone').focus(); });
-        document.getElementById('phone').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('pass').focus(); });
-        document.getElementById('pass').addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
-
-        checkUser();
-    </script>
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
 </body>
-
 </html>
