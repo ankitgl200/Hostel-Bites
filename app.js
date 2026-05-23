@@ -903,7 +903,7 @@ async function renderMenu() {
     return state.menu.filter(item => item.category === cat).length;
   };
 
-  const categories = ['All', 'Snacks', 'Meals', 'Drinks', 'Desserts'];
+  const categories = ['All', 'Kurkure', 'Chips', 'Instants', 'Drinks', 'Biscuits', 'Chocolates', 'Namkeen'];
 
   content.innerHTML = `
     <div class="container page-view">
@@ -2799,7 +2799,7 @@ function openMenuModal(item = null) {
   const isEdit = !!item;
   title.textContent = isEdit ? `Edit Menu Item: ${item.name}` : 'Add Menu Item';
 
-  const categories = ['Snacks', 'Meals', 'Drinks', 'Desserts'];
+  const categories = ['Kurkure', 'Chips', 'Instants', 'Drinks', 'Biscuits', 'Chocolates', 'Namkeen'];
 
   body.innerHTML = `
     <form id="modal-menu-form">
