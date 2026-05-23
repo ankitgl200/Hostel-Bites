@@ -534,8 +534,8 @@ function renderHome() {
     <div class="container page-view">
       <section class="hero-section">
         <div class="hero-text">
-          <h1>Hot & Fresh Food, Delivered to your <span>Hostel Room</span></h1>
-          <p>Ditch the boring mess food! Enjoy cheese burgers, spicy wings, mocktails, and fresh desserts prepared instantly. Fast and secure delivery right to your floor.</p>
+          <h1>Snacks, Delivered to your <span>Hostel Room</span></h1>
+          <p>Ditch the boring food! Enjoy Fast and secure delivery of snacks right to your room.</p>
           <div class="hero-cta">
             <a href="#/menu" class="btn btn-primary"><i class="fa-solid fa-pizza-slice"></i> Browse Menu</a>
             <a href="#/rewards" class="btn btn-secondary"><i class="fa-solid fa-gift"></i> Rewards Perks</a>
@@ -558,13 +558,13 @@ function renderHome() {
       <section class="home-features">
         <div class="section-header">
           <h2>Why Order from Hostel Bites?</h2>
-          <p>We solve the midnight hunger pangs with high quality ingredients.</p>
+          <p>We solve the midnight hunger pangs with high quality Products.</p>
         </div>
         <div class="features-grid">
           <div class="feature-card">
             <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
             <h3>Lightning Fast Delivery</h3>
-            <p>Direct room delivery within 20 minutes inside the campus boundary.</p>
+            <p>Direct room delivery within 7 minutes inside the Hostel boundary.</p>
           </div>
           <div class="feature-card accent-card">
             <div class="feature-icon"><i class="fa-solid fa-gift"></i></div>
@@ -574,7 +574,7 @@ function renderHome() {
           <div class="feature-card">
             <div class="feature-icon"><i class="fa-solid fa-clock"></i></div>
             <h3>Late Night Operations</h3>
-            <p>Operational from early morning till midnight to fuel your exam prep and coding marathons.</p>
+            <p>Operational from ${formatHour(state.shop.openHour)} to ${formatHour(state.shop.closeHour)} Daily.</p>
           </div>
         </div>
       </section>
