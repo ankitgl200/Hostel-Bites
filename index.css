@@ -1632,6 +1632,14 @@ button {
   gap: 8px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .admin-tab-btn {
@@ -1640,6 +1648,7 @@ button {
   font-size: 14px;
   color: var(--text-muted);
   border-bottom: 2px solid transparent;
+  flex-shrink: 0;
 }
 
 .admin-tab-btn:hover {
@@ -1753,7 +1762,7 @@ button {
 }
 
 .admin-table tr:hover td {
-  background-color: hsl(220, 15%, 98%);
+  background-color: var(--bg-light);
 }
 
 .admin-table-item-info {
@@ -2010,6 +2019,29 @@ button {
   }
   .rewards-rules-list {
     grid-template-columns: 1fr;
+  }
+
+  /* Admin Panel Responsiveness Mobile Enhancements */
+  .admin-panel-card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+  .admin-header-row h1 {
+    font-size: 24px;
+  }
+  .admin-table th, .admin-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  .admin-table-item-info img {
+    width: 36px;
+    height: 36px;
+  }
+  .admin-table-item-info h5 {
+    font-size: 13px;
+  }
+  .admin-config-card {
+    padding: 16px;
   }
 }
 
