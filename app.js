@@ -574,7 +574,7 @@ function renderHome() {
           <div class="feature-card">
             <div class="feature-icon"><i class="fa-solid fa-clock"></i></div>
             <h3>Late Night Operations</h3>
-            <p>Operational from ${formatHour(state.shop.openHour)} to ${formatHour(state.shop.closeHour)} Daily.</p>
+            <p>Operational from 8PM to 12AM  Daily.</p>
           </div>
         </div>
       </section>
