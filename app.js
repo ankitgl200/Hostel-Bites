@@ -1597,7 +1597,14 @@ async function renderOrders() {
                       <strong>${date}</strong>
                     </div>
                   </div>
-                  <span class="status-badge ${order.status.toLowerCase().replace(/ /g, '-')}">${order.status}</span>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                    <span class="status-badge ${order.status.toLowerCase().replace(/ /g, '-')}">${order.status}</span>
+                    ${!['Completed', 'Cancelled'].includes(order.status) ? `
+                      <div class="delivery-timer" data-created="${order.createdAt}" data-amount-paid="${order.originalAmountPaid || order.amountPaid}" style="font-size: 11px; font-weight: 600;">
+                        <!-- Populated by JS timer -->
+                      </div>
+                    ` : ''}
+                  </div>
                 </div>
                 
                 <div class="order-card-body">
@@ -1618,7 +1625,13 @@ async function renderOrders() {
                     ${order.pointsRedeemed > 0 ? `<span>Discount Applied: <span>-Rs. ${order.pointsRedeemed}</span></span>` : ''}
                     ${order.pointsEarned > 0 ? `<span class="earned">Earned: <span>+Rs. ${order.pointsEarned}</span></span>` : ''}
                   </div>
-                  <div class="total-price">Rs. ${order.amountPaid}</div>
+                  <div class="total-price">
+                    ${order.isLate ? `
+                      Rs. ${order.amountPaid} <small style="text-decoration: line-through; color: var(--text-muted); font-size: 11px; font-weight: normal;">Rs. ${order.originalAmountPaid}</small>
+                    ` : `
+                      Rs. ${order.amountPaid}
+                    `}
+                  </div>
                 </div>
               </div>
             `;
@@ -2161,6 +2174,7 @@ function renderAdminOrdersTab(orders) {
                 <td>
                   ${order.status === 'Pending' ? `<span class="pending-indicator-dot" title="Pending / New Order"></span>` : ''}
                   <strong>${order.orderId}</strong>
+                  <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">${new Date(order.createdAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                 </td>
                 <td>
                   <div>${customerName}</div>
@@ -2168,13 +2182,21 @@ function renderAdminOrdersTab(orders) {
                 </td>
                 <td>${order.deliveryAddress}</td>
                 <td>${itemsSummary}</td>
-                <td><strong>Rs. ${order.amountPaid}</strong></td>
+                <td class="admin-amount-cell" data-amount="${order.originalAmountPaid || order.amountPaid}">
+                  <strong>Rs. ${order.amountPaid}</strong>
+                  ${order.isLate ? `<br><small style="text-decoration: line-through; color: var(--text-muted); font-size: 10px;">Rs. ${order.originalAmountPaid}</small>` : ''}
+                </td>
                 <td>
                   <select class="admin-status-select order-status-updater" data-id="${order._id}">
                     ${statuses.map(st => `
                       <option value="${st}" ${order.status === st ? 'selected' : ''}>${st}</option>
                     `).join('')}
                   </select>
+                  ${!['Completed', 'Cancelled'].includes(order.status) ? `
+                    <div class="delivery-timer" data-created="${order.createdAt}" data-amount-paid="${order.originalAmountPaid || order.amountPaid}" style="font-size: 10px; font-weight: 600; margin-top: 4px;">
+                      <!-- Populated by JS timer -->
+                    </div>
+                  ` : ''}
                 </td>
                 <td>
                   <div class="admin-table-actions">
@@ -3058,7 +3080,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Start background polling
   startBackgroundPolling();
+
+  // Start real-time countdown timer loop for active orders
+  startRealtimeTimerLoop();
 });
+
+function startRealtimeTimerLoop() {
+  setInterval(() => {
+    document.querySelectorAll('.delivery-timer').forEach(el => {
+      const createdAtStr = el.getAttribute('data-created');
+      const createdAt = new Date(createdAtStr);
+      const elapsedMs = new Date() - createdAt;
+      const totalDurationMs = 7 * 60 * 1000;
+      const remainingMs = totalDurationMs - elapsedMs;
+      
+      if (remainingMs > 0) {
+        const totalSecs = Math.floor(remainingMs / 1000);
+        const mins = Math.floor(totalSecs / 60);
+        const secs = totalSecs % 60;
+        const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        el.innerHTML = `<i class="fa-solid fa-clock"></i> Deliver in: <strong style="color: var(--warning-color);">${timeStr}</strong>`;
+      } else {
+        el.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong style="color: var(--danger-color);">Late Delivery (10% Penalty Applied)</strong>`;
+        
+        // Proactively update prices in DOM
+        const card = el.closest('.order-history-card') || el.closest('tr');
+        if (card) {
+          const totalEl = card.querySelector('.total-price') || card.querySelector('.admin-amount-cell');
+          const origVal = parseFloat(el.getAttribute('data-amount-paid'));
+          if (totalEl && origVal) {
+            const penalty = Math.floor(origVal / 10);
+            const discounted = Math.max(0, origVal - penalty);
+            if (!totalEl.querySelector('small')) {
+              totalEl.innerHTML = `Rs. ${discounted} <small style="text-decoration: line-through; color: var(--text-muted); font-size: 11px;">Rs. ${origVal}</small>`;
+            }
+          }
+        }
+      }
+    });
+  }, 1000);
+}
 
 function playNotificationSound() {
   try {
@@ -3190,8 +3251,15 @@ function startBackgroundPolling() {
               const existingRows = document.querySelectorAll('tr[data-order-row-id]');
               const fetchedIds = orders.map(o => o._id);
               const existingIds = Array.from(existingRows).map(row => row.getAttribute('data-order-row-id'));
+              const existingStatuses = Array.from(existingRows).map(row => {
+                const sel = row.querySelector('.order-status-updater');
+                return sel ? sel.value : '';
+              });
               
-              const listsMatch = fetchedIds.length === existingIds.length && fetchedIds.every((id, idx) => id === existingIds[idx]);
+              const statusesMatch = orders.every((o, idx) => o.status === existingStatuses[idx]);
+              const listsMatch = fetchedIds.length === existingIds.length && 
+                                 fetchedIds.every((id, idx) => id === existingIds[idx]) &&
+                                 statusesMatch;
               
               if (!listsMatch) {
                 const panel = document.querySelector('.admin-panel-card');
@@ -3235,6 +3303,24 @@ function startBackgroundPolling() {
                   const normalizedStatusClass = order.status.toLowerCase().replace(/ /g, '-');
                   badge.className = `status-badge ${normalizedStatusClass}`;
                   badge.textContent = order.status;
+                }
+                
+                // Hide/remove timer if completed/cancelled
+                if (['Completed', 'Cancelled'].includes(order.status)) {
+                  const timerEl = card.querySelector('.delivery-timer');
+                  if (timerEl) {
+                    timerEl.remove();
+                  }
+                  
+                  // Also ensure amountPaid is correctly formatted
+                  const totalEl = card.querySelector('.total-price');
+                  if (totalEl) {
+                    if (order.isLate) {
+                      totalEl.innerHTML = `Rs. ${order.amountPaid} <small style="text-decoration: line-through; color: var(--text-muted); font-size: 11px; font-weight: normal;">Rs. ${order.originalAmountPaid}</small>`;
+                    } else {
+                      totalEl.innerHTML = `Rs. ${order.amountPaid}`;
+                    }
+                  }
                 }
               }
             });
