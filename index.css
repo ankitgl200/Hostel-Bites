@@ -1068,12 +1068,12 @@ button {
   position: absolute;
   top: 12px;
   left: 12px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 4px 10px;
   border-radius: 50px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--secondary-color);
+  color: #111827;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: var(--shadow-sm);
@@ -2321,7 +2321,7 @@ button {
     color: white !important;
   }
   
-  .qty-selector {
+  .menu-card .qty-selector {
     width: 100% !important;
     height: 36px !important;
     border-radius: 12px !important;
@@ -2329,7 +2329,7 @@ button {
     background-color: var(--primary-color) !important;
   }
   
-  .qty-btn {
+  .menu-card .qty-btn {
     width: 32px !important;
     height: 100% !important;
     font-size: 14px !important;
