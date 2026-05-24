@@ -1225,8 +1225,8 @@ async function renderCheckout() {
     .map(card => ({ card, discount: getCardDiscountValue(card, itemsTotal) }))
     .sort((a, b) => b.discount - a.discount);
 
-  // Auto-apply up to 2 best cards
-  const autoApplied = sortedCards.slice(0, 2);
+  // Auto-apply only the single best card
+  const autoApplied = sortedCards.slice(0, 1);
   const autoAppliedCards = autoApplied.map(item => item.card);
   const autoAppliedCardIds = autoAppliedCards.map(card => card._id);
   const totalDiscount = autoApplied.reduce((sum, item) => sum + item.discount, 0);
