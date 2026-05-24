@@ -132,7 +132,7 @@ function logout() {
 }
 
 async function checkUnnotifiedAdminRewards() {
-  if (state.token && state.user && state.user.role === 'customer') {
+  if (state.token && state.user) {
     const resCards = await apiCall('/api/rewards/my-cards');
     if (resCards.success) {
       const cards = resCards.data;
@@ -193,6 +193,7 @@ function showAdminAwardNotification(card) {
   });
 
   container.appendChild(notif);
+  playNotificationSound();
 }
 
 async function fetchUserProfile() {
@@ -1205,42 +1206,33 @@ async function renderCheckout() {
     return itemsTotal >= threshold;
   });
 
-  let selectedScratchCardId = '';
-
-  function getSelectedCardDiscount() {
-    const card = validCards.find(c => c._id === selectedScratchCardId);
-    if (!card) return 0;
-    
+  // Calculate discount value for a specific card
+  function getCardDiscountValue(card, total) {
     const idx = card.rewardIndex;
     if (idx === 0) return 1;
     if (idx === 1) return 2;
     if (idx === 2) return 3;
-    if (idx === 3) return Math.floor(itemsTotal * 0.05);
-    if (idx === 4) return Math.floor(itemsTotal * 0.10);
+    if (idx === 3) return Math.floor(total * 0.05);
+    if (idx === 4) return Math.floor(total * 0.10);
     if (idx === 5) {
-      // cheapest item free
       return Math.min(...state.cart.map(item => item.price));
     }
-    return 0; // Better luck next time
+    return 0;
   }
 
-  function getSelectedCardDiscountText(discount) {
-    const card = validCards.find(c => c._id === selectedScratchCardId);
-    if (!card || discount === 0) return '';
-    
-    const idx = card.rewardIndex;
-    if (idx === 0) return '-1 Rs (1 Rs off on order above 30)';
-    if (idx === 1) return '-2 Rs (2 Rs off on order above 60)';
-    if (idx === 2) return '-3 Rs (3 Rs off on order above 90)';
-    if (idx === 3) return `-${discount} Rs (5% off)`;
-    if (idx === 4) return `-${discount} Rs (10% off)`;
-    if (idx === 5) return `-${discount} Rs (Cheapest item free)`;
-    return '';
-  }
+  // Sort valid cards by discount value descending
+  const sortedCards = validCards
+    .map(card => ({ card, discount: getCardDiscountValue(card, itemsTotal) }))
+    .sort((a, b) => b.discount - a.discount);
+
+  // Auto-apply up to 2 best cards
+  const autoApplied = sortedCards.slice(0, 2);
+  const autoAppliedCards = autoApplied.map(item => item.card);
+  const autoAppliedCardIds = autoAppliedCards.map(card => card._id);
+  const totalDiscount = autoApplied.reduce((sum, item) => sum + item.discount, 0);
 
   function renderCheckoutUI() {
-    const discount = getSelectedCardDiscount();
-    const finalTotal = Math.max(0, itemsTotal - discount);
+    const finalTotal = Math.max(0, itemsTotal - totalDiscount);
     const defaultBlock = state.user.hostelBlock || 'X';
     const defaultRoom = state.user.roomNo || 1;
 
@@ -1278,18 +1270,23 @@ async function renderCheckout() {
                 </div>
               </div>
               
-              <!-- Coupon Selection -->
+              <!-- Applied Rewards (Auto-selected) -->
               <div class="form-group" style="margin-top: 16px; margin-bottom: 14px;">
-                <label for="checkout-card-select"><i class="fa-solid fa-ticket"></i> Apply Scratch Card Coupon</label>
-                <div class="input-wrapper">
-                  <i class="fa-solid fa-gift"></i>
-                  <select id="checkout-card-select" class="form-control" style="width: 100%; padding-left: 36px; height: auto;">
-                    <option value="">No Scratch Card Applied</option>
-                    ${validCards.map(card => `
-                      <option value="${card._id}" ${card._id === selectedScratchCardId ? 'selected' : ''}>${card.description}</option>
+                <label style="font-weight: 600;"><i class="fa-solid fa-ticket"></i> Applied Rewards (Auto-selected)</label>
+                ${autoAppliedCards.length > 0 ? `
+                  <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    ${autoApplied.map(item => `
+                      <div class="reward-pill" style="display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-light); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13px;">
+                        <span><i class="fa-solid fa-gift" style="color: var(--primary-color); margin-right: 6px;"></i> ${item.card.description}</span>
+                        <strong style="color: var(--success-color);">-Rs. ${item.discount}</strong>
+                      </div>
                     `).join('')}
-                  </select>
-                </div>
+                  </div>
+                ` : `
+                  <div style="background-color: var(--bg-light); border: 1px dashed var(--border-color); padding: 12px; border-radius: var(--radius-sm); font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <i class="fa-solid fa-circle-info"></i> No eligible rewards to auto-apply.
+                  </div>
+                `}
               </div>
 
               <!-- Payment Method (COD) -->
@@ -1329,9 +1326,9 @@ async function renderCheckout() {
                 <span>Items Total</span>
                 <span>Rs. ${itemsTotal}</span>
               </div>
-              <div class="bill-row" id="bill-discount-row" style="${discount > 0 ? 'display: flex;' : 'display: none;'} justify-content: space-between;">
+              <div class="bill-row" id="bill-discount-row" style="${totalDiscount > 0 ? 'display: flex;' : 'display: none;'} justify-content: space-between;">
                 <span>Discount</span>
-                <span class="discount-val" style="color: var(--danger-color); font-weight: 600;">${getSelectedCardDiscountText(discount)}</span>
+                <span class="discount-val" style="color: var(--danger-color); font-weight: 600;">-Rs. ${totalDiscount}</span>
               </div>
               <div class="bill-row">
                 <span>Delivery Fee</span>
@@ -1347,15 +1344,6 @@ async function renderCheckout() {
         </div>
       </div>
     `;
-
-    // Bind Select change
-    const cardSelect = document.getElementById('checkout-card-select');
-    if (cardSelect) {
-      cardSelect.addEventListener('change', (e) => {
-        selectedScratchCardId = e.target.value;
-        renderCheckoutUI();
-      });
-    }
 
     // Submit Order Event
     const form = document.getElementById('checkout-form');
@@ -1380,7 +1368,7 @@ async function renderCheckout() {
         const payload = {
           items: itemsPayload,
           deliveryAddress,
-          scratchCardId: selectedScratchCardId || undefined
+          scratchCardIds: autoAppliedCardIds
         };
 
         const res = await apiCall('/api/orders', 'POST', payload);
@@ -2135,7 +2123,7 @@ function renderAdminOrdersTab(orders) {
     return `<div style="text-align: center; padding: 40px;"><p style="color: var(--text-muted);">No orders submitted yet.</p></div>`;
   }
 
-  const statuses = ['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Completed', 'Cancelled'];
+  const statuses = ['Pending', 'Confirmed', 'Unpaid', 'Preparing', 'Out for Delivery', 'Completed', 'Cancelled'];
 
   return `
     <div class="table-responsive">
@@ -2332,7 +2320,6 @@ function renderAdminUsersTab(users) {
             <th>Phone</th>
             <th>Role</th>
             <th>Approval Status</th>
-            <th>Rs Balance</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -2372,13 +2359,10 @@ function renderAdminUsersTab(users) {
                   </span>
                 </td>
                 <td>
-                  <div class="points-pill"><i class="fa-solid fa-indian-rupee-sign"></i> <span>${u.rewards || 0}</span> Rs</div>
-                </td>
-                <td>
                   <div class="admin-table-actions">
                     ${showApproveBtn ? `
                       <button class="btn btn-primary btn-sm btn-approve-user" data-id="${u._id}" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;">
-                        <i class="fa-solid fa-check"></i> Approve
+                        <i class="fa-solid fa-check"></i>
                       </button>
                     ` : ''}
                     <button class="btn btn-secondary btn-sm btn-award-card" data-id="${u._id}" data-name="${u.name}" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;" title="Award Scratch Card">
@@ -3247,7 +3231,7 @@ function startBackgroundPolling() {
         }
 
         // C. Customer admin-award scratch card polling
-        if (state.user.role === 'customer') {
+        if (state.user) {
           checkUnnotifiedAdminRewards();
         }
       }
