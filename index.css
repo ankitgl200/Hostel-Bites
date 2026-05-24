@@ -343,8 +343,8 @@ button {
 }
 
 .btn-secondary {
-  background-color: white;
-  color: var(--secondary-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
   border: 1px solid var(--border-color);
 }
 
@@ -921,7 +921,7 @@ button {
 
 .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus {
   border-color: var(--primary-color);
-  background-color: white;
+  background-color: var(--bg-card);
   box-shadow: 0 0 0 3px hsl(14, 100%, 94%);
 }
 
@@ -1822,7 +1822,7 @@ button {
   font-weight: 600;
   font-size: 13px;
   color: var(--text-main);
-  background-color: white;
+  background-color: var(--bg-card);
 }
 
 .admin-status-select:focus {
@@ -2656,6 +2656,52 @@ body.dark-mode .scratch-card-status.status-expired {
   animation: gold-glow 2s infinite ease-in-out;
   transform: scale(1.02);
   transition: all 0.3s ease;
+}
+
+/* Light Mode Unpaid Badge */
+.status-badge.unpaid {
+  background-color: hsl(0, 75%, 95%);
+  color: var(--danger-color);
+}
+
+/* Dark Mode Status Badges & Points Pill overrides */
+body.dark-mode .status-badge.unpaid {
+  background-color: hsl(0, 75%, 15%) !important;
+  color: hsl(0, 75%, 75%) !important;
+}
+body.dark-mode .status-badge.cancelled {
+  background-color: hsl(352, 74%, 15%) !important;
+  color: hsl(352, 74%, 75%) !important;
+}
+body.dark-mode .status-badge.pending {
+  background-color: hsl(38, 92%, 15%) !important;
+  color: hsl(38, 92%, 75%) !important;
+}
+body.dark-mode .status-badge.confirmed {
+  background-color: hsl(200, 80%, 15%) !important;
+  color: hsl(200, 80%, 75%) !important;
+}
+body.dark-mode .status-badge.preparing {
+  background-color: hsl(270, 70%, 15%) !important;
+  color: hsl(270, 70%, 75%) !important;
+}
+body.dark-mode .status-badge.out-for-delivery {
+  background-color: hsl(180, 70%, 15%) !important;
+  color: hsl(180, 70%, 75%) !important;
+}
+body.dark-mode .status-badge.completed {
+  background-color: hsl(145, 63%, 15%) !important;
+  color: hsl(145, 63%, 75%) !important;
+}
+body.dark-mode .points-pill {
+  background-color: hsl(42, 100%, 15%) !important;
+  color: hsl(42, 100%, 75%) !important;
+}
+
+body.dark-mode .input-wrapper input:focus, 
+body.dark-mode .input-wrapper select:focus, 
+body.dark-mode .input-wrapper textarea:focus {
+  box-shadow: 0 0 0 3px rgba(243, 80, 31, 0.2) !important;
 }
 
 
