@@ -1981,6 +1981,14 @@ button {
   }
   .hero-cta {
     justify-content: center;
+    gap: 12px;
+  }
+  .hero-cta a {
+    flex: 1;
+    max-width: 180px;
+    white-space: nowrap;
+    font-size: 14px;
+    padding: 10px 16px;
   }
   .hero-image-wrapper {
     order: -1;
@@ -2305,8 +2313,8 @@ button {
     text-align: left !important;
   }
   
-  .add-to-cart-btn, 
-  .btn-secondary {
+  .menu-card .add-to-cart-btn, 
+  .menu-card .btn-secondary {
     width: 100% !important;
     height: 36px !important; /* Comfortable button height */
     padding: 0 !important;
