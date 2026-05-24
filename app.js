@@ -898,6 +898,17 @@ async function renderMenu() {
     );
   }
 
+  // Sort by stock descending, placing out-of-stock / unavailable items at the very end
+  filteredMenu.sort((a, b) => {
+    const aAvailable = a.isAvailable && a.stock > 0;
+    const bAvailable = b.isAvailable && b.stock > 0;
+    
+    if (aAvailable && !bAvailable) return -1;
+    if (!aAvailable && bAvailable) return 1;
+    
+    return b.stock - a.stock;
+  });
+
   // Counts of categories
   const getCount = (cat) => {
     if (cat === 'All') return state.menu.length;
