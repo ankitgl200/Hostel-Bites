@@ -1495,9 +1495,9 @@ async function renderCheckout() {
                 <div class="input-wrapper">
                   <i class="fa-solid fa-building"></i>
                   <select id="address-block-select" required style="width: 100%; padding-left: 36px; height: 42px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background-color: var(--bg-light); color: var(--text-main);">
-                    <option value="X" ${defaultBlock === 'X' ? 'selected' : ''}>Block X</option>
-                    <option value="Y" ${defaultBlock === 'Y' ? 'selected' : ''}>Block Y</option>
-                    <option value="Z" ${defaultBlock === 'Z' ? 'selected' : ''}>Block Z</option>
+                    <option value="X" ${defaultBlock === 'X' ? 'selected' : ''}>Block X ${state.shop.isBlockXOpen ? '' : ' (Not accepting orders)'}</option>
+                    <option value="Y" ${defaultBlock === 'Y' ? 'selected' : ''}>Block Y ${state.shop.isBlockYOpen ? '' : ' (Not accepting orders)'}</option>
+                    <option value="Z" ${defaultBlock === 'Z' ? 'selected' : ''}>Block Z ${state.shop.isBlockZOpen ? '' : ' (Not accepting orders)'}</option>
                   </select>
                 </div>
               </div>
@@ -1597,12 +1597,23 @@ async function renderCheckout() {
         e.preventDefault();
         
         const submitBtn = document.getElementById('place-order-submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border-width: 2px; margin: 0;"></div> Booking...';
-
         const hostelBlock = document.getElementById('address-block-select').value;
         const roomNo = document.getElementById('address-room-select').value;
         const deliveryAddress = `Room ${roomNo}, Block ${hostelBlock}`;
+
+        // Client-side Block Acceptance Check
+        const isBlockOpen = 
+          hostelBlock === 'X' ? state.shop.isBlockXOpen :
+          hostelBlock === 'Y' ? state.shop.isBlockYOpen :
+          hostelBlock === 'Z' ? state.shop.isBlockZOpen : true;
+
+        if (!isBlockOpen) {
+          showToast(`Sorry, currently we are not accepting orders for your block (Block ${hostelBlock}).`, 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border-width: 2px; margin: 0;"></div> Booking...';
 
         // Restructure cart items for backend
         const itemsPayload = state.cart.map(item => ({
@@ -2948,11 +2959,58 @@ function renderAdminShopTab() {
             <span>Force Closed</span>
             <i class="fa-solid ${state.shop.isManuallyClosed ? 'fa-toggle-on' : 'fa-toggle-off'}" style="font-size: 20px;"></i>
           </button>
-
+ 
           <button class="admin-toggle-btn ${state.shop.isManuallyOpened ? 'active' : ''}" id="toggle-manual-opened">
             <span>Force Opened</span>
             <i class="fa-solid ${state.shop.isManuallyOpened ? 'fa-toggle-on' : 'fa-toggle-off'}" style="font-size: 20px;"></i>
           </button>
+        </div>
+      </div>
+
+      <!-- Hostel Block Controls -->
+      <div class="admin-config-card">
+        <h3>Hostel Block Controls</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">Enable or disable order taking for specific hostel blocks.</p>
+        
+        <div style="margin-top: 4px; display: flex; flex-direction: column; gap: 12px;">
+          <!-- Block X Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-light); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-weight: 600; font-size: 14px; color: var(--text-main);">Block X Orders</span>
+              <span style="font-size: 11px; color: ${state.shop.isBlockXOpen ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
+                ${state.shop.isBlockXOpen ? 'Accepting Orders' : 'Blocked'}
+              </span>
+            </div>
+            <button class="admin-toggle-btn-small" id="toggle-block-x" style="font-size: 24px; color: ${state.shop.isBlockXOpen ? 'var(--success-color)' : 'var(--text-muted)'}; background: none; border: none; cursor: pointer;">
+              <i class="fa-solid ${state.shop.isBlockXOpen ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+            </button>
+          </div>
+
+          <!-- Block Y Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-light); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-weight: 600; font-size: 14px; color: var(--text-main);">Block Y Orders</span>
+              <span style="font-size: 11px; color: ${state.shop.isBlockYOpen ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
+                ${state.shop.isBlockYOpen ? 'Accepting Orders' : 'Blocked'}
+              </span>
+            </div>
+            <button class="admin-toggle-btn-small" id="toggle-block-y" style="font-size: 24px; color: ${state.shop.isBlockYOpen ? 'var(--success-color)' : 'var(--text-muted)'}; background: none; border: none; cursor: pointer;">
+              <i class="fa-solid ${state.shop.isBlockYOpen ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+            </button>
+          </div>
+
+          <!-- Block Z Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-light); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-weight: 600; font-size: 14px; color: var(--text-main);">Block Z Orders</span>
+              <span style="font-size: 11px; color: ${state.shop.isBlockZOpen ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
+                ${state.shop.isBlockZOpen ? 'Accepting Orders' : 'Blocked'}
+              </span>
+            </div>
+            <button class="admin-toggle-btn-small" id="toggle-block-z" style="font-size: 24px; color: ${state.shop.isBlockZOpen ? 'var(--success-color)' : 'var(--text-muted)'}; background: none; border: none; cursor: pointer;">
+              <i class="fa-solid ${state.shop.isBlockZOpen ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -2969,7 +3027,7 @@ function renderAdminShopTab() {
               <input type="number" id="opening-hour" min="0" max="23" value="${state.shop.openHour}" required>
             </div>
           </div>
-
+ 
           <div class="form-group" style="margin-bottom: 16px;">
             <label style="font-size: 12px;">Closing Hour (1-24)</label>
             <div class="input-wrapper">
@@ -2977,7 +3035,7 @@ function renderAdminShopTab() {
               <input type="number" id="closing-hour" min="1" max="24" value="${state.shop.closeHour}" required>
             </div>
           </div>
-
+ 
           <button type="submit" class="btn btn-primary btn-sm btn-block">Apply Schedule Hours</button>
         </form>
       </div>
@@ -3024,6 +3082,54 @@ function bindAdminShopEvents() {
         showToast(res.message, 'success');
         
         // Refresh Shop config
+        await checkShopStatus();
+        renderAdmin();
+      } else {
+        showToast(res.message || 'Config update failed.', 'error');
+      }
+    });
+  }
+
+  // Block X Toggle Action
+  const toggleBlockX = document.getElementById('toggle-block-x');
+  if (toggleBlockX) {
+    toggleBlockX.addEventListener('click', async () => {
+      const active = !state.shop.isBlockXOpen;
+      const res = await apiCall('/api/admin/shop/status', 'POST', { isBlockXOpen: active });
+      if (res.success) {
+        showToast(`Block X ordering ${active ? 'enabled' : 'disabled'}.`, 'success');
+        await checkShopStatus();
+        renderAdmin();
+      } else {
+        showToast(res.message || 'Config update failed.', 'error');
+      }
+    });
+  }
+
+  // Block Y Toggle Action
+  const toggleBlockY = document.getElementById('toggle-block-y');
+  if (toggleBlockY) {
+    toggleBlockY.addEventListener('click', async () => {
+      const active = !state.shop.isBlockYOpen;
+      const res = await apiCall('/api/admin/shop/status', 'POST', { isBlockYOpen: active });
+      if (res.success) {
+        showToast(`Block Y ordering ${active ? 'enabled' : 'disabled'}.`, 'success');
+        await checkShopStatus();
+        renderAdmin();
+      } else {
+        showToast(res.message || 'Config update failed.', 'error');
+      }
+    });
+  }
+
+  // Block Z Toggle Action
+  const toggleBlockZ = document.getElementById('toggle-block-z');
+  if (toggleBlockZ) {
+    toggleBlockZ.addEventListener('click', async () => {
+      const active = !state.shop.isBlockZOpen;
+      const res = await apiCall('/api/admin/shop/status', 'POST', { isBlockZOpen: active });
+      if (res.success) {
+        showToast(`Block Z ordering ${active ? 'enabled' : 'disabled'}.`, 'success');
         await checkShopStatus();
         renderAdmin();
       } else {
