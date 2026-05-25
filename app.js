@@ -446,6 +446,7 @@ function updateAuthNavbar() {
   const dropdownPoints = document.getElementById('dropdown-points');
   
   const adminLinks = document.querySelectorAll('.admin-only');
+  const userOnlyLinks = document.querySelectorAll('.user-only');
 
   if (state.user) {
     if (authActions) authActions.classList.add('hidden');
@@ -455,6 +456,8 @@ function updateAuthNavbar() {
     if (dropdownName) dropdownName.textContent = state.user.name;
     if (dropdownPhone) dropdownPhone.textContent = state.user.phone;
     if (dropdownPoints) dropdownPoints.textContent = state.user.rewards || 0;
+
+    userOnlyLinks.forEach(el => el.classList.remove('hidden'));
 
     // Toggle admin dashboards visibility
     if (state.user.role === 'admin') {
@@ -466,6 +469,7 @@ function updateAuthNavbar() {
     if (authActions) authActions.classList.remove('hidden');
     if (userMenu) userMenu.classList.add('hidden');
     adminLinks.forEach(el => el.classList.add('hidden'));
+    userOnlyLinks.forEach(el => el.classList.add('hidden'));
   }
 }
 
@@ -481,7 +485,8 @@ const routes = {
   '#/about': renderAbout,
   '#/admin': renderAdmin,
   '#/login': renderLogin,
-  '#/shop-closed': renderShopClosed
+  '#/shop-closed': renderShopClosed,
+  '#/change-password': renderChangePassword
 };
 
 function handleRouting() {
@@ -858,6 +863,87 @@ async function renderAbout() {
       </section>
     </div>
   `;
+}
+
+// 2B. CHANGE PASSWORD VIEW
+async function renderChangePassword() {
+  const content = document.getElementById('app-content');
+
+  if (!state.user) {
+    navigate('#/login');
+    return;
+  }
+
+  content.innerHTML = `
+    <div class="container page-view" style="max-width: 500px;">
+      <div class="auth-card" style="margin-top: 40px;">
+        <div class="auth-header">
+          <h2><i class="fa-solid fa-key"></i> Change Password</h2>
+          <p>Update your account security credentials</p>
+        </div>
+        <div class="auth-body">
+          <form id="change-password-form">
+            <div class="form-group">
+              <label for="current-password">Current Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="current-password" placeholder="••••••••" required>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 16px;">
+              <label for="new-password">New Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="new-password" placeholder="••••••••" required minlength="5">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+              <label for="confirm-new-password">Confirm New Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-circle-check"></i>
+                <input type="password" id="confirm-new-password" placeholder="••••••••" required minlength="5">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 24px;">
+              Update Password
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById('change-password-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value;
+    const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+    if (newPassword !== confirmNewPassword) {
+      showToast('New passwords do not match.', 'error');
+      return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Updating...';
+
+    const res = await apiCall('/api/auth/change-password', 'PUT', { currentPassword, newPassword });
+
+    if (res.success) {
+      showToast(res.message, 'success');
+      navigate('#/home');
+    } else {
+      showToast(res.message || 'Failed to update password.', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Update Password';
+    }
+  });
 }
 
 // 3. MENU VIEW
@@ -1887,7 +1973,7 @@ function renderLogin() {
                     <label for="signup-password">Password</label>
                     <div class="input-wrapper">
                       <i class="fa-solid fa-lock"></i>
-                      <input type="password" id="signup-password" placeholder="••••••" minlength="6" required>
+                      <input type="password" id="signup-password" placeholder="••••••" minlength="5" required>
                     </div>
                   </div>
 
@@ -2398,6 +2484,9 @@ function renderAdminUsersTab(users) {
                         <i class="fa-solid fa-check"></i>
                       </button>
                     ` : ''}
+                    <button class="btn btn-warning btn-sm btn-reset-password" data-id="${u._id}" data-name="${u.name}" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;" title="Reset Password to 12345">
+                      <i class="fa-solid fa-key"></i>
+                    </button>
                     <button class="btn btn-secondary btn-sm btn-award-card" data-id="${u._id}" data-name="${u.name}" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;" title="Award Scratch Card">
                       <i class="fa-solid fa-gift"></i>
                     </button>
@@ -2456,6 +2545,22 @@ function bindAdminUsersEvents() {
           renderAdmin();
         } else {
           showToast(res.message || 'Failed to delete user.', 'error');
+        }
+      }
+    });
+  });
+
+  // Reset password action
+  document.querySelectorAll('.btn-reset-password').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const userId = btn.getAttribute('data-id');
+      const userName = btn.getAttribute('data-name');
+      if (confirm(`Are you sure you want to reset the password for ${userName} to "12345"?`)) {
+        const res = await apiCall(`/api/admin/users/${userId}/reset-password`, 'PUT');
+        if (res.success) {
+          showToast(res.message, 'success');
+        } else {
+          showToast(res.message || 'Failed to reset password.', 'error');
         }
       }
     });
