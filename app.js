@@ -875,40 +875,77 @@ async function renderChangePassword() {
   }
 
   content.innerHTML = `
-    <div class="container page-view" style="max-width: 500px;">
-      <div class="auth-card" style="margin-top: 40px;">
-        <div class="auth-header">
-          <h2><i class="fa-solid fa-key"></i> Change Password</h2>
-          <p>Update your account security credentials</p>
+    <div class="password-card-container">
+      <div class="password-card">
+        <div class="password-header">
+          <div class="icon-container">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h2>Change Password</h2>
+          <p>Update your credentials to keep your account secure</p>
         </div>
-        <div class="auth-body">
-          <form id="change-password-form">
+        <div class="password-body">
+          <form id="change-password-form" novalidate>
+            <!-- Current Password -->
             <div class="form-group">
               <label for="current-password">Current Password</label>
-              <div class="input-wrapper">
+              <div class="input-wrapper password-input-container">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" id="current-password" placeholder="••••••••" required>
+                <input type="password" id="current-password" placeholder="Enter current password" required>
+                <i class="fa-solid fa-eye password-toggle-btn" id="toggle-current-pass"></i>
               </div>
             </div>
             
-            <div class="form-group" style="margin-top: 16px;">
+            <!-- New Password -->
+            <div class="form-group" style="margin-top: 20px;">
               <label for="new-password">New Password</label>
-              <div class="input-wrapper">
+              <div class="input-wrapper password-input-container">
                 <i class="fa-solid fa-key"></i>
-                <input type="password" id="new-password" placeholder="••••••••" required minlength="5">
+                <input type="password" id="new-password" placeholder="Enter new password (min. 5 chars)" required>
+                <i class="fa-solid fa-eye password-toggle-btn" id="toggle-new-pass"></i>
+              </div>
+              
+              <!-- Strength Meter -->
+              <div class="strength-meter">
+                <div class="strength-bar-bg">
+                  <div class="strength-bar-fill" id="strength-bar"></div>
+                </div>
+                <div class="strength-text">
+                  <span>Strength: <span id="strength-label">None</span></span>
+                  <span id="strength-percent">0%</span>
+                </div>
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 16px;">
+            <!-- Confirm Password -->
+            <div class="form-group" style="margin-top: 10px;">
               <label for="confirm-new-password">Confirm New Password</label>
-              <div class="input-wrapper">
+              <div class="input-wrapper password-input-container">
                 <i class="fa-solid fa-circle-check"></i>
-                <input type="password" id="confirm-new-password" placeholder="••••••••" required minlength="5">
+                <input type="password" id="confirm-new-password" placeholder="Re-type new password" required>
+                <i class="fa-solid fa-eye password-toggle-btn" id="toggle-confirm-pass"></i>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 24px;">
-              Update Password
+            <!-- Requirements Checklist -->
+            <div class="password-rules">
+              <h4>Security Guidelines</h4>
+              <div class="rule-item" id="rule-length">
+                <i class="fa-solid fa-circle"></i>
+                <span>Minimum 5 characters</span>
+              </div>
+              <div class="rule-item" id="rule-number">
+                <i class="fa-solid fa-circle"></i>
+                <span>Contains a number or symbol</span>
+              </div>
+              <div class="rule-item" id="rule-match">
+                <i class="fa-solid fa-circle"></i>
+                <span>Passwords match</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-password-submit" style="margin-top: 24px;">
+              <i class="fa-solid fa-arrows-rotate" style="margin-right: 8px;"></i> Update Password
             </button>
           </form>
         </div>
@@ -916,13 +953,124 @@ async function renderChangePassword() {
     </div>
   `;
 
+  // Visibility togglers
+  const setupToggle = (btnId, inputId) => {
+    const btn = document.getElementById(btnId);
+    const input = document.getElementById(inputId);
+    btn.addEventListener('click', () => {
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        btn.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    });
+  };
+
+  setupToggle('toggle-current-pass', 'current-password');
+  setupToggle('toggle-new-pass', 'new-password');
+  setupToggle('toggle-confirm-pass', 'confirm-new-password');
+
+  const newPassInput = document.getElementById('new-password');
+  const confirmPassInput = document.getElementById('confirm-new-password');
+
+  const ruleLength = document.getElementById('rule-length');
+  const ruleNumber = document.getElementById('rule-number');
+  const ruleMatch = document.getElementById('rule-match');
+
+  const strengthBar = document.getElementById('strength-bar');
+  const strengthLabel = document.getElementById('strength-label');
+  const strengthPercent = document.getElementById('strength-percent');
+
+  // Password checkers
+  const evaluatePassword = () => {
+    const val = newPassInput.value;
+    const confirmVal = confirmPassInput.value;
+
+    let score = 0;
+    
+    // Rule 1: Length >= 5
+    const hasLength = val.length >= 5;
+    if (hasLength) {
+      score += 1;
+      ruleLength.classList.add('valid');
+      ruleLength.querySelector('i').className = 'fa-solid fa-circle-check';
+    } else {
+      ruleLength.classList.remove('valid');
+      ruleLength.querySelector('i').className = 'fa-solid fa-circle';
+    }
+
+    // Rule 2: Numbers or special character
+    const hasNumberOrSpecial = /[0-9!@#$%^&*(),.?":{}|<>]/.test(val);
+    if (hasNumberOrSpecial) {
+      score += 1;
+      ruleNumber.classList.add('valid');
+      ruleNumber.querySelector('i').className = 'fa-solid fa-circle-check';
+    } else {
+      ruleNumber.classList.remove('valid');
+      ruleNumber.querySelector('i').className = 'fa-solid fa-circle';
+    }
+
+    // Rule 3: Upper & lowercase mix (bonus strength)
+    const hasMixedCase = /[a-z]/.test(val) && /[A-Z]/.test(val);
+    if (hasMixedCase && val.length > 0) {
+      score += 1;
+    }
+
+    // Rule 4: Match
+    const matches = val === confirmVal && val.length > 0;
+    if (matches) {
+      ruleMatch.classList.add('valid');
+      ruleMatch.querySelector('i').className = 'fa-solid fa-circle-check';
+    } else {
+      ruleMatch.classList.remove('valid');
+      ruleMatch.querySelector('i').className = 'fa-solid fa-circle';
+    }
+
+    // Update Strength Meter
+    let percent = 0;
+    let label = 'None';
+    let color = 'var(--border-color)';
+
+    if (val.length > 0) {
+      if (score === 1) {
+        percent = 33;
+        label = 'Weak';
+        color = 'var(--danger-color)';
+      } else if (score === 2) {
+        percent = 66;
+        label = 'Medium';
+        color = 'var(--warning-color)';
+      } else if (score >= 3) {
+        percent = 100;
+        label = 'Strong';
+        color = 'var(--success-color)';
+      }
+    }
+
+    strengthBar.style.width = `${percent}%`;
+    strengthBar.style.backgroundColor = color;
+    strengthLabel.textContent = label;
+    strengthLabel.style.color = val.length > 0 ? color : 'var(--text-muted)';
+    strengthPercent.textContent = `${percent}%`;
+  };
+
+  newPassInput.addEventListener('input', evaluatePassword);
+  confirmPassInput.addEventListener('input', evaluatePassword);
+
   const form = document.getElementById('change-password-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const currentPassword = document.getElementById('current-password').value;
-    const newPassword = document.getElementById('new-password').value;
-    const confirmNewPassword = document.getElementById('confirm-new-password').value;
+    const newPassword = newPassInput.value;
+    const confirmNewPassword = confirmPassInput.value;
+
+    if (newPassword.length < 5) {
+      showToast('New password must be at least 5 characters long.', 'error');
+      return;
+    }
 
     if (newPassword !== confirmNewPassword) {
       showToast('New passwords do not match.', 'error');
@@ -931,7 +1079,7 @@ async function renderChangePassword() {
 
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Updating...';
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Updating...';
 
     const res = await apiCall('/api/auth/change-password', 'PUT', { currentPassword, newPassword });
 
@@ -941,7 +1089,7 @@ async function renderChangePassword() {
     } else {
       showToast(res.message || 'Failed to update password.', 'error');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Update Password';
+      submitBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate" style="margin-right: 8px;"></i> Update Password';
     }
   });
 }
