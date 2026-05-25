@@ -363,6 +363,16 @@ button {
   transform: translateY(-2px);
 }
 
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: hsl(38, 92%, 45%);
+  transform: translateY(-2px);
+}
+
 .btn-sm {
   padding: 8px 16px;
   font-size: 13px;
